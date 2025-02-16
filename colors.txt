@@ -1,0 +1,15 @@
+blue-400
+orange-100
+green-200
+
+Up and Down
+green-400
+red-500
+
+Deposit
+green-500
+
+white/40
+white/20
+white/10
+white/5
