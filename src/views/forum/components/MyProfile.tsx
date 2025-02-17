@@ -29,11 +29,11 @@ const MyProfile = (props: {
         <button className={`tab-item ${activeTab1 === 0 ? 'active' : ''}`} onClick={() => setActiveTab1(0)}>My Account</button>
         <button className={`tab-item ${activeTab1 === 1 ? 'active' : ''}`} onClick={() => setActiveTab1(1)}>Notifications <span className="ml-1 text-gray-400">5</span></button>
       </div>
-      <div className="bg-white text-black p-5 space-y-4 overflow-auto max-h-[500px] rounded-b">
+      <div className="bg-white text-black p-5 space-y-4 overflow-auto max-h-[400px] sm:max-h-[500px] rounded-b">
         {
           activeTab1 == 0 ? <>
             <div className="flex gap-3">
-              <div className="relative w-[90px] h-[90px] bg-black circle flex items-center justify-center">
+              <div className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center">
                 <img src={IconUser} className="w-4 h-4" />
                 <div className="absolute right-0 bottom-0 circle bg-dark1">
                   <span className="badge-rank-5"></span>
@@ -42,13 +42,31 @@ const MyProfile = (props: {
               <div className="space-y-3 grow">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2 items-center">
-                    <h3 className="font-bold text-lg">UsernameLong</h3>
+                    <h3 className="font-bold text-base sm:text-lg">UsernameLong</h3>
                     <Link to="/profile/123"><img src={IconLink} className="w-4 h-4" /></Link>
                   </div>
                   <button className="text-black/40 font-bold" onClick={logout}><img src={IconLogout} className="w-4 h-4" /></button>
                 </div>
                 
-                <div className="text-black/60 text-sm space-y-2">
+                <div className="sm:hidden flex flex-wrap gap-1">
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Rank</span>
+                    <span className="text-xs text-black font-semibold">5</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Win rate</span>
+                    <span className="text-xs text-black font-semibold">56%</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Calls</span>
+                    <span className="text-xs text-black font-semibold">125</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Account age</span>
+                    <span className="text-xs text-black font-semibold">2 years</span>
+                  </div>
+                </div>
+                <div className="hidden sm:block text-black/60 text-sm space-y-2">
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Win rate</p>
                     <p className="col-span-7">56%</p>
@@ -62,10 +80,13 @@ const MyProfile = (props: {
                     <p className="col-span-7">2 years</p>
                   </div>
                 </div>
+                <div className="sm:hidden flex flex-wrap gap-1">
+
+                </div>
               </div>
             </div>
             <div className="border border-black/15"></div>
-            <div className="rounded-[20px] bg-black/5 p-4">
+            <div className="rounded-[20px] bg-black/5 p-4 hidden sm:block">
               <div className="flex gap-6">
                 <div className="space-y-2">
                   <div className="text-md font-semibold"><span className="text-xl font-bold">2.1</span> SOL</div>
@@ -120,9 +141,9 @@ const MyProfile = (props: {
                   <span className="badge-social-twitter"></span>
                   <span className="badge-social-telegram"></span>
                   <span className="badge-social-solana"></span>
-                  <span className="badge-call-10X"></span>
-                  <span className="badge-user-50"></span>
-                  <span className="badge-other-bughunter"></span>
+                  <span className="badge-call-10X !hidden sm:!flex"></span>
+                  <span className="badge-user-50 !hidden sm:!flex"></span>
+                  <span className="badge-other-bughunter !hidden sm:!flex"></span>
                 </div>
                 <button className="w-8 h-8 text-xs font-bold bg-white circle-item text-black">+5</button>
               </div>
@@ -191,16 +212,16 @@ const MyProfile = (props: {
           <div className="space-y-3 p-5">
             <div className="rounded-full border border-black/15 flex justify-between items-center p-1 pr-3">
               <div className="flex gap-1 items-center">
-                <img src={Token} className="w-[40px] h-[40px] circle"/>
-                <span className="font-bold">$PEPESI</span>
+                <img src={Token} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
+                <span className="font-bold text-sm sm:text-base">$PEPESI</span>
                 <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">200X</span>
               </div>
               <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
             </div>
             <div className="rounded-full border border-black/15 flex justify-between items-center p-1 pr-3">
               <div className="flex gap-1 items-center">
-                <img src={Token} className="w-[40px] h-[40px] circle"/>
-                <span className="font-bold">$PEPESI</span>
+                <img src={Token} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
+                <span className="font-bold text-sm sm:text-base">$PEPESI</span>
                 <span className="rounded-full bg-red-400 text-white px-2 py-1.5 text-xs font-semibold">RUG</span>
               </div>
               <span className="rounded-full bg-black text-white px-2 py-1.5 text-xs font-semibold">-10 XP</span>

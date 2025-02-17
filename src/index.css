@@ -30,7 +30,11 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply bg-dark text-white;
+  @apply bg-darker text-white duration-300 ease-in-out;
+}
+
+* {
+  @apply outline-none;
 }
 
 code {
@@ -50,18 +54,18 @@ code {
   }
 
   .btn-lg {
-    @apply !px-6 !py-5 !gap-2
+    @apply !px-6 !py-5 text-base gap-2
   }
 
   .btn-md {
-    @apply px-4 py-1.5 font-semibold
+    @apply !px-4 !py-1.5 text-base font-semibold
   }
 
   .btn-sm {
-    @apply px-3 py-2.5 text-xs font-bold
+    @apply !px-3 !py-2.5 text-xxs sm:text-xs font-bold
   }
   .btn-xs {
-    @apply px-1.5 py-1 text-xs font-bold
+    @apply !px-1.5 !py-1 text-xxs sm:text-xs font-bold
   }
 
   .btn-primary {
@@ -159,10 +163,10 @@ code {
   @apply rounded-br-none;
 }
 .tab .tab-item.active {
-  @apply bg-white text-black rounded-bl-none rounded-br-none
+  @apply bg-white text-black font-semibold rounded-bl-none rounded-br-none
 }
 .input-field {
-  @apply flex items-center bg-gray-50 rounded-full px-4 py-2.5 gap-3;
+  @apply flex items-center bg-gray-50 rounded-full px-4 py-2.5 gap-3 outline-none;
 }
 .search-field {
   @apply card flex-grow h-full px-6 py-5 rounded-full outline-none text-white;

@@ -5,6 +5,7 @@ module.exports = {
   theme: {
     extend: {
       fontSize: {
+        xxs: ['10px', '10px'],
         xs: ['12px', '12px'],
         sm: ['14px', '14px'],
         base: ['16px', '16px'],
@@ -35,6 +36,7 @@ module.exports = {
       colors: () => ({
         black: "#000000",
         white: "#ffffff",
+        darker: '#100F13',
         dark: "#1E1E1E",
         dark1: "#1C1B1F",
         dark2: '#242424',

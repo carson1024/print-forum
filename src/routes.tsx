@@ -11,6 +11,7 @@ import TokenDetail from "views/forum/token";
 import ProfileDetail from "views/forum/profile";
 import Leaderboard from "views/leaderboard";
 import CopyTrading from "views/copytrading";
+import Profile from "views/user";
 
 const routes = [
   {
@@ -18,6 +19,12 @@ const routes = [
     layout: "",
     path: "forum",
     component: <ForumList />,
+  },
+  {
+    key: "login",
+    layout: "",
+    path: "profile",
+    component: <Profile />,
   },
   {
     key: "token",
