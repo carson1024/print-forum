@@ -177,3 +177,6 @@ code {
 select {
   @apply px-2.5 py-1.5 rounded-full bg-gray-100 text-white outline-none;
 }
+input {
+  min-width: 0px;
+}
