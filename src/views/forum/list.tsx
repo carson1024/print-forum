@@ -35,15 +35,15 @@ const ForumList = () => {
           <span className="text-primary/30 mr-2">Show</span> <span>{filter}</span> <AiFillCaretDown className="text-primary/30 ml-1" />
         </button>
       </div>
-      
+ 
       <div className="p-4 sm:p-6 flex flex-col gap-5 overflow-auto flex-grow">
         {forumData.map((item) => (<Link to="/token/123" key={item.id}>
-          <div className="bg-gray-50 p-1.5 pr-3 rounded space-y-3">
+          <div className="bg-gray-50 p-1.5 pr-3 rounded flex flex-col gap-2 sm:gap-3">
             <div className="flex items-center gap-2.5">
               <div className="flex flex-wrap grow">
                 <div className="flex grow gap-2 sm:gap-3 items-center">
                   <img src={Token} className="w-[44px] h-[44px] sm:w-16 sm:h-16 circle"/>
-                  <div className="grow space-y-0.5 sm:space-y-1.5">
+                  <div className="grow space-y-1 sm:space-y-1.5">
                     <div className="flex gap-1.5 sm:gap-2.5 items-center">
                       <span className="text-sm sm:text-base font-bold">{item.name}</span>
                       <span className={`badge-multiplier-${item.multiplier}`}></span>

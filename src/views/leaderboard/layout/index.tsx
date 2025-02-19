@@ -31,7 +31,7 @@ const LeaderboardLayout = ({
       </div>
 
       {/* Right Side - Panel */}
-      <div className="w-[440px] flex flex-col gap-5 overflow-auto">
+      <div className="w-[440px] flex flex-col gap-5 overflow-auto hidden xl:flex">
         { !isLogin ? <>
             <LeaderboardCard />
             <LoginCard

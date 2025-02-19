@@ -15,10 +15,10 @@ const TradeLeadingTab = () => {
 
   return (<>
     <div className="overflow-auto h-full">
-      <div className="space-y-6 border-b-[1px] border-gray-100 p-6">
-        <div className="grid grid-cols-12">
-          <div className="col-span-7 flex-grow space-y-6">
-            <div className="flex items-center gap-3">
+      <div className="space-y-6 p-4 sm:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div className="md:col-span-8 lg:col-span-7 flex-grow space-y-6">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
                 <span className="text-xs text-gray-600">Days Trading</span>
                 <span className="text-xs text-white">57</span>
@@ -36,12 +36,12 @@ const TradeLeadingTab = () => {
                 <span className="text-xs text-white">1</span>
               </div>
             </div>
-            <div className='p-5 bg-gray-50 rounded-[22px] space-y-4'>
+            <div className='p-4 sm:p-5 bg-gray-50 rounded-[22px] space-y-4'>
               <div className='flex justify-between items-center'>
-                <span className='font-semibold'>Performance</span>
+                <span className='font-semibold text-sm sm:text-base'>Performance</span>
                 <div className='px-2.5 py-1.5 rounded-full bg-gray-100 text-white flex items-center gap-2'>
-                  <span className='text-sm font-semibold'>7 days</span>
-                  <span className='text-sm text-gray-500'><AiFillCaretDown /></span>
+                  <span className='text-xs sm:text-sm font-semibold'>7 days</span>
+                  <span className='text-xs sm:text-sm text-gray-500'><AiFillCaretDown /></span>
                 </div>
               </div>
               <div className='flex flex-wrap gap-4'>
@@ -72,7 +72,7 @@ const TradeLeadingTab = () => {
               </div>
               <div className='border border-gray-100'></div>
               <div className='flex'>
-                <span className='font-semibold'>Lead Trader Overview</span>
+                <span className='font-semibold text-sm sm:text-base'>Lead Trader Overview</span>
               </div>
               <div className='flex flex-wrap gap-4'>
                 <div className="flex items-center gap-1">
@@ -103,15 +103,15 @@ const TradeLeadingTab = () => {
               <div className='border border-gray-100'></div>
 
               <div className='flex justify-between items-center'>
-                <span className='font-semibold'>Finances</span>
+                <span className='font-semibold text-sm sm:text-base'>Finances</span>
                 <div className='px-2.5 py-1.5 rounded-full bg-gray-100 text-white flex items-center gap-2'>
-                  <span className='text-sm font-semibold'>Trader profit</span>
-                  <span className='text-sm font-semibold text-green-600'>2 SOL</span>
+                  <span className='text-xs sm:text-sm font-semibold'>Trader profit</span>
+                  <span className='text-xs sm:text-sm font-semibold text-green-600'>2 SOL</span>
                 </div>
               </div>
               <div className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center'>
-                  <span className='text-sm font-semibold'>Top Copiers</span>
+                  <span className='text-sm font-semibold text-sm sm:text-base'>Top Copiers</span>
                   <span className='text-xs text-gray-600'>{'(Amount locked / Profit)'}</span>
                 </div>
                 <button className='text-primary text-xs font-normal hover:text-primary/80' onClick={() => setIsAllCopiersModalOpen(true)}>View All</button>
@@ -144,9 +144,9 @@ const TradeLeadingTab = () => {
               </div>
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="md:col-span-4 lg:col-span-5">
             <div className="flex">
-              <div className='flex flex-col ml-auto gap-2'>
+              <div className='flex flex-col md:ml-auto gap-2'>
                 {
                   !isCopying ?
                     <button className='btn btn-md' onClick={() => setIsCopyingModalOpen(true)}>Copy Trader</button> :
@@ -180,7 +180,7 @@ const TradeLeadingTab = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
           <div className="p-5 rounded-[22px] bg-gray-50">
             <div className="space-y-2 text-white">
               <div className="flex justify-between items-center">
@@ -212,8 +212,8 @@ const TradeLeadingTab = () => {
                 <span className="badge-social-telegram"></span>
                 <span className="badge-social-solana"></span>
                 <span className="badge-call-10X"></span>
-                <span className="badge-user-50"></span>
-                <span className="badge-other-bughunter"></span>
+                <span className="badge-user-50 !hidden lg:!block"></span>
+                <span className="badge-other-bughunter !hidden lg:!block"></span>
               </div>
               <button className="w-8 h-8 text-xs font-bold bg-white circle-item text-black">+5</button>
             </div>

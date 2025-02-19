@@ -18,37 +18,42 @@ const CallModal = ({
         {/* Token Info */}
         <div className="flex items-center gap-3 justify-between">
           <div className="flex gap-2 items-center">
-            <img src={Token} className="w-16 h-16 rounded-full" />
+            <img src={Token} className="w-[50px] h-[50px] sm:w-16 sm:h-16 rounded-full" />
             <div>
-              <h2 className="text-lg font-bold mb-1">$PEPESI</h2>
-              <p className="text-gray-600">New call</p>
+              <h2 className="text-base sm:text-lg font-bold mb-1">$PEPESI</h2>
+              <p className="text-sm sm:text-base text-gray-600">New call</p>
             </div>
           </div>
-          <div className="bg-gray-50 px-6 py-4 rounded-full">
-            Marketcap <span className="text-white">475.5k</span>
+          <div>
+            <div className="flex flex-col bg-gray-50 px-5 py-3 sm:px-6 sm:py-4 rounded-full text-xs sm:text-base gap-1">
+              Marketcap <span className="text-white">475.5k</span>
+            </div>
           </div>
         </div>
 
         {/* Contract Address */}
-        <div className="bg-gray-50 px-6 py-4 rounded-full text-xs text-gray-600">
-          <span className="font-semibold text-white text-base">CA</span> 7RHms4GTZXsB8CiVbEuu9SAJRzPYrJLhLMAb
+        <div className="bg-gray-50 px-4 sm:px-6 py-4 rounded-full text-xs text-gray-600 flex items-center gap-2">
+          <span className="font-semibold text-white text-base">CA</span> 
+          <div className="truncate-wrapper">
+            <span className="truncate">7RHms4GTZXsB8CiVbEuu9SAJRzPYrJLhLMAb</span>
+          </div>
         </div>
 
         <div className="border border-gray-100"></div>
 
         {/* Holders & Callers */}
         <div className="space-y-3">
-          <div className="flex gap-2">
-            <span>Callers</span> 
+          <div className="flex gap-2 items-center">
+            <span className="text-sm sm:text-base">Callers</span> 
             <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">72</span>
           </div>
-          <div className="flex gap-2">
-            <span>Top 10 holders</span> 
+          <div className="flex gap-2 items-center">
+            <span className="text-sm sm:text-base">Top 10 holders</span> 
             <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">22.4% ($20m)</span>
           </div>
-          <div className="flex gap-2 flex-wrap">
-            <span>Top 3 holders</span>
-            <div className="flex gap-2"> 
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className="text-sm sm:text-base">Top 3 holders</span>
+            <div className="flex gap-0.5 sm:gap-2"> 
               {Array(3).fill(0).map((holder, index) => (
                 <span key={index} className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">3.3% ($1.3m)</span>
               ))}
@@ -73,7 +78,7 @@ const CallModal = ({
         </div>
 
         {/* Call Button */}
-        <button className="btn w-full" onClick={onClose}>Call</button>
+        <button className="btn w-full text-sm sm:text-base py-3" onClick={onClose}>Call</button>
       </div>
     </Modal>
 }

@@ -230,10 +230,10 @@ const MyProfile = (props: {
         ) : (<div className="px-5 py-3">
           <div className="flex justify-between">
             <div className="btn-group gray">
-              <button className="btn active">Active</button>
-              <button className="btn">Past</button>
+              <button className="btn btn-sm sm:btn-base active">Active</button>
+              <button className="btn btn-sm sm:btn-base">Past</button>
             </div>
-            <button className="btn btn-sm" onClick={() => setIsAllTradesModalOpen(true)}>View all</button>
+            <button className="btn btn-sm sm:btn-base" onClick={() => setIsAllTradesModalOpen(true)}>View all</button>
           </div>
           <div className="">
             {

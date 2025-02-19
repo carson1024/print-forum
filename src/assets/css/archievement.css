@@ -312,7 +312,7 @@ span[class^='badge-other'] {
   content: 'OG';
 }
 span[class^='leader-rank'] {
-  @apply relative font-bold text-sm w-[52px] h-[52px] bg-gray-100 circle-item overflow-hidden;
+  @apply relative font-bold text-sm w-[44px] h-[44px] sm:w-[52px] sm:h-[52px] bg-gray-100 circle-item overflow-hidden;
 }
 span[class^='leader-rank']::after {
   position: absolute;
@@ -322,6 +322,9 @@ span[class^='leader-rank']::after {
   height: 100%;
   border-radius: 50%;
   filter: blur(10px);
+}
+.leader-rank-none::after {
+  display: none;
 }
 .leader-rank1 {
   @apply border border-yellow-500 text-yellow-500 !bg-transparent

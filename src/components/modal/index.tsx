@@ -27,7 +27,7 @@ const Modal = ({
           <MdClose size={24} />
         </button>
         {/* Modal Content */}
-        <div>{children}</div>
+        {children}
       </div>
     </div>
   );

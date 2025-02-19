@@ -19,17 +19,19 @@ const DepositModal = ({
         </div>
       </div>
 
-      <p className="text-white text-sm leading-snug">
+      <p className="text-white text-xs sm:text-sm leading-snug">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi cursus, libero non pulvinar porttitor, neque elit volutpat eros, eget faucibus elit augue fringilla magna.
       </p>
 
       {/* Address Input */}
-      <div className="bg-gray-50 px-6 py-4 rounded-full text-white flex justify-between">
-        <div className="flex items-center gap-2">
-          <span className="">Your Address</span>
-          <span className="text-gray-600 text-sm">7RHms4GTZXsB8CiVbEuu9SAJRzPYrJLhLMAb</span>
+      <div className="bg-gray-50 px-4 sm:px-6 py-4 rounded-full text-white flex items-center gap-2">
+        <div className="text-xs sm:text-base">Your Address</div>
+        <div className="flex items-center gap-2 grow">
+          <div className="truncate-wrapper">
+            <span className="text-gray-600 text-xs sm:text-sm truncate">7RHms4GTZXsB8CiVbEuu9SAJRzPYrJLhLMAb</span>
+          </div>
         </div>
-        <button className="text-gray-400"><img src={IconCopy} className="w-6 h-6 opacity-40" /></button>
+        <button className="text-gray-400"><img src={IconCopy} className="w-4 h-4 sm:w-6 sm:h-6 opacity-40" /></button>
       </div>
     </div>
   </Modal>

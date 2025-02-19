@@ -47,9 +47,9 @@ const CopyTradingProfile = (props: {
           <div className="rounded-[20px] bg-black/5 p-4">
             <div className="space-y-0.5">
               <p className="text-black/60 text-sm">Copying</p>
-              <div className="text-black font-semibold flex gap-2">
-                <span>0.2 SOL</span>
-                <div className="bg-green-600 px-2 py-1 text-xs flex items-center rounded-full text-black">
+              <div className="text-black font-semibold flex gap-1 sm:gap-2">
+                <span className="font-semibold"><span className="text-md font-bold">0.2</span> SOL</span>
+                <div className="bg-green-600 px-1 sm:px-2 py-1 text-xxs sm:text-xs flex items-center rounded-full text-black">
                   <span className="text-sm"><AiFillCaretUp /></span>
                   <span>12%</span>
                 </div>
@@ -60,7 +60,7 @@ const CopyTradingProfile = (props: {
             <div className="space-y-0.5">
               <p className="text-black/60 text-sm">Unallocated</p>
               <div className="text-black font-semibold flex gap-2">
-                <span>2 SOL</span>
+                <span className="font-semibold"><span className="text-md font-bold">2</span> SOL</span>
               </div>
             </div>
           </div>

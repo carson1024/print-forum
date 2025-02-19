@@ -48,7 +48,7 @@ const Navbar = (props: {
             <MdClose size={20} />
           </button>
         :
-          <Link to={`/profile?calls=${currentRoute}`} className='sm:!hidden w-8 h-8 circle-item bg-gray-100'>
+          <Link to={`/profile?tab=${currentRoute}`} className='sm:!hidden w-8 h-8 circle-item bg-gray-100'>
             <img src={IconUser} className='w-3 h-3' />
           </Link>          
       }
