@@ -13,7 +13,7 @@ const AllCopiersModal = ({
       <div className="border border-gray-100"></div>
       <div className="space-y-3 flex-grow overflow-auto">
         {
-          Array(9).fill(0).map((value, index) => <div className="bg-gray-50 rounded sm:rounded-full text-sm px-4 py-3 flex items-center gap-3 flex-wrap">
+          Array(9).fill(0).map((value, index) => <div className="bg-gray-50 rounded sm:rounded-[40px] text-sm px-4 py-3 flex items-center gap-3 flex-wrap">
             <div className="grow">
               <div className="flex gap-2 items-center">
                 <span className="badge-rank-8"></span>

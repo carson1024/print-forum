@@ -35,8 +35,8 @@ const ProfileDetail = () => {
   ];
 
   return <ForumLayout>
-    <div className="overflow-auto sm:overflow-hidden flex-grow space-y-4">
-      <div className="card sm:h-full p-0 flex flex-col sm:overflow-hidden">
+    <div className="overflow-auto md:overflow-hidden flex-grow space-y-4">
+      <div className="card md:h-full p-0 flex flex-col md:overflow-hidden">
         <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
           <div className="flex gap-2 sm:gap-3 items-center grow">
             <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
@@ -52,8 +52,8 @@ const ProfileDetail = () => {
             <button className={`btn btn-sm ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
           </div>
         </div>
-        
-        <div className="hidden sm:block flex-grow relative overflow-hidden">
+
+        <div className="hidden md:block flex-grow relative overflow-hidden">
           {
             activeTab == 'profile' ?
               <ProfileTab />
@@ -63,11 +63,11 @@ const ProfileDetail = () => {
               <TradeLeadingTab />
           }
         </div>
-        <div className="sm:hidden">
+        <div className="md:hidden">
           <ProfileTab />
         </div>
       </div>
-      <div className="card sm:!hidden p-0">
+      <div className="card md:!hidden p-0">
         <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
           <span className="font-bold text-base sm:text-lg">Calls</span>
           <div className='btn-group primary'>
@@ -79,7 +79,7 @@ const ProfileDetail = () => {
           <CallsTab />
         </div>
       </div>
-      <div className="card sm:!hidden p-0">
+      <div className="card md:!hidden p-0">
         <div className="px-4 sm:px-6 py-6 border-b-[1px] border-gray-100 flex justify-between items-center">
           <span className="font-bold text-base sm:text-lg">Trade leading</span>
         </div>
