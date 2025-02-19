@@ -26,7 +26,7 @@ const ProfileTab = () => {
                 <span className="text-xs text-white">2 years</span>
               </div>
             </div>
-            <p className="text-xs text-gray-600 leading-snug">
+            <p className="text-xs text-gray-600 !leading-[135%]">
               {"FIXED RATIO is recommended as the algo is built on buying small portions with many price points. An algo bot that capitalizes volatility of the market aiming for monthly returns. Just trust the bot !"}
             </p>
           </div>
@@ -42,7 +42,7 @@ const ProfileTab = () => {
         </div>
         <div className="sm:hidden rounded-[22px] text-white space-y-2">
           <span className='text-sm font-bold'>Bio</span>
-          <p className='text-xs leading-snug'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ipsum eros, volutpat id nibh quis, pretium aliquet neque. </p>
+          <p className='text-xs !leading-[135%]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ipsum eros, volutpat id nibh quis, pretium aliquet neque. </p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="p-4 sm:p-5 rounded-[22px] bg-gray-50">

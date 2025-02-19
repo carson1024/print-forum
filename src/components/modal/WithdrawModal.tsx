@@ -18,7 +18,7 @@ const WithdrawModal = ({
         </div>
       </div>
 
-      <p className="text-white text-xs sm:text-sm leading-snug">
+      <p className="text-white text-xs sm:text-sm !leading-[135%]">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi cursus, libero non pulvinar porttitor, neque elit volutpat eros, eget faucibus elit augue fringilla magna.
       </p>
 

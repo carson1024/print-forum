@@ -13,7 +13,7 @@ const Leaderboard = () => {
       
       <div className="p-4 sm:p-6 flex flex-col gap-5 overflow-auto flex-grow">
         {Array(9).fill(0).map((item, index) => (<Link to="/profile/123" key={index}>
-          <div className="bg-gray-50 p-1.5 rounded flex items-center justify-between">
+          <div className="bg-gray-50 p-1.5 rounded sm:rounded-full flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-3">
               <span className={`leader-rank${index+1}`}>{index+1}</span>
               <div className="p-2.5 sm:p-3 rounded-full border border-gray-150 flex items-center gap-2.5">

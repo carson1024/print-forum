@@ -76,7 +76,7 @@ const EditProfileModal = ({
           <textarea
             placeholder="Write a short bio..."
             defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ipsum eros, volutpat id nibh quis, pretium aliquet neque. "
-            className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 resize-none text-xs sm:text-sm leading-snug"
+            className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 resize-none text-xs sm:text-sm !leading-[135%]"
           ></textarea>
         </div>
       </div>

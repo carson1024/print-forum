@@ -7,13 +7,13 @@ const AllCopiersModal = ({
   isOpen: boolean,
   onClose: () => void
 }>) => {
-  return <Modal isOpen={isOpen} onClose={onClose} extraClass="!max-w-none w-[90%] sm:w-[80%] max-h-[90%] overflow-hidden flex">
+  return <Modal isOpen={isOpen} onClose={onClose} extraClass="!max-w-none max-w-[90%] sm:max-w-[80%] max-h-[90%] overflow-hidden flex">
     <div className="flex flex-col gap-4 sm:gap-6 grow">
       <h3 className="text-md sm:text-lg font-bold">UsernameLong’s copiers</h3>
       <div className="border border-gray-100"></div>
       <div className="space-y-3 flex-grow overflow-auto">
         {
-          Array(9).fill(0).map((value, index) => <div className="bg-gray-50 rounded text-sm px-4 py-3 flex items-center gap-3 flex-wrap">
+          Array(9).fill(0).map((value, index) => <div className="bg-gray-50 rounded sm:rounded-full text-sm px-4 py-3 flex items-center gap-3 flex-wrap">
             <div className="grow">
               <div className="flex gap-2 items-center">
                 <span className="badge-rank-8"></span>
@@ -25,7 +25,7 @@ const AllCopiersModal = ({
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-3">
+            <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1">
                 <p className="text-xs text-white/60">Total amount</p>
                 <p className="text-xs text-white">9 SOL</p>

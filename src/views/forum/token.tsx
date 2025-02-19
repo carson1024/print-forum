@@ -121,7 +121,7 @@ const TokenDetail = () => {
               <div className="flex">
                 <div className="flex flex-col gap-3 w-full">
                   {Array(6).fill(0).map((item, index) => (<Link to="/profile/123" key={index}>
-                    <div className="bg-gray-50 px-2 md:px-4 py-2 rounded flex items-center gap-2 xl:gap-3 flex-wrap">
+                    <div className="bg-gray-50 px-2 md:px-4 py-2 rounded sm:rounded-full flex items-center gap-2 xl:gap-3 flex-wrap">
                       <span className="leader-rank1 2xl:leader-rank-none font-semibold w-[36px]">#{index+1}</span>
                       <div className="p-3 rounded-full border border-gray-150 flex items-center gap-2.5">
                         <div className="circle-item w-7 h-7 bg-red-300 text-black text-sm font-bold">V</div>
@@ -171,7 +171,7 @@ const TokenDetail = () => {
                         </div>
                         <span className="text-sm text-gray-600">3m</span>
                       </div>
-                      <p className="text-sm sm:text-base leading-snug">
+                      <p className="text-sm sm:text-base !leading-[135%]">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum nisi. Phasellus id pretium arcu, ac elementum eros. Nulla vulputate lacus ac erat maximus consectetur. 
                       </p>
                     </div>

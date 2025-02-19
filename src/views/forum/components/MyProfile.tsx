@@ -160,7 +160,7 @@ const MyProfile = (props: {
                     <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
                   </div>
                 </div>
-                <p className="text-black/70 text-sm leading-snug">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
+                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
               </div>
               <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
                 <div className="flex justify-between">
@@ -169,7 +169,7 @@ const MyProfile = (props: {
                     <span className="text-black font-bold">Rank 5 reached</span>
                   </div>
                 </div>
-                <p className="text-black/70 text-sm leading-snug">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
+                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
               </div>
               <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
                 <div className="flex justify-between">
@@ -181,7 +181,7 @@ const MyProfile = (props: {
                     <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
                   </div>
                 </div>
-                <p className="text-black/70 text-sm leading-snug">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
+                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
               </div>
               <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
                 <div className="flex justify-between">
@@ -193,7 +193,7 @@ const MyProfile = (props: {
                     <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
                   </div>
                 </div>
-                <p className="text-black/70 text-sm leading-snug">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
+                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
               </div>
             </div>
           </>
