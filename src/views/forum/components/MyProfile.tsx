@@ -46,7 +46,7 @@ const MyProfile = (props: {
   
       setCallList(data);
   
-      // setIsLoading(false);
+      setIsLoading(false);
     }
 
     fetchCalls();
