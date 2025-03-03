@@ -20,8 +20,10 @@ import { CallReportType } from "types/calls";
 import { SkeletonDiscussionList } from "components/skeleton/discussion";
 import { showToastr } from "components/toastr";
 import { supabase } from "lib/supabase";
+import { useAuth } from "contexts/AuthContext";
 
 const TokenDetail = () => {
+  const { isLogin } = useAuth();
   const navigate = useNavigate();
   const [filter, setFilter] = useState("All Ranks");
   const [isDiscussionOpen, setDiscussionOpen] = useState(false);
@@ -285,19 +287,21 @@ const TokenDetail = () => {
                 }
               </div>
             </div>
-            <div className="relative rounded-full bg-gray-100 px-12 mx-1 sm:mx-3 py-2 flex items-center">
-              <div className="absolute left-1 flex items-center">
-                <div className="relative w-8 h-8 bg-black circle-item">
-                  <img src={IconUser} className="w-2.5 h-2.5" />
+            {
+              isLogin && <div className="relative rounded-full bg-gray-100 px-12 mx-1 sm:mx-3 py-2 flex items-center">
+                <div className="absolute left-1 flex items-center">
+                  <div className="relative w-8 h-8 bg-black circle-item">
+                    <img src={IconUser} className="w-2.5 h-2.5" />
+                  </div>
+                </div>
+                <input type="text" className="w-full bg-transparent outline-none text-white" placeholder="Add a comment..." disabled={isLoading} />
+                <div className="absolute right-3 flex items-center">
+                  <button disabled={isLoading}>
+                    <img src={IconSend} className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-              <input type="text" className="w-full bg-transparent outline-none text-white" placeholder="Add a comment..." disabled={isLoading} />
-              <div className="absolute right-3 flex items-center">
-                <button disabled={isLoading}>
-                  <img src={IconSend} className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+            }
           </div>
         </div>
       </div>
