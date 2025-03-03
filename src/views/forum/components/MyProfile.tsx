@@ -61,7 +61,7 @@ const MyProfile = (props: {
       supabase.removeChannel(subscription);
     };
 
-  }, []);
+  }, [user]);
   
   return (<>
     <div className="rounded border border-gray-100">
