@@ -29,33 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setLoading(true);
-    const checkUser = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      // console.log(data);
-      if (error) {
-        console.error("Error fetching session:", error);
-      } else {
-        setSession(data.session);
-      }
-      setLoading(false);
-    };
-
-    checkUser();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, session: Session | null) => {
-        setSession(session);
-      }
-    );
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!session || !session.user) return;
-    const checkUser = async () => {
+    const checkUser = async (session: Session) => {
       const { data: dataUser, error: errorUser } = await supabase
         .from("users")
         .select("*")
@@ -68,8 +42,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    checkUser();
-  }, [session]);
+    const checkSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      // console.log(data);
+      if (error) {
+        console.error("Error fetching session:", error);
+      } else {
+        setSession(data.session);
+        checkUser(data.session);
+      }
+      setLoading(false);
+    };
+
+    checkSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (event, _session: Session | null) => {
+        if ((!session && !_session) || (session.access_token == _session.access_token)) return;
+        setSession(_session);
+        checkUser(_session);
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
   
   return (
     <AuthContext.Provider value={{session, isLogin, user}}>

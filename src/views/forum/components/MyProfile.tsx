@@ -19,7 +19,7 @@ import { SkeletonMyCallsList } from "components/skeleton/mycalls";
 const MyProfile = (props: {
   logout: () => void
 }) => {
-  const { user } = useAuth();
+  const { session, user } = useAuth();
   const { logout } = props;
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab2, setActiveTab2] = useState(0);
@@ -30,13 +30,13 @@ const MyProfile = (props: {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const fetchCalls = async () => {
-      if (!user) return;
+      if (!session || !session.user) return;
       const { data, error } = await supabase
         .from("callers")
         .select("calls(*)")
-        .eq("user_id", user.id)
+        .eq("user_id", session.user.id)
         .order("created_at", { ascending: false });
   
       if (error) {
@@ -61,7 +61,7 @@ const MyProfile = (props: {
       supabase.removeChannel(subscription);
     };
 
-  }, [user]);
+  }, []);
   
   return (<>
     <div className="rounded border border-gray-100">
