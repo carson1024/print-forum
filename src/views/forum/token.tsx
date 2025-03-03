@@ -66,7 +66,6 @@ const TokenDetail = () => {
       }else {
         setCallersCount(data.length);
         const uniqueCallers = Array.from(new Map(data.map(item => [item.user_id, item])).values());
-        console.log(uniqueCallers);
         setTopCallers(uniqueCallers);
       }
 

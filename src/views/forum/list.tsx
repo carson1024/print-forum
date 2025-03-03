@@ -30,10 +30,8 @@ const ForumList = () => {
         console.error("Error fetching calls:", error.message);
         return;
       }
-  
-      console.log("Calls with User Emails:", data);
+
       setCallList(data);
-  
       setIsLoading(false);
     }
 
