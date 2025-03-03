@@ -13,11 +13,13 @@ import Photon from 'assets/img/sample/photon.png';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import IconUser from 'assets/img/icons/user.svg';
 import { TopHolderType } from "components/modal/CallModal";
-import { checkCall, formatNumber, formatShortAddress } from "utils/blockchain";
+import { checkCall, formatNumber, formatShortAddress, formatTimestamp } from "utils/blockchain";
 import { SkeletonList, SkeletonRow } from "components/skeleton/forum";
 import { MdCheck } from "react-icons/md";
 import { CallReportType } from "types/calls";
 import { SkeletonDiscussionList } from "components/skeleton/discussion";
+import { showToastr } from "components/toastr";
+import { supabase } from "lib/supabase";
 
 const TokenDetail = () => {
   const navigate = useNavigate();
@@ -39,6 +41,7 @@ const TokenDetail = () => {
     if (isCopied) return;
     setIsCopied(true);
     await navigator.clipboard.writeText(callReport.pairAddress);
+    showToastr("Address copied to clipboard!", "success");
     setTimeout(() => setIsCopied(false), 2000);
   }
 
@@ -52,6 +55,19 @@ const TokenDetail = () => {
         return;
       }
   
+      const { data, error } = await supabase
+        .from("callers")
+        .select("user_id, created_at, users(*)")
+        .order("created_at", { ascending: false });
+  
+      if (error) {
+        console.error("Error fetching calls:", error.message);
+      }else {
+        setCallersCount(data.length);
+        const uniqueCallers = Array.from(new Map(data.map(item => [item.user_id, item])).values());
+        setTopCallers(uniqueCallers);
+      }
+
       let _top3Holders: TopHolderType[] = [];
       let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
       result.topHolders.map((holder, index) => {
@@ -206,17 +222,17 @@ const TokenDetail = () => {
                       <SkeletonRow opacity={60} /> 
                       <SkeletonRow opacity={30} />
                     </> :
-                    Array(6).fill(0).map((item, index) => (<Link to="/profile/123" key={index}>
+                    topCallers.map((caller, index) => (<Link to="/profile/123" key={index}>
                       <div className="bg-gray-50 px-2 md:px-4 py-2 rounded sm:rounded-[40px] flex items-center gap-2 xl:gap-3 flex-wrap">
                         <span className="leader-rank1 2xl:leader-rank-none font-semibold w-[36px]">#{index+1}</span>
                         <div className="p-3 rounded-full border border-gray-150 flex items-center gap-2.5">
                           <div className="circle-item w-7 h-7 bg-red-300 text-black text-sm font-bold">V</div>
                           <div className="space-y-0.5">
                             <div className="flex gap-1 items-center">
-                              <span className="font-bold text-sm">UsernameLong</span>
+                              <span className="font-bold text-sm">{caller.users.name}</span>
                               <span className="text-xs text-gray-600">55%</span>
                             </div>
-                            <div className="text-xs text-gray-600">1 min ago</div>
+                            <div className="text-xs text-gray-600">{formatTimestamp(caller.created_at)} ago</div>
                           </div>
                         </div>
                         <div className="px-2 py-2 2xl:px-5 2xl:py-3 rounded-full bg-gray-100 flex 2xl:flex-col gap-1 mr-auto">
@@ -224,7 +240,7 @@ const TokenDetail = () => {
                             <span className="text-xs">Marketcap</span>
                             <span className="text-xs text-primary font-semibold">200X</span>
                           </div>
-                          <span className="text-xs text-white"><b>475.5k</b> to <b>880.4k</b></span>
+                          <span className="text-xs text-white"><b>{formatNumber(callReport?.marketCap)}</b> to <b>{formatNumber(callReport?.marketCap)}</b></span>
                         </div>
                         <div className="">
                           <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>

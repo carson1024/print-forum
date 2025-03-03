@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getRankChar } from "utils/style";
 import IconUser from 'assets/img/icons/user.svg';
 import IconLink from 'assets/img/icons/link.svg';
@@ -13,6 +13,8 @@ import DepositModal from "components/modal/DepositModal";
 import AllTradesModal from "components/modal/AllTradesModal";
 import { Link } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
+import { supabase } from "lib/supabase";
+import { SkeletonMyCallsList } from "components/skeleton/mycalls";
 
 const MyProfile = (props: {
   logout: () => void
@@ -24,7 +26,43 @@ const MyProfile = (props: {
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isAllTradesModalOpen, setIsAllTradesModalOpen] = useState(false);
+  const [callList, setCallList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchCalls = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from("callers")
+        .select("calls(*)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+  
+      if (error) {
+        console.error("Error fetching calls:", error.message);
+        return;
+      }
+  
+      setCallList(data);
+  
+      // setIsLoading(false);
+    }
+
+    fetchCalls();
+
+    // Subscribe to real-time changes in the "calls" table
+    const subscription = supabase
+      .channel("my_calls")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+
+  }, []);
+  
   return (<>
     <div className="rounded border border-gray-100">
       <div className="tab">
@@ -204,7 +242,7 @@ const MyProfile = (props: {
     </div>
 
     {/* My Calls / My Trades Tabs */}
-    <div className="rounded border border-gray-100 grow flex flex-col">
+    <div className={`rounded border border-gray-100 grow flex flex-col ${isLoading ? 'loading' : ''}`}>
       <div className="tab">
         <button className={`tab-item ${activeTab2 === 0 ? 'active' : ''}`} onClick={() => setActiveTab2(0)}>My Calls</button>
         <button className={`tab-item ${activeTab2 === 1 ? 'active' : ''}`} onClick={() => setActiveTab2(1)}>My Trades</button>
@@ -212,22 +250,18 @@ const MyProfile = (props: {
       <div className="bg-white text-black flex-1 overflow-auto rounded-b">
         {activeTab2 === 0 ? (
           <div className="space-y-3 p-5">
-            <div className="rounded-full border border-black/15 flex justify-between items-center p-1 pr-3">
-              <div className="flex gap-1 items-center">
-                <img src={Token} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
-                <span className="font-bold text-sm sm:text-base">$PEPESI</span>
-                <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">200X</span>
+            {
+              isLoading || !callList.length ? <SkeletonMyCallsList /> :
+              callList.map((call, index) => (<div className="rounded-full border border-black/15 flex justify-between items-center p-1 pr-3">
+                <div className="flex gap-1 items-center">
+                  <img src={call.calls.image} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
+                  <span className="font-bold text-sm sm:text-base">${call.calls.symbol}</span>
+                  <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">200X</span>
+                </div>
+                <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
               </div>
-              <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
-            </div>
-            <div className="rounded-full border border-black/15 flex justify-between items-center p-1 pr-3">
-              <div className="flex gap-1 items-center">
-                <img src={Token} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
-                <span className="font-bold text-sm sm:text-base">$PEPESI</span>
-                <span className="rounded-full bg-red-400 text-white px-2 py-1.5 text-xs font-semibold">RUG</span>
-              </div>
-              <span className="rounded-full bg-black text-white px-2 py-1.5 text-xs font-semibold">-10 XP</span>
-            </div>
+              ))
+            }
           </div>
         ) : (<div className="px-5 py-3">
           <div className="flex justify-between">

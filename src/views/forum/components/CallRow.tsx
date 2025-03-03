@@ -5,6 +5,7 @@ import IconCopy from 'assets/img/icons/copy.svg';
 import { FaChevronRight } from "react-icons/fa";
 import { useState } from "react";
 import { MdCheck } from "react-icons/md";
+import { showToastr } from "components/toastr";
 
 export const CallRow = ({
   call
@@ -17,12 +18,13 @@ export const CallRow = ({
     e.stopPropagation();
     if (isCopied) return;
     setIsCopied(true);
-    await navigator.clipboard.writeText(call.pair_addr);
+    await navigator.clipboard.writeText(call.address);
+    showToastr("Address copied to clipboard!", "success");
     setTimeout(() => setIsCopied(false), 2000);
   }
   
   return <>
-    <Link to={`/token/${call.pair_addr}`} key={call.id}>
+    <Link to={`/token/${call.address}`} key={call.id}>
       <div className="bg-gray-50 p-1.5 pr-3 rounded sm:rounded-[40px] flex flex-col gap-2 sm:gap-3">
         <div className="flex items-center gap-2.5">
           <div className="flex flex-wrap grow">
@@ -36,7 +38,7 @@ export const CallRow = ({
                   }
                   <div onClick={handleCopy} className="bg-gray-100 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full flex text-xs gap-1 items-center">
                     <span>CA</span>
-                    <span className="truncate text-gray-400">{formatShortAddress(call.pair_addr)}</span>
+                    <span className="truncate text-gray-400">{formatShortAddress(call.address)}</span>
                     <button className="text-gray-400">{
                       !isCopied ? <img src={IconCopy} className="opacity-40"/>
                       : <span className='text-[#06cf9c]'><MdCheck size={16} /></span>
@@ -60,12 +62,12 @@ export const CallRow = ({
             </div>
             <div className="hidden md:flex items-center gap-3 justify-between">
               {
-                call.user_id && 
+                call.users && 
                   <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs">
-                    <span className={`badge-rank-${call.rank || 1}`}></span>
+                    <span className={`badge-rank-${call.users.rank + 1}`}></span>
                     <div>
                       <div className="text-gray-600">Caller</div>
-                      <div className="font-bold text-sm">{call.user_name} <span className="text-xs text-gray-600">0%</span></div>
+                      <div className="font-bold text-sm">{call.users.name} <span className="text-xs text-gray-600">0%</span></div>
                     </div>
                   </div>
               }
@@ -82,12 +84,12 @@ export const CallRow = ({
         </div>
         <div className="flex md:hidden items-center gap-1 sm:gap-3 justify-between">
           {
-            call.user_id && 
+            call.users && 
             <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs">
-              <span className={`badge-rank-${call.rank}`}></span>
+              <span className={`badge-rank-${call.users.rank + 1}`}></span>
               <div className="">
                 <div className="text-gray-600">Caller</div>
-                <div className="font-bold text-sm">{call.user_name} <span className="text-xs text-gray-600">55%</span></div>
+                <div className="font-bold text-sm">{call.users.name} <span className="text-xs text-gray-600">55%</span></div>
               </div>
             </div>
           }

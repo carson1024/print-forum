@@ -46,12 +46,11 @@ const SubmitCallCard = () => {
           image: callReport.info.imageUrl,
           name: callReport.fileMeta.name,
           symbol: callReport.fileMeta.symbol,
-          pair_addr: callReport.pairAddress,
-          token_addr: callReport.baseToken.address,
+          address: callReport.pairAddress,
+          token_address: callReport.baseToken.address,
           init_market_cap: callReport.marketCap,
         },
-      ])
-      .select("id") // ✅ Return the new inserted ID
+      ]);
 
     if (error) {
       showToastr("Error saving call report", "error");
@@ -60,13 +59,12 @@ const SubmitCallCard = () => {
       return;
     }
 
-    const callId = data[0]?.id;
     const { data: dataCaller, error: errorCaller } = await supabase
       .from("callers")
       .insert([
         {
           user_id: userId,
-          call_id: callId,
+          address: callReport.pairAddress,
         },
       ])
     

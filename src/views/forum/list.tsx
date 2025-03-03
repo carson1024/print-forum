@@ -15,24 +15,40 @@ const ForumList = () => {
   const [activeTab, setActiveTab] = useState<'featured' | 'latest'>('featured');
   const [filter, setFilter] = useState("All Ranks");
   const [isLoading, setIsLoading] = useState(true);
-  const [forumData, setFormData] = useState([]);
-
-  const fetchCalls = async () => {
-    const { data, error } = await supabase.rpc('get_calls_with_users');
-
-    if (error) {
-      console.error("Error fetching calls:", error.message);
-      return;
-    }
-
-    console.log("Calls with User Emails:", data);
-    setFormData(data);
-
-    setIsLoading(false);
-  }
+  const [callList, setCallList] = useState([]);
 
   useEffect(() => {
+    setIsLoading(true);
+    const fetchCalls = async () => {
+      const { data, error } = await supabase
+        .from("calls")
+        .select("*, users(*)")
+        .order("updated_at", { ascending: false })
+        .limit(20);
+  
+      if (error) {
+        console.error("Error fetching calls:", error.message);
+        return;
+      }
+  
+      console.log("Calls with User Emails:", data);
+      setCallList(data);
+  
+      setIsLoading(false);
+    }
+
     fetchCalls();
+
+    // Subscribe to real-time changes in the "calls" table
+    const subscription = supabase
+      .channel("calls")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+
   }, []);
 
   return <ForumLayout>
@@ -54,9 +70,9 @@ const ForumList = () => {
         
         { isLoading ?
           <SkeletonList />
-         : !forumData.length ? 
+         : !callList.length ? 
           <div>No Data Available</div> : 
-          forumData.map((item) => <CallRow call={item} key={item.id} />)
+          callList.map((item) => <CallRow call={item} key={item.id} />)
         }
       </div>
     </div>

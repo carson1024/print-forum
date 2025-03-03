@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { Session } from '@supabase/supabase-js';
 
 export interface UserType {
+  id: string,
   avatar: string | null;
   name: string;
   email: string;

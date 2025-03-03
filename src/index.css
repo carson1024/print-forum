@@ -191,6 +191,11 @@ input {
   background-size: 400px 200%;
 }
 
+.skeleton.dark {
+  background: linear-gradient(120deg, #0000000F 25%, #0000001C 50%, #0000000F 75%);
+  background-size: 400px 200%;
+}
+
 .loading .skeleton {
   animation: shimmer 2s infinite linear;
 }
