@@ -60,7 +60,7 @@ export default function MainLayout(props: { [x: string]: any }) {
         <div className="h-full">
           <Routes>
             {getRoutes(routes)}
-            <Route path="/" element={<Navigate to="forum" />} />
+            {/* <Route path="/" element={<Navigate to="forum" />} /> */}
           </Routes>
         </div>
       </main>

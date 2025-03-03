@@ -180,3 +180,17 @@ select {
 input {
   min-width: 0px;
 }
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(120deg, #FFFFFF0F 25%, #FFFFFF1C 50%, #FFFFFF0F 75%);
+  background-size: 400px 200%;
+}
+
+.loading .skeleton {
+  animation: shimmer 2s infinite linear;
+}

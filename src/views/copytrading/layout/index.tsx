@@ -5,21 +5,15 @@ import LoginCard from "components/login/LoginCard";
 import MyProfile from "views/forum/components/MyProfile";
 import ForumCard from "views/forum/components/ForumCard";
 import CopyTradingProfile from "../components/CopyTradingProfile";
+import { useAuth } from "contexts/AuthContext";
+import { login, logout } from "utils/auth";
 
 const CopyTradingLayout = ({
     children
 }: {
     children: React.ReactNode
 }) => {
-  const [isLogin, setIsLogin] = useState(false);
-
-  const handleLogin = () => {
-    setIsLogin(true);
-  }
-
-  const handleLogout = () => {
-    setIsLogin(false);
-  }
+  const { isLogin } = useAuth();
 
   return (<>
     <div className="flex gap-5 h-full">
@@ -32,12 +26,12 @@ const CopyTradingLayout = ({
       <div className="w-[440px] flex flex-col gap-5 overflow-auto hidden xl:flex">
         { !isLogin ? <>
             <LoginCard
-              login={handleLogin}
+              login={login}
             />
             <ForumCard />
           </> : 
           <CopyTradingProfile
-            logout={handleLogout} />}
+            logout={logout} />}
       </div>
     </div>
   </>

@@ -45,12 +45,8 @@
     "noImplicitThis": true,
     "strictNullChecks": false,
     "downlevelIteration": true,
-    "baseUrl": "src",
-    "paths": {
-      "@assets/*": ["./src/assets/*"]
-    },
+    "baseUrl": "./src",
   },
-  "include": [
-    "./src"
-  ], 
+  "include": ["./src", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

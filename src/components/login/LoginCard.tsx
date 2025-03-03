@@ -3,7 +3,7 @@ import { useState } from "react";
 import { getRankChar } from "utils/style";
 
 const LoginCard = (props: {
-  login: () => void
+  login: (provider: string, email?: string) => Promise<boolean>
 }) => {
   const { login } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,10 +14,11 @@ const LoginCard = (props: {
       <p className="text-black/60 text-xs lg:text-base !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis odio rhoncus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis odio rhoncus.</p>
       <button className="btn w-full py-3 sm:py-5" onClick={() => setIsModalOpen(true)}>Log in</button>
     </div>
-    <LoginModal isOpen={isModalOpen} onClose={() => {
-      setIsModalOpen(false);
-      login()
-    }} />
+    <LoginModal 
+      isOpen={isModalOpen} 
+      onClose={() => setIsModalOpen(false)}
+      login={login}
+      />
   </>)
 }
 

@@ -12,10 +12,12 @@ import WithdrawModal from "components/modal/WithdrawModal";
 import DepositModal from "components/modal/DepositModal";
 import AllTradesModal from "components/modal/AllTradesModal";
 import { Link } from "react-router-dom";
+import { useAuth } from "contexts/AuthContext";
 
 const MyProfile = (props: {
   logout: () => void
 }) => {
+  const { user } = useAuth();
   const { logout } = props;
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab2, setActiveTab2] = useState(0);
@@ -42,7 +44,7 @@ const MyProfile = (props: {
               <div className="space-y-3 grow">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2 items-center">
-                    <h3 className="font-bold text-base sm:text-lg">UsernameLong</h3>
+                    <h3 className="font-bold text-base sm:text-lg">{ user?.name }</h3>
                     <Link to="/profile/123"><img src={IconLink} className="w-4 h-4" /></Link>
                   </div>
                   <button className="text-black/40 font-bold" onClick={logout}><img src={IconLogout} className="w-4 h-4" /></button>

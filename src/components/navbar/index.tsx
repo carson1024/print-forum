@@ -31,7 +31,7 @@ const Navbar = (props: {
           <img src={Logo} className='h-8' />
         </div>
         <div className="flex gap-0 sm:gap-2">
-          <Link to="/forum" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'forum' ? 'active' : ''}`}>Forum</Link>
+          <Link to="/" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'forum' ? 'active' : ''}`}>Forum</Link>
           <button className={`nav-item btn-sm md:btn-lg ${currentRoute == 'alpha' ? 'active' : ''}`} onClick={() => setIsModalOpen(true)}>Alpha</button>
           <Link to="/leaderboard" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'leaderboard' ? 'active' : ''}`}>Leaderboard</Link>
           <Link to="/copytrading" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'copytrading' ? 'active' : ''}`}>Copy Trading</Link>

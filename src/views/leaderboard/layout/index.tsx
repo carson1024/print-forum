@@ -4,21 +4,15 @@ import SubmitCallCard from "components/call/SubmitCallCard";
 import LoginCard from "components/login/LoginCard";
 import LeaderboardCard from "../components/LeaderboardCard";
 import MyProfile from "views/forum/components/MyProfile";
+import { useAuth } from "contexts/AuthContext";
+import { login, logout } from "utils/auth";
 
 const LeaderboardLayout = ({
     children
 }: {
     children: React.ReactNode
 }) => {
-  const [isLogin, setIsLogin] = useState(false);
-
-  const handleLogin = () => {
-    setIsLogin(true);
-  }
-
-  const handleLogout = () => {
-    setIsLogin(false);
-  }
+  const { isLogin } = useAuth();
 
   return (<>
     <div className="flex gap-5 h-full">
@@ -35,11 +29,11 @@ const LeaderboardLayout = ({
         { !isLogin ? <>
             <LeaderboardCard />
             <LoginCard
-              login={handleLogin}
+              login={login}
             />
           </> : 
           <MyProfile
-            logout={handleLogout} />}
+            logout={logout} />}
       </div>
     </div>
   </>
