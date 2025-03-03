@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, _session: Session | null) => {
-        if ((!session && !_session) || (session.access_token == _session.access_token)) return;
+        if ((!session && !_session) || (session?.access_token == _session?.access_token)) return;
         setSession(_session);
         checkUser(_session);
       }
