@@ -22,7 +22,7 @@ export const CallRow = ({
     showToastr("Address copied to clipboard!", "success");
     setTimeout(() => setIsCopied(false), 2000);
   }
-  
+
   return <>
     <Link to={`/token/${call.address}`} key={call.id}>
       <div className="bg-gray-50 p-1.5 pr-3 rounded sm:rounded-[40px] flex flex-col gap-2 sm:gap-3">
@@ -72,8 +72,8 @@ export const CallRow = ({
                   </div>
               }
               <div className="flex gap-1 items-center">
-                <div className="circle-item w-6 h-6 bg-gray-100 text-green-600 text-sm pb-[2px]"><AiFillCaretUp /></div>
-                <div className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]"><AiFillCaretDown /></div>
+                <button className="circle-item w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]"><AiFillCaretUp /></button>
+                <button className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]"><AiFillCaretDown /></button>
                 <span className="text-xs text-gray-600">0%</span>
               </div>
             </div>

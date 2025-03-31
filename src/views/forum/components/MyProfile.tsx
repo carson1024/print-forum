@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getRankChar } from "utils/style";
 import IconUser from 'assets/img/icons/user.svg';
 import IconLink from 'assets/img/icons/link.svg';
 import IconLogout from 'assets/img/icons/logout.svg';
-import { VscLinkExternal } from "react-icons/vsc";
-import { MdLogout } from "react-icons/md";
 import { ImArrowUp, ImArrowDown } from "react-icons/im";
 import { AiFillCaretUp } from "react-icons/ai";
-import Token from 'assets/img/sample/token.png';
 import WithdrawModal from "components/modal/WithdrawModal";
 import DepositModal from "components/modal/DepositModal";
 import AllTradesModal from "components/modal/AllTradesModal";
@@ -38,7 +34,7 @@ const MyProfile = (props: {
         .select("calls(*)")
         .eq("user_id", session.user.id)
         .order("created_at", { ascending: false });
-  
+
       if (error) {
         console.error("Error fetching calls:", error.message);
         return;

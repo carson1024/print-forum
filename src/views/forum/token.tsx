@@ -82,7 +82,7 @@ const TokenDetail = () => {
           _top10HolderInfo.uiAmount += holder.uiAmount;
         }
       });
-      console.log(result);
+      // console.log(result);
       setCallReport(result);
       setTop3Holders(_top3Holders);
       setTop10HolderInfo(_top10HolderInfo);

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Session } from '@supabase/supabase-js';
 
@@ -26,25 +26,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<UserType | null>(null);
   const isLogin = useMemo<boolean>(() => !!(session?.user.email && session?.user.confirmed_at), [session]);
+  const checkUser = useCallback(async (_session: Session) => {
+    if (!_session?.user.id) {
+      setUser(null);
+      return;
+    }
+    if (user?.id == _session?.user.id) return;
+    const { data: dataUser, error: errorUser } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", _session.user.id)
+      .single();
+    if (errorUser) {
+      console.error("Error fetching user:", errorUser);
+    } else {
+      setUser(dataUser);
+    }
+  }, [user]);
 
   useEffect(() => {
     setLoading(true);
-    const checkUser = async (session: Session) => {
-      const { data: dataUser, error: errorUser } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", session.user.id)
-        .single();
-      if (errorUser) {
-        console.error("Error fetching user:", errorUser);
-      } else {
-        setUser(dataUser);
-      }
-    };
 
     const checkSession = async () => {
       const { data, error } = await supabase.auth.getSession();
-      // console.log(data);
+      console.log(data);
       if (error) {
         console.error("Error fetching session:", error);
       } else {
@@ -58,7 +63,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, _session: Session | null) => {
-        if ((!session && !_session) || (session?.access_token == _session?.access_token)) return;
         setSession(_session);
         checkUser(_session);
       }

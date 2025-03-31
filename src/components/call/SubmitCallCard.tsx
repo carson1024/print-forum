@@ -1,13 +1,16 @@
 import CallModal from "components/modal/CallModal";
+import LoginModal from "components/modal/LoginModal";
 import { showToastr } from "components/toastr";
 import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
 import { useState } from "react";
 import { CallReportType } from "types/calls";
 import { checkCall } from "utils/blockchain";
+import { login, logout } from "utils/auth";
 
 const SubmitCallCard = () => {
   const { isLogin, session } = useAuth();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [callToken, setCallToken] = useState("");
   const [callReport, setCallReport] = useState<CallReportType | null>(null);
@@ -17,7 +20,8 @@ const SubmitCallCard = () => {
     if (isSubmitting) return;
     setCallReport(null);
     if (!isLogin) {
-      showToastr("Please login to submit a call", "error");
+      // showToastr("Please login to submit a call", "error");
+      setIsLoginModalOpen(true);
       return;
     }
     if (!callToken) {
@@ -90,14 +94,17 @@ const SubmitCallCard = () => {
       </div>
       <button className="btn !hidden sm:!flex" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button>
     </div>
-    {
-      <CallModal 
-        isOpen={isCallModalOpen} 
-        callReport={callReport}
-        onSave={handleCallSave}
-        onClose={() => setIsCallModalOpen(false)} 
+    <CallModal 
+      isOpen={isCallModalOpen} 
+      callReport={callReport}
+      onSave={handleCallSave}
+      onClose={() => setIsCallModalOpen(false)} 
+    />
+    <LoginModal 
+      isOpen={isLoginModalOpen} 
+      onClose={() => setIsLoginModalOpen(false)}
+      login={login}
       />
-    }
   </>)
 }
 
