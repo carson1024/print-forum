@@ -26,5 +26,12 @@ export interface CallReportType {
     address: string;
     pct: number;
     uiAmount: number;
-  }]
+  }],
+  token: {
+    mintAuthority: string;
+    supply: number;
+    decimals: number;
+    isInitialized: boolean;
+    freezeAuthority: string;
+  }
 }

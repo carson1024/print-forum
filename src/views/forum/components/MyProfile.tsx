@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
 import { SkeletonMyCallsList } from "components/skeleton/mycalls";
+import { getRankChar } from "../../../../src/utils/style";
 
 const MyProfile = (props: {
   logout: () => void
@@ -23,28 +24,39 @@ const MyProfile = (props: {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isAllTradesModalOpen, setIsAllTradesModalOpen] = useState(false);
   const [callList, setCallList] = useState([]);
+  const [muser, setMuser] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // setIsLoading(true);
     const fetchCalls = async () => {
+
       if (!session || !session.user) return;
       const { data, error } = await supabase
-        .from("callers")
-        .select("calls(*)")
+        .from("calls")
+        .select("*")
         .eq("user_id", session.user.id)
         .order("created_at", { ascending: false });
-
       if (error) {
         console.error("Error fetching calls:", error.message);
         return;
       }
-  
+
+      const { data:myuser, error:myusererror } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", session.user.email)
+        .order("created_at", { ascending: false });
+      if (myusererror) {
+        console.error("Error fetching calls:", myusererror.message);
+        return;
+      }
+      if (myuser) {
+        setMuser(myuser)
+      }
       setCallList(data);
-  
       setIsLoading(false);
     }
-
     fetchCalls();
 
     // Subscribe to real-time changes in the "calls" table
@@ -52,11 +64,9 @@ const MyProfile = (props: {
       .channel("my_calls")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
       .subscribe();
-
     return () => {
       supabase.removeChannel(subscription);
     };
-
   }, []);
   
   return (<>
@@ -87,7 +97,7 @@ const MyProfile = (props: {
                 <div className="sm:hidden flex flex-wrap gap-1">
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Rank</span>
-                    <span className="text-xs text-black font-semibold">5</span>
+                    <span className="text-xs text-black font-semibold">1</span>
                   </div>
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Win rate</span>
@@ -95,27 +105,44 @@ const MyProfile = (props: {
                   </div>
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Calls</span>
-                    <span className="text-xs text-black font-semibold">125</span>
+                    <span className="text-xs text-black font-semibold">12</span>
                   </div>
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Account age</span>
-                    <span className="text-xs text-black font-semibold">2 years</span>
+                    <span className="text-xs text-black font-semibold">2years</span>
                   </div>
                 </div>
-                <div className="hidden sm:block text-black/60 text-sm space-y-2">
+                {
+                  isLoading || !callList.length ?
+                  <div className="hidden sm:block text-black/60 text-sm space-y-2">
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Win rate</p>
-                    <p className="col-span-7">56%</p>
+                        <p className="col-span-7">Loading...</p>
                   </div>
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Calls</p>
-                    <p className="col-span-7">125</p>
+                    <p className="col-span-7">Loading...</p>
                   </div>
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Account age</p>
-                    <p className="col-span-7">2 years</p>
+                    <p className="col-span-7">Loading...</p>
                   </div>
-                </div>
+                </div> :
+                  <div className="hidden sm:block text-black/60 text-sm space-y-2">
+                  <div className="grid grid-cols-12 gap-5">
+                    <p className="col-span-5">Win rate</p>
+                        <p className="col-span-7">{muser[0].winrate }%</p>
+                  </div>
+                  <div className="grid grid-cols-12 gap-5">
+                    <p className="col-span-5">Calls</p>
+                    <p className="col-span-7">{muser[0].callcount }</p>
+                  </div>
+                  <div className="grid grid-cols-12 gap-5">
+                    <p className="col-span-5">Account age</p>
+                    <p className="col-span-7">{Number((new Date().toISOString().split("T")[0]).slice(0,4))-Number((muser[0].created_at).slice(0,4)) + 1} years</p>
+                  </div>
+                </div>                
+                  }
                 <div className="sm:hidden flex flex-wrap gap-1">
 
                 </div>
@@ -152,22 +179,45 @@ const MyProfile = (props: {
                 </div>
               </div>
             </div>
+
+            
+            {
+              isLoading || !callList.length ?
+              <div className="space-y-2 text-black">
+              <div className="flex justify-between items-center">
+                <span className="font-bold">Rank progression</span>
+                <div className="flex gap-3 items-center">
+                  <span className="circle-item bg-red-300 w-8 h-8 text-xs font-bold">R</span>
+                  <span className="text-sm text-black/60">Rank</span>
+                </div>
+              </div>
+              <div className="w-full bg-black/15 h-3 rounded-full overflow-hidden">
+                <div className="bg-red-300 h-full" style={{ width: '0%' }}></div>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">0XP</span>
+                <span className="text-black/60 text-sm">1000 XP</span>
+              </div>
+            </div>
+              :
             <div className="space-y-2 text-black">
               <div className="flex justify-between items-center">
                 <span className="font-bold">Rank progression</span>
                 <div className="flex gap-3 items-center">
-                  <span className="circle-item bg-red-300 w-8 h-8 text-xs font-bold">VIII</span>
-                  <span className="text-sm text-black/60">Rank 6</span>
+                      <span className="circle-item bg-red-300 w-8 h-8 text-xs font-bold">{getRankChar(muser[0].rank) }</span>
+                  <span className="text-sm text-black/60">Rank {muser[0].rank }</span>
                 </div>
               </div>
               <div className="w-full bg-black/15 h-3 rounded-full overflow-hidden">
-                <div className="bg-red-300 h-full" style={{ width: '25%' }}></div>
+                <div className="bg-red-300 h-full" style={{ width: `${muser[0].xp*100/1000}%` }}></div>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm">165 XP</span>
+                    <span className="text-sm">{muser[0].xp}XP</span>
                 <span className="text-black/60 text-sm">1000 XP</span>
               </div>
             </div>
+              }
+            
             <div className="rounded-[25px] bg-dark3 text-white p-4 space-y-2.5">
               <span>Archievements</span>
               <div className="flex justify-between">
@@ -250,8 +300,8 @@ const MyProfile = (props: {
               isLoading || !callList.length ? <SkeletonMyCallsList /> :
               callList.map((call, index) => (<div className="rounded-full border border-black/15 flex justify-between items-center p-1 pr-3">
                 <div className="flex gap-1 items-center">
-                  <img src={call.calls.image} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
-                  <span className="font-bold text-sm sm:text-base">${call.calls.symbol}</span>
+                  <img src={call.image} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
+                  <span className="font-bold text-sm sm:text-base">${call.symbol}</span>
                   <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">200X</span>
                 </div>
                 <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>

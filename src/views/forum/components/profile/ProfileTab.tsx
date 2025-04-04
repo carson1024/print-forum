@@ -1,8 +1,24 @@
 import IconTwitter from 'assets/img/icons/twitter.svg';
 import IconTelegram from 'assets/img/icons/telegram.svg';
 import IconSolana from 'assets/img/icons/solana.svg';
+import React, { Component } from 'react';
 
-const ProfileTab = () => {
+
+type Props = {
+  myprofile: {
+    name: string;
+    email: string;
+    avatar: string;
+    xp: string;
+    rank: string;
+    winrate: string;
+    callcount: string;
+    achievements: string;
+    created_at: string;
+  };
+};
+
+const ProfileTab = ({myprofile}:Props) => {
   return (<>
     <div className="overflow-auto sm:h-full">
       <div className="flex flex-col gap-6 sm:border-b-[1px] border-gray-100 p-4 sm:p-6">
@@ -15,15 +31,15 @@ const ProfileTab = () => {
               </div>
               <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
                 <span className="text-xs text-gray-600">Win rate</span>
-                <span className="text-xs text-green-600">56%</span>
+                <span className="text-xs text-green-600">{myprofile.winrate}</span>
               </div>
               <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
                 <span className="text-xs text-gray-600">Calls</span>
-                <span className="text-xs text-white">125</span>
+                <span className="text-xs text-white">{myprofile.callcount}</span>
               </div>
               <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
                 <span className="text-xs text-gray-600">Account age</span>
-                <span className="text-xs text-white">2 years</span>
+                <span className="text-xs text-white">{Number((new Date().toISOString().split("T")[0]).slice(0,4))-Number((myprofile.created_at).slice(0,4)) + 1} years</span>
               </div>
             </div>
             <p className="text-xs text-gray-600 !leading-[135%]">
@@ -49,19 +65,20 @@ const ProfileTab = () => {
             <div className="space-y-2 text-white">
               <div className="flex justify-between items-center">
                 <div className="flex gap-2 items-center">
-                  <span className="badge-rank-3"></span>
-                  <span className="text-sm text-white">Rank 3</span>
+                  <span className={"badge-rank-" + myprofile.rank}></span>
+                  <span className="text-sm text-white">Rank {myprofile.rank}</span>
                 </div>
                 <div className="hidden sm:flex gap-2 items-center">
-                  <span className="circle-item bg-gray-50 w-8 h-8 text-xs font-bold">IV</span>
-                  <span className="text-sm text-gray-600">Rank 4</span>
+                  {/* <span className="circle-item bg-gray-50 w-8 h-8 text-xs font-bold">IV</span> */}
+                  <span className={"badge-rank-" + Number(myprofile.rank+1)}></span>
+                  <span className="text-sm text-gray-600">Rank {Number( myprofile.rank ) + 1}</span>
                 </div>
               </div>
               <div className="hidden sm:flex w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                <div className="bg-primary h-full" style={{ width: '25%' }}></div>
+                <div className="bg-primary h-full" style={{ width: `${ Number(myprofile.xp) * 100/1000}%`  }}></div>
               </div>
               <div className="hidden sm:flex  justify-between">
-                <span className="text-sm text-white">165 XP</span>
+                <span className="text-sm text-white">{myprofile.xp} XP</span>
                 <span className="text-gray-600 text-sm">1000 XP</span>
               </div>
             </div>

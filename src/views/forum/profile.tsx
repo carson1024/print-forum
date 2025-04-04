@@ -16,12 +16,17 @@ import ProfileTab from "./components/profile/ProfileTab";
 import CallsTab from "./components/profile/CallsTab";
 import TradeLeadingTab from "./components/profile/TradeLeadingTab";
 import EditProfileModal from "components/modal/EditProfileModal";
-
+import { act, useEffect } from "react";
+import { supabase } from "lib/supabase";
+import { SkeletonList, SkeletonRow } from "../../../src/components/skeleton/forum";
+  
 const ProfileDetail = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("All Ranks");
   const [activeTab, setActiveTab] = useState<'profile' | 'calls' | 'trade'>('profile');
-  const [isEditProfileModalOpen ,setIsEditProfileModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [profile, setProfile] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const forumData = [
     { id: 1, name: "$PEPESI", multiplier: "10X", rank: "1", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
     { id: 2, name: "$PEPESI", multiplier: "100X", rank: "2", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
@@ -33,16 +38,44 @@ const ProfileDetail = () => {
     { id: 6, name: "$PEPESI", multiplier: "20X", rank: "10", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
   ];
 
+  useEffect(() => {
+     setIsLoading(true);
+   const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+   
+  const scan = async () => {
+    const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .match({ "id": id });
+    if (error) {
+        console.error("Fetch failed:", error);
+        return; // Stop execution if there's an error
+         }
+    if (data.length > 0) {
+      setProfile(data)
+    } else {
+    }};
+    scan(); 
+   setIsLoading(false);
+    // Subscribe to real-time changes in the "calls" table
+     }, []);
+
   return <ForumLayout>
-    <div className="overflow-auto md:overflow-hidden flex-grow space-y-4">
-      <div className="card md:h-full p-0 flex flex-col md:overflow-hidden">
+    {isLoading ? <SkeletonList /> :
+              !profile.length ? <>
+                <SkeletonRow opacity={60} />
+                <SkeletonRow opacity={30} />
+              </> :<>
+                <div className="overflow-auto md:overflow-hidden flex-grow space-y-4">
+         <div className="card md:h-full p-0 flex flex-col md:overflow-hidden">
         <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
-          <div className="flex gap-2 sm:gap-3 items-center grow">
+             <div className="flex gap-2 sm:gap-3 items-center grow">
             <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
               <FaChevronLeft />
             </button>
             <img src={User} className="w-8 h-8 circle"/>
-            <span className="font-bold text-base sm:text-lg">UsernameLong</span>
+            <span className="font-bold text-base sm:text-lg">{profile[0].name}</span>
             <button className="btn btn-gray flex btn-sm gap-1 items-center ml-auto md:ml-0" onClick={() => setIsEditProfileModalOpen(true)}><MdEdit /> Edit Profile</button>
           </div>
           <div className="hidden md:flex btn-group light">
@@ -55,15 +88,15 @@ const ProfileDetail = () => {
         <div className="hidden md:block flex-grow relative overflow-hidden">
           {
             activeTab == 'profile' ?
-              <ProfileTab />
+              <ProfileTab myprofile={profile[0]} />
             : activeTab == 'calls' ?
-              <CallsTab />
+              <CallsTab myprofile={profile[0]}/>
             :
               <TradeLeadingTab />
           }
         </div>
         <div className="md:hidden">
-          <ProfileTab />
+          <ProfileTab myprofile={profile[0]} />
         </div>
       </div>
       <div className="card md:!hidden p-0">
@@ -75,7 +108,7 @@ const ProfileDetail = () => {
           </div>
         </div>
         <div>
-          <CallsTab />
+          <CallsTab myprofile={profile[0]} />
         </div>
       </div>
       <div className="card md:!hidden p-0">
@@ -87,8 +120,11 @@ const ProfileDetail = () => {
         </div>
       </div>
     </div>
-    <EditProfileModal isOpen={isEditProfileModalOpen} onOk={() => setIsEditProfileModalOpen(false)} onCancel={() => setIsEditProfileModalOpen(false)} />
-  </ForumLayout>
-}
+   <EditProfileModal isOpen={isEditProfileModalOpen} onOk={() => setIsEditProfileModalOpen(false)} onCancel={() => setIsEditProfileModalOpen(false)} />
+       </>
+               }
+    </ForumLayout>
+   
+      }
 
 export default ProfileDetail;

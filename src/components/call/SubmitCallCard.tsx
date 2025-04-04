@@ -17,27 +17,36 @@ const SubmitCallCard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmitCall = async () => {
-    if (isSubmitting) return;
-    setCallReport(null);
-    if (!isLogin) {
-      // showToastr("Please login to submit a call", "error");
-      setIsLoginModalOpen(true);
+
+      if (isSubmitting) return;
+      setCallReport(null);
+      if (!isLogin) {
+        // showToastr("Please login to submit a call", "error");
+        setIsLoginModalOpen(true);
+        return;
+      }
+      if (!callToken) {
+        showToastr("Please enter a CA", "error");
+        return;
+      }
+      const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("address", callToken);
+      let mycalls = (owncalls.filter(call => call.user_id === session.user.id)).length
+    if (mycalls > 0) {
+      showToastr("This token is already called fro you!", "error");
       return;
     }
-    if (!callToken) {
-      showToastr("Please enter a CA", "error");
-      return;
+    else {
+      setIsSubmitting(true);
+      let result = await checkCall(callToken);
+      setIsSubmitting(false);
+      if (!result) {
+        showToastr("Invalid CA", "error");
+        return;
+      }
+      setCallReport(result);
+      setCallToken("");
+      setIsCallModalOpen(true);
     }
-    setIsSubmitting(true);
-    let result = await checkCall(callToken);
-    setIsSubmitting(false);
-    if (!result) {
-      showToastr("Invalid CA", "error");
-      return;
-    }
-    setCallReport(result);
-    setCallToken("");
-    setIsCallModalOpen(true);
   }
 
   const handleCallSave = async () => {
@@ -53,6 +62,12 @@ const SubmitCallCard = () => {
           address: callReport.pairAddress,
           token_address: callReport.baseToken.address,
           init_market_cap: callReport.marketCap,
+          decimals: callReport.token.decimals,
+          supply: callReport.token.supply,
+          changedCap: callReport.marketCap,
+          price: (callReport.marketCap * Math.pow(10, callReport.token.decimals)) / callReport.token.supply,
+          percentage: 100,
+          changedPrice:(callReport.marketCap * Math.pow(10, callReport.token.decimals)) / callReport.token.supply
         },
       ]);
 
@@ -76,7 +91,6 @@ const SubmitCallCard = () => {
       showToastr("Error saving call report", "error");
       console.error("Error saving call report:", error.message);
     }
-
     setIsCallModalOpen(false);
   }
 
