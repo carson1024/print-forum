@@ -45,20 +45,35 @@ const ForumList = () => {
   useOutsideAlerter(wrapperRef, setIsOpen);
 
   useEffect(() => {
-    setIsLoading(true);
-  const fetchCalls = async () => {
+
+   setIsLoading(true);
+   const fetchCalls = async () => {
    const { data, error } = await supabase
         .from("calls")
         .select("*, users(*)")
-        .eq("is_featured", false)
         .order("updated_at", { ascending: false })
-        .limit(20);
 
       if (error) {
         console.error("Error fetching calls:", error.message);
         return;
-      }
-      setCallList(data);
+     }
+     if (localStorage.getItem("tag")==null || localStorage.getItem("tag") == "1") {
+       if (localStorage.getItem("levelSelected") == "All Ranks") {
+         setCallList(data.filter(call => call.is_featured === true));
+       }
+       else {
+         setCallList((data.filter(call => call.is_featured === true)).filter(call => call.users.rank === parseInt(localStorage.getItem("levelSelected").slice(6, 8), 10)));
+       }
+     }
+     else if (localStorage.getItem("tag") == "2") {
+       if (localStorage.getItem("levelSelected") == "All Ranks") {
+         setCallList(data.filter(call => call.is_featured === false));
+       }
+       else {
+         setCallList((data.filter(call => call.is_featured === false)).filter(call => call.users.rank === parseInt(localStorage.getItem("levelSelected").slice(6, 8), 10)));
+       }
+     }
+      
       setIsLoading(false);
     }
     fetchCalls();   
@@ -80,7 +95,8 @@ const ForumList = () => {
         
   }, []);
 
- const featuredlist = () => {
+  const featuredlist = () => {
+    localStorage.setItem("tag", "1");
    setActiveTab('featured')
    setFilters(options[0])
    setIsLoading(true);
@@ -101,11 +117,12 @@ const ForumList = () => {
     featuredCalls();   
  }
   
- const lastestlist = () => {
+  const lastestlist = () => {
+   localStorage.setItem("tag", "2");
    setActiveTab('latest')
       setFilters(options[0])
    setIsLoading(true);
-  const fetchCalls = async () => {
+   const fetchCalls = async () => {
    const { data, error } = await supabase
         .from("calls")
         .select("*, users(*)")
@@ -123,7 +140,8 @@ const ForumList = () => {
  }
   
 const toggleDropdown = () => setIsOpen(!isOpen);
-const handleSelect = (op: string): void=> {
+  const handleSelect = (op: string): void => {
+  localStorage.setItem("levelSelected", op);
   setFilters(op);
   setIsOpen(false);
   if (activeTab == "featured") { 
