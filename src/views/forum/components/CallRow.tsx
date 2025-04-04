@@ -291,7 +291,7 @@ export const CallRow = ({
 
 
   return <>
-    <div className="bg-gray-50 p-1.5 pr-3 rounded sm:rounded-[40px] flex flex-col gap-2 sm:gap-3" id="myDiv" onClick={gotoenpage}>
+    <div className="bg-gray-50 p-1.5 pr-3 rounded sm:rounded-[40px] flex flex-col gap-2 sm:gap-3 cursor-pointer" onClick={gotoenpage}>
         <div className="flex items-center gap-2.5">
           <div className="flex flex-wrap grow">
             <div className="flex grow gap-2 sm:gap-3 items-center">
