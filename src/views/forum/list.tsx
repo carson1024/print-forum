@@ -12,16 +12,38 @@ import { SkeletonList } from "components/skeleton/forum";
 import { CallRow } from "./components/CallRow";
 import { checkPrice } from "components/cron/netlify";
 
+const options = ["All Ranks", "Level 1", "Level 2", "Level 3","Level 4","Level 5","Level 6","Level 7","Level 8","Level 9","Level 10"];
 
+function useOutsideAlerter(ref: any, setX: any): void {
+  React.useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    // function handleClickOutside(event: React.MouseEvent<HTMLElement>) {
+    function handleClickOutside(event: any) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setX(false);
+      }
+    }
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, setX]);
+}
 
 const ForumList = () => {
   const [activeTab, setActiveTab] = useState<'featured' | 'latest'>('latest');
   const [filter, setFilter] = useState("All Ranks");
   const [isLoading, setIsLoading] = useState(true);
   const [callList, setCallList] = useState([]);
-  const options = ["All Ranks", "Level 1", "Level 2", "Level 3","Level 4","Level 5","Level 6","Level 7","Level 8","Level 9","Level 10"];
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(options[0]);
+  const wrapperRef = React.useRef(null);
+  useOutsideAlerter(wrapperRef, setIsOpen);
+
   useEffect(() => {
     setIsLoading(true);
   const fetchCalls = async () => {
@@ -199,25 +221,25 @@ const handleSelect = (op: string): void=> {
         {/* <button className="flex rounded-full items-center bg-primary/20 text-primary px-3 py-2 hover:bg-primary/30 text-xs md:text-base "  >
         <span className="text-primary/30 mr-2 ">Show</span> <span>{filter}</span> <AiFillCaretDown className="text-primary/30 ml-1" />
         </button> */}
-      <div className="relative inline-block text-left">
-      <button
-       className="flex rounded-full items-center bg-primary/20 text-primary px-3 py-2 hover:bg-primary/30 text-xs md:text-base"
-       onClick={toggleDropdown}>
-       <span className="text-primary/30 mr-2">Show</span> <span>{filters}</span>
-       <AiFillCaretDown className="text-primary/30 ml-1" /></button>
-     {isOpen && (
-      <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-36 bg-primary/99 bg-transparent text-white bg-dark-40 border-2 border-black rounded-md  text-mg shadow-lg z-10 text-center font-bold ">
-        {options.map((op) => (
-          <button
-            key={op}
-            className="block w-full px-4 py-2 text-left bg-neutral-800 text-gray-250 hover:bg-gray-100"
-            onClick={() => handleSelect(op)}>
-            {op}
-          </button>
-            ))}
-         </div>
-         )}
-       </div>
+      <div ref={wrapperRef} className="relative inline-block text-left">
+        <button
+        className="flex rounded-full items-center bg-primary/20 text-primary px-3 py-2 hover:bg-primary/30 text-xs md:text-base"
+        onClick={toggleDropdown}>
+        <span className="text-primary/30 mr-2">Show</span> <span>{filters}</span>
+        <AiFillCaretDown className="text-primary/30 ml-1" /></button>
+        {isOpen && (
+          <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-36 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg">
+          {options.map((op) => (
+            <button
+              key={op}
+              className={`block w-full px-4 py-2.5 text-left hover:text-black hover:bg-primary/50 ${filters == op ? 'bg-primary/50 text-black' : ''}`}
+              onClick={() => handleSelect(op)}>
+              {op}
+            </button>
+              ))}
+          </div>
+        )}
+        </div>
       </div>
  
       <div className={`p-4 sm:p-6 flex flex-col gap-5 flex-grow ${isLoading ? 'overflow-hidden loading' : 'overflow-auto'}`} onClick={()=>setIsOpen(false)}>   
