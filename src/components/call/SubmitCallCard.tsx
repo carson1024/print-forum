@@ -47,11 +47,14 @@ const SubmitCallCard = () => {
       setCallToken("");
       setIsCallModalOpen(true);
     }
+    
   }
 
   const handleCallSave = async () => {
+
     if (!session.user || !callReport) return;
     const userId = session.user.id;
+
     const { data, error } = await supabase
       .from("calls")
       .insert([

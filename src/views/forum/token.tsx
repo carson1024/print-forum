@@ -36,6 +36,7 @@ const TokenDetail = () => {
   const [callReport, setCallReport] = useState<CallReportType | null>(null);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
+   const [xLoading, setXLoading] = useState(true);
   const [topCallers, setTopCallers] = useState([]);
   const [discussions, setDiscussions] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
@@ -45,6 +46,7 @@ const TokenDetail = () => {
   const [confirmVote, setConfirmVote] = useState(0);
   const [ratioVote, setRatioVote] = useState(0);
   const [paddress, setPaddress] = useState('');  
+  const [myid, setMyid] = useState('');  
   const [comment, setComment] = useState('');  
   const [commentstore, setCommentstore] = useState('');  
   const [added, setAdded] = useState(false);
@@ -68,6 +70,12 @@ const TokenDetail = () => {
       const myuser = params.get("user");
       if (localStorage.getItem(pairAddress + myuser) == "yes") { setConfirmVote(1) }
       if (localStorage.getItem(pairAddress + myuser) == "no") { setConfirmVote(2) }
+      if (isLogin) {
+        if (!session.user) return;
+        else setMyid(session.user.id);
+      }
+
+
       const { data:ratio, error:ratioerror } = await supabase
         .from("vote")
         .select("*")
@@ -76,8 +84,7 @@ const TokenDetail = () => {
         console.error("Fetch failed:", ratioerror);
         return; // Stop execution if there's an error
         }
-        if (ratio) {
-         console.log(ratio);
+        if (ratio.length > 0) {
          setRatioVote(ratio[0].ratio)
          } else {
          setRatioVote(0)
@@ -90,7 +97,7 @@ const TokenDetail = () => {
         console.log("Invalid CA", pairAddress);
         return;
       }
-  
+
       const { data, error } = await supabase
         .from("callers")
         .select("user_id, created_at, users(*)")
@@ -110,7 +117,8 @@ const TokenDetail = () => {
         .eq("address", pairAddress);
       if (saveerror) {
         console.error("Error fetching calls:", error.message);
-      } else {        
+      } else { 
+        console.log("upgrade supply seccessful")
       }
     
      const { data:item, error:itemerror } = await supabase
@@ -145,25 +153,25 @@ const TokenDetail = () => {
       } else {
         setDiscussions(findcomment)
         if (isLogin) {
-          let mycomment = (findcomment.filter(com => com.user_id === session.user.id)).length
+          let mycomment = (findcomment.filter(com => com.user_id === myid)).length
           if (mycomment > 0) {
             setAdded(true)
           }
         }
       }
-
-    
-  if (isLogin) {
+      if (isLogin) {
+        setXLoading(true);
         const { data: mine, error: findmine } = await supabase
           .from("users")
           .select("*")
-          .eq("email", session.user.email)
+          .eq("id", myid)
           .order("created_at", { ascending: false });
         if (findmine) {
           console.error("Error fetching calls:", findmine.message);
         } else {
           setMe(mine)
         }
+        setXLoading(false);
       }
 
       let _top3Holders: TopHolderType[] = [];
@@ -291,7 +299,7 @@ const TokenDetail = () => {
       .from("comments")
       .insert([
         {
-          user_id: session.user.id,
+          user_id: myid,
           comment: comment,
           address: paddress    
         },
@@ -509,9 +517,9 @@ const TokenDetail = () => {
         <div className={`${isDiscussionOpen ? '' : 'hidden '} 2xl:block 2xl:absolute top-0 right-6 h-full w-full 2xl:w-[39%] pl-4 pr-4 2xl:pr-0 py-4 2xl:py-6`}>
           <div className="rounded bg-gray-100 w-full h-full p-4 sm:p-6 flex flex-col gap-5">
             <div className="flex-grow overflow-hidden">
-               <div className={`${isLoading ? 'overflow-hidden' : 'overflow-auto'} h-full space-y-3`}>
+               <div className={`${isLoading  ? 'overflow-hidden' : 'overflow-auto'} h-full space-y-3`}>
                   {
-                    isLoading || !discussions.length ? <SkeletonDiscussionList /> :
+                isLoading || !discussions.length ? <SkeletonDiscussionList /> :
                     discussions.map((discussion) => <>
                   <div className="flex gap-4">
                     <div>
@@ -562,7 +570,7 @@ const TokenDetail = () => {
               </div>
             </div>
             {
-              ! isLoading && isLogin && <div className="relative rounded-full bg-gray-100 px-12 mx-1 sm:mx-3 py-2 flex items-center">
+            ! isLoading && isLogin && <div className="relative rounded-full bg-gray-100 px-12 mx-1 sm:mx-3 py-2 flex items-center">
                 <div className="absolute left-1 flex items-center">
                   <div className="relative w-8 h-8 bg-black circle-item">
                     <img src={IconUser} className="w-2.5 h-2.5" />

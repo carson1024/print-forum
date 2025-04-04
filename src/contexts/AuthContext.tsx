@@ -8,6 +8,9 @@ export interface UserType {
   name: string;
   email: string;
   rank: number;
+  xp: number;
+  winrate: number;
+  callcount: number;
   achievements: string[];
   created_at: string;
 }

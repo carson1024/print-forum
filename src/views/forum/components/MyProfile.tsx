@@ -97,35 +97,36 @@ const MyProfile = (props: {
                 <div className="sm:hidden flex flex-wrap gap-1">
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Rank</span>
-                    <span className="text-xs text-black font-semibold">1</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Win rate</span>
-                    <span className="text-xs text-black font-semibold">56%</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Calls</span>
                     <span className="text-xs text-black font-semibold">12</span>
                   </div>
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Win rate</span>
+                    <span className="text-xs text-black font-semibold">50%</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Calls</span>
+                    <span className="text-xs text-black font-semibold">10</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Account age</span>
-                    <span className="text-xs text-black font-semibold">2years</span>
+                    <span className="text-xs text-black font-semibold">1 years ago</span>
                   </div>
                 </div>
                 {
-                  isLoading || !callList.length ?
+                  isLoading ?
                   <div className="hidden sm:block text-black/60 text-sm space-y-2">
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Win rate</p>
-                        <p className="col-span-7">Loading...</p>
+                        <p className="col-span-7">...</p>
                   </div>
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Calls</p>
-                    <p className="col-span-7">Loading...</p>
+                    <p className="col-span-7 sm w-14 h-14">...
+                    </p>
                   </div>
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Account age</p>
-                    <p className="col-span-7">Loading...</p>
+                    <p className="col-span-7">...</p>
                   </div>
                 </div> :
                   <div className="hidden sm:block text-black/60 text-sm space-y-2">
@@ -302,9 +303,9 @@ const MyProfile = (props: {
                 <div className="flex gap-1 items-center">
                   <img src={call.image} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
                   <span className="font-bold text-sm sm:text-base">${call.symbol}</span>
-                  <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">200X</span>
+                  {/* <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">200X</span> */}
                 </div>
-                <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
+                {/* <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span> */}
               </div>
               ))
             }

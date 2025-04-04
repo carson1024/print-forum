@@ -43,9 +43,18 @@ const ForumList = () => {
    const interval = setInterval(() => {
     fetchCalls();   
     checkPrice();
-    }, 15000);
-    return () => clearInterval(interval);
-
+    }, 20000);
+    
+    const subscription = supabase
+      .channel("my_calls")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
+      .subscribe();
+    return () => {
+      clearInterval(interval) 
+      subscription.unsubscribe();
+    };
+      
+    
         
   }, []);
 
@@ -197,11 +206,11 @@ const handleSelect = (op: string): void=> {
        <span className="text-primary/30 mr-2">Show</span> <span>{filters}</span>
        <AiFillCaretDown className="text-primary/30 ml-1" /></button>
      {isOpen && (
-      <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-36 bg-blue-300 border border-gray-600 rounded-md shadow-lg z-10 text-yellow-600 text-center ">
+      <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-36 bg-primary/99 bg-transparent text-white bg-dark-40 border-2 border-black rounded-md  text-mg shadow-lg z-10 text-center font-bold ">
         {options.map((op) => (
           <button
             key={op}
-            className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+            className="block w-full px-4 py-2 text-left bg-neutral-800 text-gray-250 hover:bg-gray-100"
             onClick={() => handleSelect(op)}>
             {op}
           </button>
@@ -212,10 +221,9 @@ const handleSelect = (op: string): void=> {
       </div>
  
       <div className={`p-4 sm:p-6 flex flex-col gap-5 flex-grow ${isLoading ? 'overflow-hidden loading' : 'overflow-auto'}`} onClick={()=>setIsOpen(false)}>   
-        { isLoading ?
+        { isLoading || !callList.length ?
           <SkeletonList />
-         : !callList.length ? 
-          <div>No Data Available</div> : 
+         : 
           callList.map((item) => <CallRow call={item} key={item.id} />)
         }
       </div>
