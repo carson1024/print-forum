@@ -62,136 +62,258 @@ const TokenDetail = () => {
   }
 
   useEffect(() => {
-    setIsLoading(true);
-    const fetchCall = async () => {
-      const pairAddress = location.pathname.substring(location.pathname.lastIndexOf('/') + 1).split('?')[0];
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
-      const myuser = params.get("user");
-      if (localStorage.getItem(pairAddress + myuser) == "yes") { setConfirmVote(1) }
-      if (localStorage.getItem(pairAddress + myuser) == "no") { setConfirmVote(2) }
-      if (isLogin) {
-        if (!session.user) return;
-        else setMyid(session.user.id);
-      }
-
-
-      const { data:ratio, error:ratioerror } = await supabase
-        .from("vote")
-        .select("*")
-        .match({ "call_name": pairAddress, user_id: myuser });
-        if (ratioerror) {
-        console.error("Fetch failed:", ratioerror);
-        return; // Stop execution if there's an error
-        }
-        if (ratio.length > 0) {
-         setRatioVote(ratio[0].ratio)
-         } else {
-         setRatioVote(0)
-        };
-
-      setUserid(myuser);
-      setPaddress(pairAddress)
-      let result = await checkCall(pairAddress);
-      if (!result) {
-        console.log("Invalid CA", pairAddress);
+    if (isLogin) {
+      if (!session) {
         return;
       }
-
-      const { data, error } = await supabase
-        .from("callers")
-        .select("user_id, created_at, users(*)")
-        .eq("address", pairAddress)
-        .order("created_at", { ascending: false });
-      if (error) {
-        console.error("Error fetching calls:", error.message);
-      }else {
-        setCallersCount(data.length);
-        const uniqueCallers = Array.from(new Map(data.map(item => [item.user_id, item])).values());
-        setTopCallers(uniqueCallers);
-      }
-
-      const { error: saveerror } = await supabase
-        .from("calls")
-        .update({ supply:result.token.supply })
-        .eq("address", pairAddress);
-      if (saveerror) {
-        console.error("Error fetching calls:", error.message);
-      } else { 
-        console.log("upgrade supply seccessful")
-      }
-    
-     const { data:item, error:itemerror } = await supabase
-        .from("calls")
-        .select("*")
-        .eq("id", id)
-        .order("created_at", { ascending: false }); 
-      if (itemerror) {
-        console.error("Error fetching calls:", itemerror.message);
-      }else {
-        setSitem(item);
-      }
-
-      const { data:findcall, error:findcallerror } = await supabase
-        .from("calls")
-        .select("*, users(*)")
-        .eq("address", pairAddress)
-        .order("created_at", { ascending: false });
-      if (findcallerror) {
-        console.error("Error fetching calls:", error.message);
-      }else {
-        setScall(findcall)
-      }
-
-     const { data:findcomment, error:commenterror } = await supabase
-        .from("comments")
-        .select("*, users(*)")
-        .eq("address", pairAddress)
-        .order("created_at", { ascending: false });
-      if (commenterror) {
-        console.error("Error fetching calls:", error.message);
-      } else {
-        setDiscussions(findcomment)
-        if (isLogin) {
-          let mycomment = (findcomment.filter(com => com.user_id === myid)).length
-          if (mycomment > 0) {
-            setAdded(true)
+      else {
+        setIsLoading(true);
+        const fetchCall = async () => {
+          const pairAddress = location.pathname.substring(location.pathname.lastIndexOf('/') + 1).split('?')[0];
+          const params = new URLSearchParams(window.location.search);
+          const id = params.get("id");
+          const myuser = params.get("user");
+          if (localStorage.getItem(pairAddress + myuser) == "yes") { setConfirmVote(1) }
+          if (localStorage.getItem(pairAddress + myuser) == "no") { setConfirmVote(2) }
+          if (isLogin) {
+            if (!session.user) return;
+            else setMyid(session.user.id);
           }
-        }
-      }
-      if (isLogin) {
-        setXLoading(true);
-        const { data: mine, error: findmine } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", myid)
-          .order("created_at", { ascending: false });
-        if (findmine) {
-          console.error("Error fetching calls:", findmine.message);
-        } else {
-          setMe(mine)
-        }
-        setXLoading(false);
-      }
 
-      let _top3Holders: TopHolderType[] = [];
-      let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
-      result.topHolders.map((holder, index) => {
-        if (index < 3) {
-          _top3Holders.push(holder);
+          if (isLogin) {
+            setXLoading(true);
+            const { data: mine, error: findmine } = await supabase
+              .from("users")
+              .select("*")
+              .eq("id", myid)
+              .order("created_at", { ascending: false });
+            if (findmine) {
+              console.error("Error fetching calls:", findmine.message);
+            } else {
+              setMe(mine)
+            }
+            setXLoading(false);
+          }
+      
+
+
+          const { data: ratio, error: ratioerror } = await supabase
+            .from("vote")
+            .select("*")
+            .match({ "call_name": pairAddress, user_id: myuser });
+          if (ratioerror) {
+            console.error("Fetch failed:", ratioerror);
+            return; // Stop execution if there's an error
+          }
+          if (ratio.length > 0) {
+            setRatioVote(ratio[0].ratio)
+          } else {
+            setRatioVote(0)
+          };
+
+          setUserid(myuser);
+          setPaddress(pairAddress)
+          let result = await checkCall(pairAddress);
+          if (!result) {
+            console.log("Invalid CA", pairAddress);
+            return;
+          }
+
+          const { data, error } = await supabase
+            .from("callers")
+            .select("user_id, created_at, users(*)")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (error) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            setCallersCount(data.length);
+            const uniqueCallers = Array.from(new Map(data.map(item => [item.user_id, item])).values());
+            setTopCallers(uniqueCallers);
+          }
+
+          const { error: saveerror } = await supabase
+            .from("calls")
+            .update({ supply: result.token.supply })
+            .eq("address", pairAddress);
+          if (saveerror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            console.log("upgrade supply seccessful")
+          }
+    
+          const { data: item, error: itemerror } = await supabase
+            .from("calls")
+            .select("*")
+            .eq("id", id)
+            .order("created_at", { ascending: false });
+          if (itemerror) {
+            console.error("Error fetching calls:", itemerror.message);
+          } else {
+            setSitem(item);
+          }
+
+          const { data: findcall, error: findcallerror } = await supabase
+            .from("calls")
+            .select("*, users(*)")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (findcallerror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            setScall(findcall)
+          }
+
+          const { data: findcomment, error: commenterror } = await supabase
+            .from("comments")
+            .select("*, users(*)")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (commenterror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            setDiscussions(findcomment)
+            
+              let mycomment = (findcomment.filter(com => com.user_id === myid)).length
+              if (mycomment > 0) {
+                setAdded(true)
+              }
+            
+          }
+
+
+          let _top3Holders: TopHolderType[] = [];
+          let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
+          result.topHolders.map((holder, index) => {
+            if (index < 3) {
+              _top3Holders.push(holder);
+            }
+            if (index < 10) {
+              _top10HolderInfo.pct += holder.pct;
+              _top10HolderInfo.uiAmount += holder.uiAmount;
+            }
+          });
+          setCallReport(result);
+          setTop3Holders(_top3Holders);
+          setTop10HolderInfo(_top10HolderInfo);
+          setIsLoading(false);
         }
-        if (index < 10) {
-          _top10HolderInfo.pct += holder.pct;
-          _top10HolderInfo.uiAmount += holder.uiAmount;
-        }
-      });
-      setCallReport(result);
-      setTop3Holders(_top3Holders);
-      setTop10HolderInfo(_top10HolderInfo);
-      setIsLoading(false);
+        fetchCall();
+      }
     }
-    fetchCall();
-  }, []);
+    else { 
+       setIsLoading(true);
+        const fetchCall = async () => {
+          const pairAddress = location.pathname.substring(location.pathname.lastIndexOf('/') + 1).split('?')[0];
+          const params = new URLSearchParams(window.location.search);
+          const id = params.get("id");
+          const myuser = params.get("user");
+          if (localStorage.getItem(pairAddress + myuser) == "yes") { setConfirmVote(1) }
+          if (localStorage.getItem(pairAddress + myuser) == "no") { setConfirmVote(2) }
+      
+          const { data: ratio, error: ratioerror } = await supabase
+            .from("vote")
+            .select("*")
+            .match({ "call_name": pairAddress, user_id: myuser });
+          if (ratioerror) {
+            console.error("Fetch failed:", ratioerror);
+            return; // Stop execution if there's an error
+          }
+          if (ratio.length > 0) {
+            setRatioVote(ratio[0].ratio)
+          } else {
+            setRatioVote(0)
+          };
+
+          setUserid(myuser);
+          setPaddress(pairAddress)
+          let result = await checkCall(pairAddress);
+          if (!result) {
+            console.log("Invalid CA", pairAddress);
+            return;
+          }
+
+          const { data, error } = await supabase
+            .from("callers")
+            .select("user_id, created_at, users(*)")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (error) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            setCallersCount(data.length);
+            const uniqueCallers = Array.from(new Map(data.map(item => [item.user_id, item])).values());
+            setTopCallers(uniqueCallers);
+          }
+
+          const { error: saveerror } = await supabase
+            .from("calls")
+            .update({ supply: result.token.supply })
+            .eq("address", pairAddress);
+          if (saveerror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            console.log("upgrade supply seccessful")
+          }
+    
+          const { data: item, error: itemerror } = await supabase
+            .from("calls")
+            .select("*")
+            .eq("id", id)
+            .order("created_at", { ascending: false });
+          if (itemerror) {
+            console.error("Error fetching calls:", itemerror.message);
+          } else {
+            setSitem(item);
+          }
+
+          const { data: findcall, error: findcallerror } = await supabase
+            .from("calls")
+            .select("*, users(*)")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (findcallerror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            setScall(findcall)
+          }
+
+          const { data: findcomment, error: commenterror } = await supabase
+            .from("comments")
+            .select("*, users(*)")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (commenterror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            setDiscussions(findcomment)
+      
+            
+          }
+
+
+          let _top3Holders: TopHolderType[] = [];
+          let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
+          result.topHolders.map((holder, index) => {
+            if (index < 3) {
+              _top3Holders.push(holder);
+            }
+            if (index < 10) {
+              _top10HolderInfo.pct += holder.pct;
+              _top10HolderInfo.uiAmount += holder.uiAmount;
+            }
+          });
+          setCallReport(result);
+          setTop3Holders(_top3Holders);
+          setTop10HolderInfo(_top10HolderInfo);
+          setIsLoading(false);
+        }
+        fetchCall();
+
+
+
+    }
+  }, [session]);
 
    const handleVotelike = () => {
       localStorage.setItem(paddress + sitem[0].user_id, "yes")
@@ -517,7 +639,31 @@ const TokenDetail = () => {
         <div className={`${isDiscussionOpen ? '' : 'hidden '} 2xl:block 2xl:absolute top-0 right-6 h-full w-full 2xl:w-[39%] pl-4 pr-4 2xl:pr-0 py-4 2xl:py-6`}>
           <div className="rounded bg-gray-100 w-full h-full p-4 sm:p-6 flex flex-col gap-5">
             <div className="flex-grow overflow-hidden">
-               <div className={`${isLoading  ? 'overflow-hidden' : 'overflow-auto'} h-full space-y-3`}>
+              <div className={`${isLoading ? 'overflow-hidden' : 'overflow-auto'} h-full space-y-3`}>
+                 { 
+              ! isLoading && preshow ? <>
+                <div className="flex gap-4">
+                    <div>
+                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item">
+                        <img src={IconUser} className="w-2.5 h-2.5" />
+                      </div>
+                    </div>
+                    <div className="space-y-1 flex-grow">
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-1 items-center">
+                          <span className="font-bold text-sm text-gray-600">{me[0].name}</span>
+                          <span className="text-xs text-gray-600">{ me[0].winrate}%</span>
+                          <div className="circle-item w-6 h-6 sm:w-7 sm:h-7 bg-red-300 text-black text-sm font-bold">{getRankChar(me[0].rank)}</div>
+                        </div>
+                        <span className="text-sm text-gray-600">{formatTimestamp(me[0].created_at)}</span>
+                      </div>
+                      <p className="text-sm sm:text-base !leading-[135%]">
+                        { commentstore}  </p>
+                    </div>
+                  </div>
+                  <div className="border-b-[1px] border-gray-100"></div>
+                        </> : <></>
+               }
                   {
                 isLoading || !discussions.length ? <SkeletonDiscussionList /> :
                     discussions.map((discussion) => <>
@@ -543,30 +689,7 @@ const TokenDetail = () => {
                      <div className="border-b-[1px] border-gray-100"></div>
                     </>)   
                 }
-               { 
-              ! isLoading && preshow ? <>
-                <div className="flex gap-4">
-                    <div>
-                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item">
-                        <img src={IconUser} className="w-2.5 h-2.5" />
-                      </div>
-                    </div>
-                    <div className="space-y-1 flex-grow">
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-1 items-center">
-                          <span className="font-bold text-sm text-gray-600">{me[0].name}</span>
-                          <span className="text-xs text-gray-600">{ me[0].winrate}%</span>
-                          <div className="circle-item w-6 h-6 sm:w-7 sm:h-7 bg-red-300 text-black text-sm font-bold">{getRankChar(me[0].rank)}</div>
-                        </div>
-                        <span className="text-sm text-gray-600">{formatTimestamp(me[0].created_at)}</span>
-                      </div>
-                      <p className="text-sm sm:text-base !leading-[135%]">
-                        { commentstore}  </p>
-                    </div>
-                  </div>
-                  <div className="border-b-[1px] border-gray-100"></div>
-                        </> : <></>
-               }
+              
               </div>
             </div>
             {

@@ -25,12 +25,12 @@ export const CallRow = ({
   useEffect(() => {
     if (localStorage.getItem(call.address + call.user_id) == "yes") { setConfirmVote(1) }
     if (localStorage.getItem(call.address + call.user_id) == "no") { setConfirmVote(2) }
-    if (new Date(call.created_at).getTime() + 86400000 - Date.now() < 0) {
+
       setTimeLimit(true);
-      if (call.featured !== 1) {
+      if (call.is_featured == true) {
         setFeatured(call.featured)
       }
-    }
+    
     
   const voteratio = async () => {
     const { data, error } = await supabase

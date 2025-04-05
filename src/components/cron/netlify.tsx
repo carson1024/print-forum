@@ -83,7 +83,7 @@ export const checkPrice = async () => {
         // Update the call record
     const { error: updateError } = await supabase
       .from("calls")
-      .update({ changedPrice:newPrice, changedCap: newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)), is_featured: true, featured: newFeatured,percentage:100 * (newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)))/(calls[index].init_market_cap) })
+      .update({ changedPrice:newPrice, changedCap: newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)), is_featured: true, featured: newFeatured,percentage:Math.ceil(100 * (newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)))/(calls[index].init_market_cap) )})
       .eq("id", calls[index].id);
        if (updateError) {
             console.error("Update failed:", updateError);
