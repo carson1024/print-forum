@@ -45,7 +45,7 @@ const ForumList = () => {
   useOutsideAlerter(wrapperRef, setIsOpen);
 
   useEffect(() => {
-
+    localStorage.setItem('levelSelected', 'All Ranks');
    setIsLoading(true);
    const fetchCalls = async () => {
    const { data, error } = await supabase
