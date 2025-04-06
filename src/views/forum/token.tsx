@@ -625,7 +625,7 @@ const TokenDetail = () => {
                           <span className="text-xs text-white"><b>{formatNumber(scall[index].init_market_cap)}</b> to <b>{formatNumber(scall[index].changedCap)}</b></span>
                         </div>
                         <div className="">
-                          {scall[index].addXP > 5 ? <> <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">{scall[index].addXP}XP +</span></>:<></> }
+                          {scall[index].addXP > 5 ? <> <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+{scall[index].addXP}XP</span></>:<></> }
                          
                         </div>
                       </div>

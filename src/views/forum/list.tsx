@@ -45,7 +45,18 @@ const ForumList = () => {
   useOutsideAlerter(wrapperRef, setIsOpen);
 
   useEffect(() => {
-    localStorage.setItem('levelSelected', 'All Ranks');
+    if (localStorage.getItem("levelSelected") == null) {
+      localStorage.setItem('levelSelected', 'All Ranks');
+    }
+    else { setFilters(localStorage.getItem("levelSelected")) }
+    if (localStorage.getItem("tag") == null) { 
+      localStorage.setItem('tag', '2');
+      setActiveTab('latest');
+    }
+    else {
+      if (localStorage.getItem("tag") == "1") { setActiveTab('featured'); }
+      else{setActiveTab('latest');}
+      }
    setIsLoading(true);
    const fetchCalls = async () => {
    const { data, error } = await supabase
