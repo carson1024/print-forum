@@ -66,7 +66,7 @@ const ForumList = () => {
        }
      }
      else if (localStorage.getItem("tag") == "2") {
-       if (localStorage.getItem("levelSelected") == "All Ranks") {
+       if (localStorage.getItem("levelSelected") == "All Ranks" || localStorage.getItem("levelSelected") ==null) {
          setCallList(data.filter(call => call.is_featured === false));
        }
        else {
