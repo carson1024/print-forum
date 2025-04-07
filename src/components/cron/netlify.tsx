@@ -2,6 +2,46 @@ import { supabase } from "lib/supabase";
 
 export const checkPrice = async () => {
   try {
+
+    //update the weeklt and monthly winrate
+const { data: allusers, error: allusererror } = await supabase.from("users").select("*").order("created_at");
+    allusers.map(async (user) => { 
+      const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("user_id", user.id);
+      if (owncalls.length == 0) {
+        const { error: updatewinrateError } = await supabase
+          .from("users")
+          .update({ weekrate: 0, monthrate: 0 })
+          .eq("id", user.id);
+        if (updatewinrateError) {
+          console.error("Update failed:", updatewinrateError);
+        } else {
+          console.log("weekrateUpdate successful");
+        }
+      }
+
+      else {
+        const monthcalls = owncalls.filter(call => new Date(call.created_at).getTime() + 2592000000 > Date.now());
+        let winmonthcallcounts = monthcalls.filter(monthcall => monthcall.is_featured === true).length;
+        let monthcallcounts = monthcalls.length;
+        let monthrate = Math.ceil(winmonthcallcounts * 100 / monthcallcounts);
+
+        const weekcalls = owncalls.filter(call => new Date(call.created_at).getTime() + 604800000 > Date.now());
+        let winweekcallcounts = weekcalls.filter(weekcall => weekcall.is_featured === true).length;
+        let weekcallcounts = weekcalls.length;
+        let weekrate = Math.ceil(winweekcallcounts * 100 / weekcallcounts);
+        const { error: updatewinrateError } = await supabase
+          .from("users")
+          .update({ weekrate: weekrate, monthrate: monthrate })
+          .eq("id", user.id);
+        if (updatewinrateError) {
+          console.error("Update failed:", updatewinrateError);
+        } else {
+          console.log("weekrateUpdate successful");
+        }
+      }
+    })
+
+
     //winrate Update process
     const { data: users, error: usererror } = await supabase.from("users").select("*").order("created_at");
     users.map(async (user) => { 
@@ -20,7 +60,7 @@ export const checkPrice = async () => {
       let wincalls = (owncalls.filter(call => call.is_featured === true)).length
       if (wincalls > 0) {
         let winrate = wincalls * 100 / counts;
-        let rounded = Math.floor(winrate * 100) / 100;
+        let rounded = Math.ceil(winrate);
         const { error: updatewinrateError } = await supabase
           .from("users")
           .update({ winrate: rounded,callcount:counts,rank:newrank })

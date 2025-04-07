@@ -17,7 +17,7 @@ const routes = [
   {
     key: "forum",
     layout: "",
-    path: "",
+    path: "/",
     component: <ForumList />,
   },
   {
