@@ -5,7 +5,6 @@ export const checkCall = async (address: string): Promise<CallReportType | null>
   if (pairsCache[address]) {
     return pairsCache[address];
   }
-
   let tokenAddress = '';
 
   try {
@@ -16,7 +15,6 @@ export const checkCall = async (address: string): Promise<CallReportType | null>
     if (pairData.pairs && pairData.pairs.length > 0) {
       if (pairData.pairs[0].quoteToken.symbol != "SOL") return null;
       const baseToken = pairData.pairs[0].baseToken.address;
-      // const quoteToken = data.pairs[0].quoteToken.address;
       tokenAddress = baseToken;
     }else {
       const getTokenUrl = `https://api.dexscreener.com/latest/dex/tokens/${address}`;
@@ -25,31 +23,23 @@ export const checkCall = async (address: string): Promise<CallReportType | null>
       if (pairData.pairs && pairData.pairs.length > 0) {
         if (pairData.pairs[0].quoteToken.symbol != "SOL") return null;
         const baseToken = pairData.pairs[0].baseToken.address;
-        // const quoteToken = data.pairs[0].quoteToken.address;
         tokenAddress = baseToken;
       }
     }
-
-    // console.log("Token Name", tokenAddress);
     if (!tokenAddress) {
       return null;
     }
-
     const rugCheckUrl = `https://api.rugcheck.xyz/v1/tokens/${tokenAddress}/report`;
     response = await fetch(rugCheckUrl);
     const rugCheckData = await response.json();
-
-    // console.log("Rug Check Result", data);
     const result: CallReportType = {
       ...pairData.pairs[0],
       ...rugCheckData
     };
     pairsCache[result.pairAddress] = result;
-
     return result;
-  } catch (error) {
-  }
-
+    } catch (error) {
+   }
   return null;
 }
 

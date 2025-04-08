@@ -1,4 +1,3 @@
-import { FaTimes } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 
 const Modal = ({

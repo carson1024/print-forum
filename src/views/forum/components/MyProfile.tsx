@@ -12,7 +12,7 @@ import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
 import { SkeletonMyCallsList } from "components/skeleton/mycalls";
 import { getRankChar } from "../../../../src/utils/style";
-import { formatNumber, formatShortAddress, formatTimestamp } from "../../../utils/blockchain";
+import { formatTimestamp } from "../../../utils/blockchain";
 const MyProfile = (props: {
   logout: () => void
 }) => {
@@ -53,18 +53,15 @@ const MyProfile = (props: {
       if (myuser) {
         setMuser(myuser)
       }
-      
       setIsLoading(false);
     }
     fetchCalls();
-
     // Subscribe to real-time changes in the "calls" table
     const channel = supabase
       .channel("my_calls")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, fetchCalls)
       .subscribe();
-    
     return () => {
       supabase.removeChannel(channel);
     };
@@ -135,7 +132,6 @@ const MyProfile = (props: {
                   </div>
                 </div> }
                 
-
                 {
                   isLoading ?
                   <div className="hidden sm:block text-black/60 text-sm space-y-2">
@@ -174,38 +170,8 @@ const MyProfile = (props: {
               </div>
             </div>
             <div className="border border-black/15"></div>
-            <div className="rounded-[20px] bg-black/5 p-4 hidden sm:block">
-              <div className="flex gap-6">
-                <div className="space-y-2">
-                  <div className="text-md font-semibold"><span className="text-xl font-bold">2.1</span> SOL</div>
-                  <p className="text-sm text-black/60">Current Balance</p>
-                  <div className="flex gap-2">
-                    <button className="btn btn-sm btn-green flex items-center gap-1" onClick={() => setIsDepositModalOpen(true)}><span className=""><ImArrowUp /></span> Deposit</button>
-                    <button className="btn btn-sm btn-red flex items-center gap-1" onClick={() => setIsWithdrawModalOpen(true)}><span className=""><ImArrowDown /></span> Withdraw</button>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="space-y-0.5">
-                    <p className="text-black/60 text-sm">Copying</p>
-                    <div className="text-black font-semibold flex gap-2">
-                      <span>0.2 SOL</span>
-                      <div className="bg-green-600 px-2 py-1 text-xs flex items-center rounded-full text-black">
-                        <span className="text-sm"><AiFillCaretUp /></span>
-                        <span>12%</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-0.5">
-                    <p className="text-black/60 text-sm">Unallocated</p>
-                    <div className="text-black font-semibold flex gap-2">
-                      <span>2 SOL</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+           
 
-            
             {
               isLoading || !callList.length ?
               <div className="space-y-2 text-black">
@@ -311,12 +277,11 @@ const MyProfile = (props: {
         }
       </div>
     </div>
-
     {/* My Calls / My Trades Tabs */}
     <div className={`rounded border border-gray-100 grow flex flex-col ${isLoading ? 'loading' : ''}`}>
       <div className="tab">
         <button className={`tab-item ${activeTab2 === 0 ? 'active' : ''}`} onClick={() => setActiveTab2(0)}>My Calls</button>
-        <button className={`tab-item ${activeTab2 === 1 ? 'active' : ''}`} onClick={() => setActiveTab2(1)}>My Trades</button>
+        <button className={`tab-item hidden ${activeTab2 === 1 ? 'active' : ''}`} onClick={() => setActiveTab2(1)}>My Trades</button>
       </div>
       <div className="bg-white text-black flex-1 overflow-auto rounded-b">
         {activeTab2 === 0 ? (

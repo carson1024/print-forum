@@ -9,7 +9,6 @@ import { showToastr } from "components/toastr";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import React, { act, useEffect } from "react";
 import { supabase } from "lib/supabase";
-import {checkPrice}  from "../../../components/cron/netlify";
 
 export const CallRow = ({
   call
@@ -25,12 +24,10 @@ export const CallRow = ({
   useEffect(() => {
     if (localStorage.getItem(call.address + call.user_id) == "yes") { setConfirmVote(1) }
     if (localStorage.getItem(call.address + call.user_id) == "no") { setConfirmVote(2) }
-
       setTimeLimit(true);
       if (call.is_featured == true) {
         setFeatured(call.featured)
       }
-    
     
   const voteratio = async () => {
     const { data, error } = await supabase
@@ -47,9 +44,7 @@ export const CallRow = ({
        setRatioVote(0)
     }};
     voteratio(); 
-
-    // Subscribe to real-time changes in the "calls" table
-     }, []);
+    }, []);
 
   const handleCopy = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -68,7 +63,7 @@ export const CallRow = ({
     setConfirmVote(1)
     let v2 = [];
     const insertUser = async () => {
-     const { data, error } = await supabase
+    const { data, error } = await supabase
         .from("vote")
         .select("*")
         .match({ "call_name": call.address, user_id: call.user_id });
@@ -76,7 +71,7 @@ export const CallRow = ({
         console.error("Fetch failed:", error);
         return; // Stop execution if there's an error
         }
-      if (data.length > 0) {
+    if (data.length > 0) {
         v2 = data;
         setRatioVote(Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))));
         const { error: updateError } = await supabase
@@ -86,18 +81,17 @@ export const CallRow = ({
             if (updateError) {
             console.error("Update failed:", updateError);
             } else {
-            console.log("delete vote successful");
-           
+            console.log("delete vote successful"); 
             }
-              const { error: insertError } = await supabase
-              .from("vote")
-              .insert([{ call_name: call.address,user_id: call.user_id, like_number: v2[0].like_number+1, dislike_number: v2[0].dislike_number, ratio:Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))) }]);
-              if (insertError) {
+        const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: call.address,user_id: call.user_id, like_number: v2[0].like_number+1, dislike_number: v2[0].dislike_number, ratio:Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))) }]);
+            if (insertError) {
                console.error("Insert failed:", insertError);
-              } else {
-                console.log("Insert successful");
-                  setCounter(counter + 1);
-              }  
+             } else {
+              console.log("Insert successful");
+              setCounter(counter + 1);
+            }  
       }
       else {
             const { error: insertError } = await supabase
@@ -108,9 +102,9 @@ export const CallRow = ({
               } else {
                 setRatioVote(100)
                 console.log("Insert successful");
-                  setCounter(counter + 1);
+                setCounter(counter + 1);
               }
-    }
+            }
     };
     insertUser();  
   }
@@ -133,13 +127,13 @@ export const CallRow = ({
         v1 = data;
        setRatioVote(Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))));
       const { error: updateError } = await supabase
-          .from('vote')
-          .delete()
-           .match({ "call_name": call.address, user_id: call.user_id });
+         .from('vote')
+         .delete()
+         .match({ "call_name": call.address, user_id: call.user_id });
        if (updateError) {
-            console.error("Update failed:", updateError);
+         console.error("Update failed:", updateError);
         } else {
-          console.log("delete successful");
+         console.log("delete successful");
        }
       const { error: insertError } = await supabase
               .from("vote")
@@ -148,19 +142,18 @@ export const CallRow = ({
                console.error("Insert failed:", insertError);
               } else {
                 console.log("Insert successful");
-                  setCounter(counter + 1);
+                setCounter(counter + 1);
               }
         } else {
-       
         const { error: insertError } = await supabase
             .from("vote")
             .insert([{ call_name: call.address,user_id: call.user_id, like_number: 0, dislike_number: 1, ratio:0 }]);
         if (insertError) {
             console.error("Insert failed:", insertError);
-        } else {  setCounter(counter + 1);
-          console.log("Insert successful");
-          setRatioVote(0);
-      }
+            } else {  setCounter(counter + 1);
+              console.log("Insert successful");
+              setRatioVote(0);
+           }
        }
    };
     insertdislikeUser();
@@ -204,9 +197,8 @@ export const CallRow = ({
             console.error("Update failed:", updateError);
             } else {
             console.log("delete vote successful");
-           
             }
-              const { error: insertError } = await supabase
+            const { error: insertError } = await supabase
               .from("vote")
               .insert([{ call_name: call.address,user_id: call.user_id, like_number: v2[0].like_number+1, dislike_number: v2[0].dislike_number, ratio:Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))) }]);
               if (insertError) {
@@ -227,7 +219,7 @@ export const CallRow = ({
                 console.log("Insert successful");
                   setCounter(counter + 1);
               }
-    }
+       }
     };
     insertUser();  
   }
@@ -246,29 +238,28 @@ export const CallRow = ({
     if (error) {
         console.error("Fetch failed:", error);
         return; }
-      if (data.length > 0) {
+    if (data.length > 0) {
         v1 = data;
        setRatioVote(Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))));
-      const { error: updateError } = await supabase
+    const { error: updateError } = await supabase
           .from('vote')
           .delete()
-           .match({ "call_name": call.address, user_id: call.user_id });
-       if (updateError) {
+          .match({ "call_name": call.address, user_id: call.user_id });
+    if (updateError) {
             console.error("Update failed:", updateError);
         } else {
           console.log("delete successful");
        }
-      const { error: insertError } = await supabase
-              .from("vote")
-              .insert([{ call_name: call.address,user_id: call.user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number+1, ratio:Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
-              if (insertError) {
-               console.error("Insert failed:", insertError);
-              } else {
-                console.log("Insert successful");
-                  setCounter(counter + 1);
-              }
+    const { error: insertError } = await supabase
+          .from("vote")
+          .insert([{ call_name: call.address,user_id: call.user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number+1, ratio:Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
+          if (insertError) {
+             console.error("Insert failed:", insertError);
+            } else {
+             console.log("Insert successful");
+             setCounter(counter + 1);
+            }
         } else {
-       
         const { error: insertError } = await supabase
             .from("vote")
             .insert([{ call_name: call.address,user_id: call.user_id, like_number: 0, dislike_number: 1, ratio:0 }]);
@@ -277,12 +268,11 @@ export const CallRow = ({
         } else {  setCounter(counter + 1);
           console.log("Insert successful");
           setRatioVote(0);
-      }
+        }
        }
    };
     insertdislikeUser();
   }
-
 
   const gotoenpage = () => {
    window.location.href=`/token/${call.address}?id=${call.id} &user=${call.user_id}`; 
@@ -333,9 +323,6 @@ export const CallRow = ({
                 </div>
               </div>
           </div>
-          {/* <div className="hidden md:flex items-center gap-3 justify-between">
-            Forum gives you good Luck
-          </div> */}
             <div className="hidden md:flex items-center gap-3 justify-between">
               {
               call.users && 
@@ -346,7 +333,7 @@ export const CallRow = ({
                       <div className="text-gray-600">Caller</div>
                       <div className="font-bold text-sm">{call.users.name} <span className="text-xs text-gray-600">{call.users.winrate}%</span></div>
                     </div>
-                </div>
+                 </div>
                </Link>
               }
             
@@ -414,13 +401,11 @@ export const CallRow = ({
             <div className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><FaThumbsDown className="w-3 h-3 text-red-500 cursor-pointer hover:scale-110 transition-transform" /></div>
             <span className="text-xs text-gray-600">{ratioVote}%</span>
         </div></>
-
             }
-          
           </> 
         }
-        </div>
       </div>
-       </>
+     </div>
+   </>
 
 }

@@ -50,7 +50,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(dataUser);
     }
   }, [user]);
-
   useEffect(() => {
     setLoading(true);
 
@@ -65,21 +64,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setLoading(false);
     };
-
     checkSession();
-
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, _session: Session | null) => {
         setSession(_session);
         checkUser(_session);
       }
     );
-
     return () => {
       listener.subscription.unsubscribe();
     };
   }, []);
-  
   return (
     <AuthContext.Provider value={{session, isLogin, user}}>
       {children}

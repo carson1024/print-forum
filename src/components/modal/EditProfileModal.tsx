@@ -1,13 +1,9 @@
 import React, { useEffect, useState,useRef } from "react";
-import { FaArrowDown } from "react-icons/fa";
 import Modal from "."
-import { ImArrowDown } from "react-icons/im";
-import User from 'assets/img/sample/user.png';
 import IconUpload from 'assets/img/icons/upload.svg';
 import IconTwitter from 'assets/img/icons/twitter.svg';
 import IconTelegram from 'assets/img/icons/telegram.svg';
 import IconSolana from 'assets/img/icons/solana.svg';
-import { IoCheckmark } from "react-icons/io5";
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "lib/supabase";
 import { showToastr } from "../../components/toastr";
@@ -34,7 +30,6 @@ const EditProfileModal = ({
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -64,6 +59,7 @@ const EditProfileModal = ({
           return;
         }
         if (data.length > 0) {
+          setPreview(data[0].avatar);
           setXaddress(data[0].xaddress);
           setTaddress(data[0].taddress);
           setSaddress(data[0].saddress);
@@ -74,9 +70,8 @@ const EditProfileModal = ({
         }
       };
       info();
-    }
-
-  }, [session]);
+     }
+   }, [session]);
   
   const onsaveInfo = async () => { 
      const { error: updateError } = await supabase
@@ -94,16 +89,14 @@ const EditProfileModal = ({
   return <Modal isOpen={isOpen} onClose={onCancel} extraClass="w-[620px]">
     {isLoading ? <div className="space-y-6"><br/><br/><div className="border-b-[1px] border-gray-100"></div><SkeletonList/></div> :
     <div className="space-y-6">
-      {/* User Header */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-3">
-
           {/* <img src={User} className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" alt="User avatar" /> */}
           {preview ? (
             <img src={preview} alt="Avatar" className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />
             ) : profile[0].avatar !==null?(<img src={profile[0].avatar} className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />):(<img src={ IconUser} className="w-[12px] h-[12px] sm:w-[82px] sm:h-[82px] circle" />)
                 
-        }
+           }
           <div className="space-y-2">
             <h2 className="text-base sm:text-lg font-bold">{profile[0].name }</h2>
             <button className=" sm:flex items-center gap-2 text-sm bg-gray-50 px-3 py-2 rounded-full" onClick={handleButtonClick}>
@@ -116,12 +109,10 @@ const EditProfileModal = ({
               className="hidden"
               onChange={(e)=>handleFileChange(e)}
               />
-            
           </div>
         </div>
-        
       </div>
-      <div className="border-b-[1px] border-gray-100"></div>
+    <div className="border-b-[1px] border-gray-100"></div>
       {/* Social Links */}
       <div className="space-y-5">
         <div className="flex items-center bg-gray-50 rounded-full px-5 py-2.5 gap-2">
@@ -135,7 +126,6 @@ const EditProfileModal = ({
             className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
           />
         </div>
-
         <div className="flex items-center bg-gray-50 rounded-full px-5 py-2.5 gap-2">
           <img src={IconTelegram} className="w-[28px] h-[28px] opacity-60" />
           <span className="text-xs sm:text-sm text-gray-600">t.com/</span>
@@ -147,7 +137,6 @@ const EditProfileModal = ({
             className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
           />
         </div>
-
         <div className="flex items-center bg-gray-50 rounded-full px-5 py-2.5 gap-2">
           <img src={IconSolana} className="w-6 h-6 opacity-60" />
           <span className="text-xs sm:text-sm text-gray-600">address:</span>
@@ -157,10 +146,8 @@ const EditProfileModal = ({
             defaultValue={saddress}
             onChange={(e) => setSaddress(e.target.value)}
             className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
-          
           />
         </div>
-
         <div className="flex items-start bg-gray-50 rounded-[20px] px-5 py-2.5">
           <span className="text-gray-600 mr-2">Bio</span>
           <textarea
@@ -168,17 +155,13 @@ const EditProfileModal = ({
             defaultValue={bio}
             onChange={(e) => setBio(e.target.value)}
             className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 resize-none text-xs sm:text-sm !leading-[135%]"
-            ></textarea>
-           
+            ></textarea>  
         </div>
       </div>
-
       {/* Save Button */}
       <button className="w-full btn py-3 text-sm sm:text-base" onClick={onsaveInfo}>Save</button>
     </div>
     }
-    
   </Modal>
-}
-
+ }
 export default EditProfileModal;

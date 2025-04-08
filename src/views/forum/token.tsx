@@ -455,14 +455,17 @@ const TokenDetail = () => {
                 <div className="bg-gray-100 px-2 py-1.5 rounded-full flex text-xs gap-1">
                   Marketcap {formatNumber(sitem[0].init_market_cap)} to {formatNumber(sitem[0].changedCap)}
                 </div>
-                  {sitem[0].percentage >= 100 ? <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
+                  {sitem[0].percentage >= 100 ? <>
+                    <div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretUp />
                     <span>{sitem[0].percentage}%</span>
-                  </div></> :
+                  </div>
+                  </> :
                     <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretDown />
                       <span>{ sitem[0].percentage}%</span>
-                  </div></>}
+                    </div>
+                  </>}
               </div>
             </div>
           }
@@ -625,8 +628,7 @@ const TokenDetail = () => {
                           <span className="text-xs text-white"><b>{formatNumber(scall[index].init_market_cap)}</b> to <b>{formatNumber(scall[index].changedCap)}</b></span>
                         </div>
                         <div className="">
-                          {scall[index].addXP > 5 ? <> <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+{scall[index].addXP}XP</span></>:<></> }
-                         
+                          {scall[index].addXP > 5 ? <> <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+{scall[index].addXP}XP</span></>:<></> }   
                         </div>
                       </div>
                     </Link>
@@ -661,8 +663,8 @@ const TokenDetail = () => {
                         { commentstore}  </p>
                     </div>
                   </div>
-                  <div className="border-b-[1px] border-gray-100"></div>
-                        </> : <></>
+                <div className="border-b-[1px] border-gray-100"></div>
+                </> : <></>
                }
                   {
                 isLoading || !discussions.length ? <SkeletonDiscussionList /> :

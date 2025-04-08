@@ -2,9 +2,8 @@ import IconTwitter from 'assets/img/icons/twitter.svg';
 import IconTelegram from 'assets/img/icons/telegram.svg';
 import IconSolana from 'assets/img/icons/solana.svg';
 import React, { Component } from 'react';
-import { formatNumber, formatShortAddress, formatTimestamp } from "../../../../utils/blockchain";
+import { formatTimestamp } from "../../../../utils/blockchain";
 import { useAuth } from "../../../../contexts/AuthContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
   myprofile: {
@@ -50,7 +49,7 @@ const ProfileTab = ({ myprofile }: Props) => {
               </div>
             </div>
             <p className="text-xs text-gray-600 !leading-[135%]">
-              {"FIXED RATIO is recommended as the algo is built on buying small portions with many price points. An algo bot that capitalizes volatility of the market aiming for monthly returns. Just trust the bot !"}
+              {myprofile.bio}
             </p>
           </div>
           <div className="col-span-3">
@@ -68,7 +67,7 @@ const ProfileTab = ({ myprofile }: Props) => {
         </div>
         <div className="sm:hidden rounded-[22px] text-white space-y-2">
           <span className='text-sm font-bold'>Bio</span>
-          <p className='text-xs !leading-[135%]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ipsum eros, volutpat id nibh quis, pretium aliquet neque. </p>
+          <p className='text-xs !leading-[135%]'>{myprofile.bio}</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="p-4 sm:p-5 rounded-[22px] bg-gray-50">

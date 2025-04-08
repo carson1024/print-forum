@@ -1,16 +1,8 @@
 import React, { useState } from "react";
 import ForumLayout from "./layout"
 import { FaChevronDown, FaChevronLeft, FaChevronRight, FaChevronUp } from "react-icons/fa";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
-import { IoMdCopy } from "react-icons/io";
 import User from 'assets/img/sample/user.png';
-import IconCopy from 'assets/img/icons/copy.svg';
-import IconSend from 'assets/img/icons/send.svg';
 import { Link, useNavigate, useNavigation } from "react-router-dom";
-import Dexscreener from 'assets/img/sample/dexscreener.png';
-import Photon from 'assets/img/sample/photon.png';
-import { FaExternalLinkAlt } from "react-icons/fa";
-import IconUser from 'assets/img/icons/user.svg';
 import { MdEdit } from "react-icons/md";
 import ProfileTab from "./components/profile/ProfileTab";
 import CallsTab from "./components/profile/CallsTab";
@@ -20,11 +12,9 @@ import { act, useEffect } from "react";
 import { supabase } from "lib/supabase";
 import { SkeletonList, SkeletonRow } from "../../../src/components/skeleton/forum";
 import { useAuth } from "contexts/AuthContext";
-import { showToastr } from "../../components/toastr";
   
 const ProfileDetail = () => {
   const navigate = useNavigate();
-  const [filter, setFilter] = useState("All Ranks");
   const [activeTab, setActiveTab] = useState<'profile' | 'calls' | 'trade'>('profile');
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [profile, setProfile] = useState([]);
@@ -55,7 +45,7 @@ const ProfileDetail = () => {
     if (error) {
         console.error("Fetch failed:", error);
         return; // Stop execution if there's an error
-         }
+        }
     if (data.length > 0) {
       setProfile(data)
     } else {
@@ -69,7 +59,6 @@ const ProfileDetail = () => {
     profile[0].saddress = saddress;
     profile[0].bio = bio;
     profile[0].avatar = preview;
-    // await setIsEditProfileModalOpen(false);
   }
   return <ForumLayout>
     {isLoading ? <SkeletonList /> :
@@ -89,16 +78,15 @@ const ProfileDetail = () => {
                   { 
                     isLogin && session.user.id == profile[0].id ? <button className="btn btn-gray flex btn-sm gap-1 items-center ml-auto md:ml-0" onClick={() => setIsEditProfileModalOpen(true)}><MdEdit /> Edit Profile</button>
                    :<></>
-                  }
+              }
             
           </div>
-          <div className="hidden md:flex btn-group light">
+         <div className="hidden md:flex btn-group light">
             <button className={`btn btn-sm ${activeTab == 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>Profile</button>
             <button className={`btn btn-sm ${activeTab == 'calls' ? 'active' : ''}`} onClick={() => setActiveTab('calls')}>Calls</button>
             <button className={`btn btn-sm hidden ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
-          </div>
+         </div>
         </div>
-
         <div className="hidden md:block flex-grow relative overflow-hidden">
           {
             activeTab == 'profile' ?
@@ -136,9 +124,8 @@ const ProfileDetail = () => {
     </div>
           <EditProfileModal isOpen={isEditProfileModalOpen} onChange={(xaddress,taddress,saddress,bio,preview)=>handleReprofile(xaddress,taddress,saddress,bio,preview)} onOk={() => setIsEditProfileModalOpen(false)} onCancel={() => setIsEditProfileModalOpen(false)} />
        </>
-               }
+     }
     </ForumLayout>
-   
-      }
+    }
 
 export default ProfileDetail;

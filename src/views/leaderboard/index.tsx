@@ -8,7 +8,7 @@ import { SkeletonList,SkeletonRow } from "../../components/skeleton/forum";
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  React.useEffect(() => {
+  useEffect(() => {
   setIsLoading(true);
   const fetchCalls = async () => {
   const { data, error } = await supabase
@@ -16,7 +16,6 @@ const Leaderboard = () => {
         .select("*")
         .order('rank', { ascending: false })  // higher rank first
         .order('winrate', { ascending: false }); 
-
       if (error) {
         console.error("Error fetching calls:", error.message);
         return;
@@ -24,29 +23,28 @@ const Leaderboard = () => {
       if (data) { setUsers(data) }
      }
     fetchCalls();   
-  setIsLoading(false);
-  })
+    setIsLoading(false);
+  }, []);
   return (<LeaderboardLayout>
     <div className="card flex-grow p-0 flex flex-col overflow-hidden">
       <div className="px-4 sm:px-6 py-6 border-b-[1px] border-gray-100 flex justify-between items-center">
         <div className="flex gap-5 items-center">
           <h2 className="text-base sm:text-lg font-semibold">Leaderboard</h2>
         </div>
-      </div>
-      
+      </div> 
       <div className="p-4 sm:p-6 flex flex-col gap-5 overflow-auto flex-grow">
         { 
           isLoading ? <SkeletonList /> : 
             !users.length ? <>
                             <SkeletonRow opacity={60} />
                             <SkeletonRow opacity={30} />
-                          </> :
-           <>{users.map((item, index) => (<Link to={`/profile?id=${item.id}`} key={index}>
+                            </> :
+          <>{users.map((item, index) => (<Link to={`/profile?id=${item.id}`} key={index}>
           <div className="bg-gray-50 p-1.5 rounded sm:rounded-[40px] flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-3">
               <span className={`leader-rank${index+1}`}>{index+1}</span>
               <div className="p-2.5 sm:p-3 rounded-full border border-gray-150 flex items-center gap-2.5">
-                <div className="circle-item w-7 h-7 bg-red-300 text-black text-sm font-bold">V</div>
+                <div className={`circle-item w-7 h-7 bg-red-300 text-black text-sm font-bold badge-rank-${item.rank}`}></div>
                 <div className="space-y-0.5">
                   <div className="text-xs text-gray-600">Rank { item.rank}</div>
                   <div className="flex gap-1 items-center mr-2">
@@ -88,9 +86,8 @@ const Leaderboard = () => {
           </div>
         </Link>
         ))}</>
-        }
-       
-      </div>
+     }  
+     </div>
     </div>
   </LeaderboardLayout>)
 }

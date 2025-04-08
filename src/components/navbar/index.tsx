@@ -1,7 +1,4 @@
 import Logo from 'assets/img/logo.png';
-import IconTwitter from 'assets/img/icons/twitter.svg';
-import IconTelegram from 'assets/img/icons/telegram.svg';
-import IconSolana from 'assets/img/icons/solana.svg';
 import IconUser from 'assets/img/icons/user.svg';
 import RestrictedModal from 'components/modal/RestrictedModal';
 import { useEffect, useState } from 'react';
@@ -26,9 +23,7 @@ const Navbar = (props: {
   
   return (
     <div className="card rounded-full flex justify-between px-2.5 lg:px-5 items-center">
-      <div className={`${route.pathname == '/profile' ? 'grow' : 'hidden'}`}>
-        <img src={Logo} className={`h-8`} />
-      </div>
+        <img src={Logo} className="hidden md:block h-8" />
       <div className={`flex gap-6 ${route.pathname == '/profiles' ? 'hidden' : ''}`}>
         <div className='hidden lg:block my-auto'>
           <img src={Logo} className='h-8' />
@@ -40,7 +35,7 @@ const Navbar = (props: {
           <Link to="/copytrading" className={`nav-item hidden btn-sm md:btn-lg ${currentRoute == 'copytrading' ? 'active' : ''}`}>Copy Trading</Link>
         </div>
       </div>
-      <div className={`${route.pathname == '/profile' ? 'flex' : 'hidden'} w-full justify-end`}>
+      <div className="flex w-full justify-end">
         {isLogin? <Icons/> : <></>}
       </div>
       {

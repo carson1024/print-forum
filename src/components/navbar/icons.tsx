@@ -1,9 +1,6 @@
-import Logo from 'assets/img/logo.png';
 import IconTwitter from 'assets/img/icons/twitter.svg';
 import IconTelegram from 'assets/img/icons/telegram.svg';
 import IconSolana from 'assets/img/icons/solana.svg';
-import IconUser from 'assets/img/icons/user.svg';
-import RestrictedModal from 'components/modal/RestrictedModal';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from "../../contexts/AuthContext";
@@ -17,33 +14,29 @@ const Icons = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-   if (!session) {
-        return;
-      }
+   if (!session) { return;}
      setIsLoading(true)
      const scan = async () => {
      const { data, error } = await supabase
               .from("users")
               .select("*")
               .match({ "id": session.user.id });
-          if (error) {
+           if (error) {
               console.error("Fetch failed:", error);
               return; 
                }
-          if (data.length > 0) {
-            setProfile(data)
-            setIsLoading(false)
-          } else {
-          }};
-    scan();  
-    
-    const channel = supabase
+           if (data.length > 0) {
+              setProfile(data)
+              setIsLoading(false)
+              } else {
+            }};
+     scan();   
+   const channel = supabase
       .channel("my_users")
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, scan)
       .subscribe();
     return () => {
-      supabase.removeChannel(channel);
-        };
+      supabase.removeChannel(channel);};
     }, [session]);
   
     return (
@@ -58,7 +51,6 @@ const Icons = () => {
         <button><a  href={`https://t.me/${profile[0].taddress}`} target="_blank" rel="noopener noreferrer" ><img src={IconTelegram} className='w-[20px] h-[20px] sm:w-[28px] sm:h-[28px]' /></a></button>
         <button><a  href={`https://explorer.solana.com/address/${profile[0].saddress}`} target="_blank" rel="noopener noreferrer" ><img src={IconSolana} className='w-4 h-4 sm:w-6 sm:h-6' /></a></button>
             </div> }
-           
       </>
        )
       }  
