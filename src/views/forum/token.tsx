@@ -602,7 +602,7 @@ const TokenDetail = () => {
                       <SkeletonRow opacity={60} /> 
                       <SkeletonRow opacity={30} />
                     </> :
-                      topCallers.map((caller, index) => (<Link to={`/profile/123 ?id=${caller.users.id}`} key={index}>
+                      topCallers.map((caller, index) => (<Link to={`/profile?id=${caller.users.id}`} key={index}>
                       <div className="bg-gray-50 px-2 md:px-4 py-2 rounded sm:rounded-[40px] flex items-center gap-2 xl:gap-3 flex-wrap">
                         <span className="leader-rank1 2xl:leader-rank-none font-semibold w-[36px]">#{index+1}</span>
                         <div className="p-3 rounded-full border border-gray-150 flex items-center gap-2.5">

@@ -3,12 +3,15 @@ import LeaderboardLayout from "./layout"
 import { FaChevronRight } from "react-icons/fa";
 import React, { act, useEffect, useState } from "react";
 import { supabase } from "lib/supabase";
+import { SkeletonList,SkeletonRow } from "../../components/skeleton/forum";
 
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   React.useEffect(() => {
+  setIsLoading(true);
   const fetchCalls = async () => {
-   const { data, error } = await supabase
+  const { data, error } = await supabase
         .from("users")
         .select("*")
         .order('rank', { ascending: false })  // higher rank first
@@ -18,9 +21,10 @@ const Leaderboard = () => {
         console.error("Error fetching calls:", error.message);
         return;
       }
-    if (data) {setUsers(data) }
+      if (data) { setUsers(data) }
      }
     fetchCalls();   
+  setIsLoading(false);
   })
   return (<LeaderboardLayout>
     <div className="card flex-grow p-0 flex flex-col overflow-hidden">
@@ -31,7 +35,13 @@ const Leaderboard = () => {
       </div>
       
       <div className="p-4 sm:p-6 flex flex-col gap-5 overflow-auto flex-grow">
-        {users.map((item, index) => (<Link to={`/profile/123?id=${item.id}`} key={index}>
+        { 
+          isLoading ? <SkeletonList /> : 
+            !users.length ? <>
+                            <SkeletonRow opacity={60} />
+                            <SkeletonRow opacity={30} />
+                          </> :
+           <>{users.map((item, index) => (<Link to={`/profile?id=${item.id}`} key={index}>
           <div className="bg-gray-50 p-1.5 rounded sm:rounded-[40px] flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-3">
               <span className={`leader-rank${index+1}`}>{index+1}</span>
@@ -77,7 +87,9 @@ const Leaderboard = () => {
             </button>
           </div>
         </Link>
-        ))}
+        ))}</>
+        }
+       
       </div>
     </div>
   </LeaderboardLayout>)

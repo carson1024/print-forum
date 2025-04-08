@@ -2,15 +2,16 @@ import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import routes from "routes";
 import Navbar from "components/navbar";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function MainLayout(props: { [x: string]: any }) {
   const { ...rest } = props;
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
-
+  const { isLogin,session } = useAuth();
   React.useEffect(() => {
-    getActiveRoute(routes);
-  }, [location.pathname]);
+      getActiveRoute(routes);
+  }, [location.pathname,session]);
 
   const getActiveRoute = (routes: RoutesType[]): string | boolean => {
     let activeRoute = "forum";

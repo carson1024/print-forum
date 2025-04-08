@@ -20,12 +20,12 @@ const routes = [
     path: "/",
     component: <ForumList />,
   },
-  {
-    key: "login",
-    layout: "",
-    path: "profile",
-    component: <Profile />,
-  },
+  // {
+  //   key: "login",
+  //   layout: "",
+  //   path: "profile",
+  //   component: <Profile />,
+  // },
   {
     key: "token",
     layout: "",
@@ -35,7 +35,7 @@ const routes = [
   {
     key: "profile",
     layout: "",
-    path: "profile/*",
+    path: "profile",
     component: <ProfileDetail />,
   },
   {

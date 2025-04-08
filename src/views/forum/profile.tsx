@@ -19,6 +19,8 @@ import EditProfileModal from "components/modal/EditProfileModal";
 import { act, useEffect } from "react";
 import { supabase } from "lib/supabase";
 import { SkeletonList, SkeletonRow } from "../../../src/components/skeleton/forum";
+import { useAuth } from "contexts/AuthContext";
+import { showToastr } from "../../components/toastr";
   
 const ProfileDetail = () => {
   const navigate = useNavigate();
@@ -27,6 +29,8 @@ const ProfileDetail = () => {
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [profile, setProfile] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [mainid, setMainid] = useState('');
+  const { isLogin,session } = useAuth();
   const forumData = [
     { id: 1, name: "$PEPESI", multiplier: "10X", rank: "1", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
     { id: 2, name: "$PEPESI", multiplier: "100X", rank: "2", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
@@ -41,9 +45,9 @@ const ProfileDetail = () => {
   useEffect(() => {
      setIsLoading(true);
    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-   
-  const scan = async () => {
+   const id = params.get("id");
+    setMainid(id);
+   const scan = async () => {
     const { data, error } = await supabase
         .from("users")
         .select("*")
@@ -58,9 +62,15 @@ const ProfileDetail = () => {
     }};
     scan(); 
    setIsLoading(false);
-    // Subscribe to real-time changes in the "calls" table
-     }, []);
-
+  }, []);
+  const handleReprofile = async (xaddress: string, taddress: string, saddress: string, bio: string, preview: string) => { 
+    profile[0].xaddress = xaddress;
+    profile[0].taddress = taddress;
+    profile[0].saddress = saddress;
+    profile[0].bio = bio;
+    profile[0].avatar = preview;
+    // await setIsEditProfileModalOpen(false);
+  }
   return <ForumLayout>
     {isLoading ? <SkeletonList /> :
               !profile.length ? <>
@@ -71,17 +81,21 @@ const ProfileDetail = () => {
          <div className="card md:h-full p-0 flex flex-col md:overflow-hidden">
         <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
              <div className="flex gap-2 sm:gap-3 items-center grow">
-            <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
+              <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
               <FaChevronLeft />
-            </button>
-            <img src={User} className="w-8 h-8 circle"/>
-            <span className="font-bold text-base sm:text-lg">{profile[0].name}</span>
-            <button className="btn btn-gray flex btn-sm gap-1 items-center ml-auto md:ml-0" onClick={() => setIsEditProfileModalOpen(true)}><MdEdit /> Edit Profile</button>
+              </button>
+              {profile[0].avatar !==null?<img src={profile[0].avatar} className="w-8 h-8 circle"/>:<img src={User} className="w-8 h-8 circle"/> }
+                  <span className="font-bold text-base sm:text-lg">{profile[0].name}</span>
+                  { 
+                    isLogin && session.user.id == profile[0].id ? <button className="btn btn-gray flex btn-sm gap-1 items-center ml-auto md:ml-0" onClick={() => setIsEditProfileModalOpen(true)}><MdEdit /> Edit Profile</button>
+                   :<></>
+                  }
+            
           </div>
           <div className="hidden md:flex btn-group light">
             <button className={`btn btn-sm ${activeTab == 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>Profile</button>
             <button className={`btn btn-sm ${activeTab == 'calls' ? 'active' : ''}`} onClick={() => setActiveTab('calls')}>Calls</button>
-            <button className={`btn btn-sm ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
+            <button className={`btn btn-sm hidden ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
           </div>
         </div>
 
@@ -120,7 +134,7 @@ const ProfileDetail = () => {
         </div>
       </div>
     </div>
-   <EditProfileModal isOpen={isEditProfileModalOpen} onOk={() => setIsEditProfileModalOpen(false)} onCancel={() => setIsEditProfileModalOpen(false)} />
+          <EditProfileModal isOpen={isEditProfileModalOpen} onChange={(xaddress,taddress,saddress,bio,preview)=>handleReprofile(xaddress,taddress,saddress,bio,preview)} onOk={() => setIsEditProfileModalOpen(false)} onCancel={() => setIsEditProfileModalOpen(false)} />
        </>
                }
     </ForumLayout>

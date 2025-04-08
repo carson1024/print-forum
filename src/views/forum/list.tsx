@@ -46,7 +46,7 @@ const ForumList = () => {
   useOutsideAlerter(wrapperRef, setIsOpen);
   
   useEffect(() => {
-   setSearchParams({ type: activeTab,level: filters });
+  // setSearchParams({ type: activeTab,level: filters });
    setIsLoading(true);
    const fetchCalls = async () => {
    const { data, error } = await supabase
@@ -82,15 +82,15 @@ const ForumList = () => {
     checkPrice();
     }, 20000);
     
-    const subscription = supabase
+    const channel  = supabase
       .channel("my_calls")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
       .subscribe();
     return () => {
-      clearInterval(interval) 
-      subscription.unsubscribe();
+      supabase.removeChannel(channel );
+      clearInterval(interval);
     };
-  }, [searchParams,filters]);
+  }, [filters]);
 
   const featuredlist = () => {
     setActiveTab('featured')
@@ -104,8 +104,9 @@ const ForumList = () => {
   
   const toggleDropdown = () => setIsOpen(!isOpen);
   const handleSelect = (op: string): void =>{
-  setFilters(op);
-  setIsOpen(false);
+    setFilters(op);
+    setIsOpen(false);
+    setSearchParams({ type: activeTab, level: op });
   };
 
   return <ForumLayout>

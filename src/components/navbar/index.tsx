@@ -7,6 +7,8 @@ import RestrictedModal from 'components/modal/RestrictedModal';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { MdClose } from 'react-icons/md';
+import Icons from './icons';
+import { useAuth } from "../../contexts/AuthContext";
 
 const Navbar = (props: {
   currentRoute: string;
@@ -16,6 +18,7 @@ const Navbar = (props: {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const route = useLocation();
   const navigate = useNavigate();
+  const { isLogin,session } = useAuth();
 
   useEffect(() => {
     console.log(route.pathname);
@@ -26,7 +29,7 @@ const Navbar = (props: {
       <div className={`${route.pathname == '/profile' ? 'grow' : 'hidden'}`}>
         <img src={Logo} className={`h-8`} />
       </div>
-      <div className={`flex gap-6 ${route.pathname == '/profile' ? 'hidden' : ''}`}>
+      <div className={`flex gap-6 ${route.pathname == '/profiles' ? 'hidden' : ''}`}>
         <div className='hidden lg:block my-auto'>
           <img src={Logo} className='h-8' />
         </div>
@@ -34,13 +37,11 @@ const Navbar = (props: {
           <Link to="/" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'forum' ? 'active' : ''}`}>Forum</Link>
           <button className={`nav-item btn-sm md:btn-lg ${currentRoute == 'alpha' ? 'active' : ''}`} onClick={() => setIsModalOpen(true)}>Alpha</button>
           <Link to="/leaderboard" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'leaderboard' ? 'active' : ''}`}>Leaderboard</Link>
-          <Link to="/copytrading" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'copytrading' ? 'active' : ''}`}>Copy Trading</Link>
+          <Link to="/copytrading" className={`nav-item hidden btn-sm md:btn-lg ${currentRoute == 'copytrading' ? 'active' : ''}`}>Copy Trading</Link>
         </div>
       </div>
-      <div className={`${route.pathname == '/profile' ? 'flex' : 'hidden'} sm:flex px-2.5 py-2 sm:px-3 sm:py-2.5 gap-3 bg-gray-100 rounded-full my-auto items-center`}>
-        <img src={IconTwitter} className='w-3.5 h-3.5 sm:w-5 sm:h-5' />
-        <img src={IconTelegram} className='w-[20px] h-[20px] sm:w-[28px] sm:h-[28px]' />
-        <img src={IconSolana} className='w-4 h-4 sm:w-6 sm:h-6' />
+      <div className={`${route.pathname == '/profile' ? 'flex' : 'hidden'} w-full justify-end`}>
+        {isLogin? <Icons/> : <></>}
       </div>
       {
         route.pathname == '/profile' ?

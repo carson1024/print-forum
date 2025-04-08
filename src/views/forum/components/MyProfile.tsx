@@ -12,7 +12,7 @@ import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
 import { SkeletonMyCallsList } from "components/skeleton/mycalls";
 import { getRankChar } from "../../../../src/utils/style";
-
+import { formatNumber, formatShortAddress, formatTimestamp } from "../../../utils/blockchain";
 const MyProfile = (props: {
   logout: () => void
 }) => {
@@ -28,9 +28,8 @@ const MyProfile = (props: {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // setIsLoading(true);
+    //  setIsLoading(true);
     const fetchCalls = async () => {
-
       if (!session || !session.user) return;
       const { data, error } = await supabase
         .from("calls")
@@ -41,11 +40,11 @@ const MyProfile = (props: {
         console.error("Error fetching calls:", error.message);
         return;
       }
-
+      setCallList(data);
       const { data:myuser, error:myusererror } = await supabase
         .from("users")
         .select("*")
-        .eq("email", session.user.email)
+        .eq("id", session.user.id)
         .order("created_at", { ascending: false });
       if (myusererror) {
         console.error("Error fetching calls:", myusererror.message);
@@ -54,18 +53,20 @@ const MyProfile = (props: {
       if (myuser) {
         setMuser(myuser)
       }
-      setCallList(data);
+      
       setIsLoading(false);
     }
     fetchCalls();
 
     // Subscribe to real-time changes in the "calls" table
-    const subscription = supabase
+    const channel = supabase
       .channel("my_calls")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, fetchCalls)
       .subscribe();
+    
     return () => {
-      supabase.removeChannel(subscription);
+      supabase.removeChannel(channel);
     };
   }, []);
   
@@ -80,38 +81,61 @@ const MyProfile = (props: {
           activeTab1 == 0 ? <>
             <div className="flex gap-3">
               <div className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center">
-                <img src={IconUser} className="w-4 h-4" />
+                {isLoading || ! muser.length ? <img src={IconUser} className="w-10 h-10" /> : muser[0].avatar==null?<img src={IconUser} className="w-10 h-10" />:
+                <><img src={muser[0].avatar} className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center" />
                 <div className="absolute right-0 bottom-0 circle bg-dark1">
-                  <span className="badge-rank-5"></span>
-                </div>
+                 <span className={"badge-rank-" + muser[0].rank}></span> 
+                </div></>}
+                
               </div>
               <div className="space-y-3 grow">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2 items-center">
                     <h3 className="font-bold text-base sm:text-lg">{ user?.name }</h3>
-                    <Link to="/profile/123"><img src={IconLink} className="w-4 h-4" /></Link>
+                    <Link to={`/profile?id=${session.user.id}`}><img src={IconLink} className="w-4 h-4" /></Link>
                   </div>
                   <button className="text-black/40 font-bold" onClick={logout}><img src={IconLogout} className="w-4 h-4" /></button>
                 </div>
                 
-                <div className="sm:hidden flex flex-wrap gap-1">
+                {isLoading ?
+                  <div className="sm:hidden flex flex-wrap gap-1">
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Rank</span>
-                    <span className="text-xs text-black font-semibold">12</span>
+                    <span className="text-xs text-black font-semibold">...</span>
                   </div>
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Win rate</span>
-                    <span className="text-xs text-black font-semibold">50%</span>
+                    <span className="text-xs text-black font-semibold">...</span>
                   </div>
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Calls</span>
-                    <span className="text-xs text-black font-semibold">10</span>
+                    <span className="text-xs text-black font-semibold">...</span>
                   </div>
                   <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
                     <span className="text-xs text-black/60">Account age</span>
-                    <span className="text-xs text-black font-semibold">1 years ago</span>
+                    <span className="text-xs text-black font-semibold">...</span>
                   </div>
-                </div>
+                </div> :
+                  <div className="sm:hidden flex flex-wrap gap-1">
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Rank</span>
+                    <span className="text-xs text-black font-semibold">{muser[0].rank }</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Win rate</span>
+                    <span className="text-xs text-black font-semibold">{muser[0].winrate }%</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Calls</span>
+                    <span className="text-xs text-black font-semibold">{muser[0].callcount }</span>
+                  </div>
+                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                    <span className="text-xs text-black/60">Account age</span>
+                    <span className="text-xs text-black font-semibold">{formatTimestamp(muser[0].created_at) }</span>
+                  </div>
+                </div> }
+                
+
                 {
                   isLoading ?
                   <div className="hidden sm:block text-black/60 text-sm space-y-2">
@@ -140,7 +164,7 @@ const MyProfile = (props: {
                   </div>
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Account age</p>
-                    <p className="col-span-7">{Number((new Date().toISOString().split("T")[0]).slice(0,4))-Number((muser[0].created_at).slice(0,4)) + 1} years</p>
+                    <p className="col-span-7">{formatTimestamp(muser[0].created_at) } ago</p>
                   </div>
                 </div>                
                   }

@@ -175,7 +175,7 @@ export const CallRow = ({
   const profilepage =async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    window.location.href=`/profile/123 ?id=${call.users.id}`;
+    window.location.href=`/profile?id=${call.users.id}`;
   }
 
   const handleVotelikemobile =async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -339,7 +339,7 @@ export const CallRow = ({
             <div className="hidden md:flex items-center gap-3 justify-between">
               {
               call.users && 
-              <Link to={`/profile/123 ?id=${call.users.id}`} key={call.id}>
+              <Link to={`/profile?id=${call.users.id}`} key={call.id}>
                   <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs" onClick={profilepage}>
                     <span className={`badge-rank-${call.users.rank}`}></span>
                     <div>
@@ -389,7 +389,7 @@ export const CallRow = ({
         <div className="flex md:hidden items-center gap-1 sm:gap-3 justify-between">
           {
           call.users && 
-          <Link to={`/profile/123 ?id=${call.users.id}`} key={call.id}>
+          <Link to={`/profile?id=${call.users.id}`} key={call.id}>
             <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs">
               <span className={`badge-rank-${call.users.rank}`}></span>
               <div className="">

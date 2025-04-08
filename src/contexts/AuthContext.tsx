@@ -7,6 +7,10 @@ export interface UserType {
   avatar: string | null;
   name: string;
   email: string;
+  taddress: string;
+  xaddress: string;
+  saddress: string;
+  bio: string;
   rank: number;
   xp: number;
   winrate: number;

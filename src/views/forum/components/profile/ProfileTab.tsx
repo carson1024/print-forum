@@ -2,7 +2,9 @@ import IconTwitter from 'assets/img/icons/twitter.svg';
 import IconTelegram from 'assets/img/icons/telegram.svg';
 import IconSolana from 'assets/img/icons/solana.svg';
 import React, { Component } from 'react';
-
+import { formatNumber, formatShortAddress, formatTimestamp } from "../../../../utils/blockchain";
+import { useAuth } from "../../../../contexts/AuthContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
   myprofile: {
@@ -15,10 +17,15 @@ type Props = {
     callcount: string;
     achievements: string;
     created_at: string;
+    taddress: string;
+    xaddress: string;
+    saddress: string;
+    bio: string;
   };
 };
 
-const ProfileTab = ({myprofile}:Props) => {
+const ProfileTab = ({ myprofile }: Props) => {
+  const { isLogin,session } = useAuth();
   return (<>
     <div className="overflow-auto sm:h-full">
       <div className="flex flex-col gap-6 sm:border-b-[1px] border-gray-100 p-4 sm:p-6">
@@ -39,7 +46,7 @@ const ProfileTab = ({myprofile}:Props) => {
               </div>
               <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
                 <span className="text-xs text-gray-600">Account age</span>
-                <span className="text-xs text-white">{Number((new Date().toISOString().split("T")[0]).slice(0,4))-Number((myprofile.created_at).slice(0,4)) + 1} years</span>
+                <span className="text-xs text-white">{formatTimestamp(myprofile.created_at) } ago</span>
               </div>
             </div>
             <p className="text-xs text-gray-600 !leading-[135%]">
@@ -48,11 +55,14 @@ const ProfileTab = ({myprofile}:Props) => {
           </div>
           <div className="col-span-3">
             <div className="flex">
-              <div className="ml-auto flex px-3 py-2 gap-3 bg-gray-50 rounded-full items-center">
-                <img src={IconTwitter} className='w-3.5 h-3.5 sm:w-5 sm:h-5' />
-                <img src={IconTelegram} className='w-[20px] h-[20px] sm:w-[28px] sm:h-[28px]' />
-                <img src={IconSolana} className='w-4 h-4 sm:w-6 sm:h-6' />
-              </div>
+              { 
+                isLogin ?<div className="ml-auto flex px-3 py-2 gap-3 bg-gray-50 rounded-full items-center">
+                <button><a  href={`https://x.com/${myprofile.xaddress}`} target="_blank" rel="noopener noreferrer" ><img src={IconTwitter} className='w-3.5 h-3.5 sm:w-5 sm:h-5' /></a></button>
+                <button><a  href={`https://t.me/${myprofile.taddress}`} target="_blank" rel="noopener noreferrer" ><img src={IconTelegram} className='w-[20px] h-[20px] sm:w-[28px] sm:h-[28px]' /></a></button>
+                <button><a  href={`https://explorer.solana.com/address/${myprofile.saddress}`} target="_blank" rel="noopener noreferrer" ><img src={IconSolana} className='w-4 h-4 sm:w-6 sm:h-6' /></a></button>
+              </div>:<></>
+              }
+              
             </div>
           </div>
         </div>
@@ -86,15 +96,15 @@ const ProfileTab = ({myprofile}:Props) => {
           <div className="sm:hidden p-4 sm:p-5 rounded-[22px] bg-gray-50 text-xs space-y-1.5">
             <div className='grid grid-cols-12'>
               <span className='col-span-4 text-gray-600'>Win rate</span>
-              <span className='col-span-8 text-white'>56%</span>
+              <span className='col-span-8 text-white'>{myprofile.winrate}%</span>
             </div>
             <div className='grid grid-cols-12'>
               <span className='col-span-4 text-gray-600'>Calls</span>
-              <span className='col-span-8 text-white'>125</span>
+              <span className='col-span-8 text-white'>{myprofile.callcount}</span>
             </div>
             <div className='grid grid-cols-12'>
               <span className='col-span-4 text-gray-600'>Account age</span>
-              <span className='col-span-8 text-white'>2 years</span>
+              <span className='col-span-8 text-white'>{formatTimestamp(myprofile.created_at)} ago</span>
             </div>
           </div>
           <div className="rounded-[22px] sm:bg-gray-50 text-white sm:p-4 space-y-2.5">
