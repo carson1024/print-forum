@@ -90,23 +90,23 @@ const ForumList = () => {
       supabase.removeChannel(channel );
       clearInterval(interval);
     };
-  }, [filters]);
+  }, [filters,activeTab]);
 
   const featuredlist = () => {
-    setActiveTab('featured')
-    setSearchParams({ type: 'featured',level: filters });
+    setActiveTab("featured");
+    setSearchParams({ type: "featured",level: filters });
  }
   
   const lastestlist = () => {
-    setActiveTab('latest')
-    setSearchParams({ type: 'latest',level: filters });
+    setActiveTab("latest");
+    setSearchParams({ type: "latest",level: filters });
  }
   
   const toggleDropdown = () => setIsOpen(!isOpen);
   const handleSelect = (op: string): void =>{
     setFilters(op);
+    setSearchParams({ type:activeTab, level: op });
     setIsOpen(false);
-    setSearchParams({ type: activeTab, level: op });
   };
 
   return <ForumLayout>
