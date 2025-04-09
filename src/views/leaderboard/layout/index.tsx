@@ -6,6 +6,7 @@ import LeaderboardCard from "../components/LeaderboardCard";
 import MyProfile from "views/forum/components/MyProfile";
 import { useAuth } from "contexts/AuthContext";
 import { login, logout } from "utils/auth";
+import { SkeletonList } from "components/skeleton/forum";
 
 const LeaderboardLayout = ({
     children
@@ -19,7 +20,6 @@ const LeaderboardLayout = ({
       {/* Left Side - Main Content */}
       <div className="flex-1 flex flex-col h-full">
         <SubmitCallCard />
-
         { children }
         
       </div>

@@ -2,20 +2,16 @@ import IconTwitter from 'assets/img/icons/twitter.svg';
 import IconTelegram from 'assets/img/icons/telegram.svg';
 import IconSolana from 'assets/img/icons/solana.svg';
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "lib/supabase";
 const Icons = () => {
   const { isLogin,session } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const route = useLocation();
   const [profile, setProfile] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
    if (!session) { return;}
-     setIsLoading(true)
+    setIsLoading(true)
      const scan = async () => {
      const { data, error } = await supabase
               .from("users")
@@ -26,9 +22,9 @@ const Icons = () => {
               return; 
                }
            if (data.length > 0) {
-              setProfile(data)
-              setIsLoading(false)
-              } else {
+             setProfile(data)
+             setIsLoading(false)
+             } else {
             }};
      scan();   
    const channel = supabase

@@ -12,7 +12,7 @@ import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
 import { SkeletonMyCallsList } from "components/skeleton/mycalls";
 import { getRankChar } from "../../../../src/utils/style";
-import { formatTimestamp } from "../../../utils/blockchain";
+import { formatNumber, formatShortAddress, formatTimestamp } from "../../../utils/blockchain";
 const MyProfile = (props: {
   logout: () => void
 }) => {
@@ -26,33 +26,39 @@ const MyProfile = (props: {
   const [callList, setCallList] = useState([]);
   const [muser, setMuser] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [notificates, setNotificate] = useState([]);
+  const [hasUnread, setHasUnread] = useState(true);
+  const [unreadcounts, setUnreadcounts] = useState(0);
+  const [readcounts, setReadcounts] = useState(0);
   useEffect(() => {
     //  setIsLoading(true);
-    const fetchCalls = async () => {
-      if (!session || !session.user) return;
+   const fetchCalls = async () => {
+      if (!user) return;
       const { data, error } = await supabase
         .from("calls")
         .select("*")
-        .eq("user_id", session.user.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) {
         console.error("Error fetching calls:", error.message);
         return;
       }
       setCallList(data);
-      const { data:myuser, error:myusererror } = await supabase
-        .from("users")
+
+      const { data:notifications, error:notifyerror } = await supabase
+        .from("notifications")
         .select("*")
-        .eq("id", session.user.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
-      if (myusererror) {
-        console.error("Error fetching calls:", myusererror.message);
+      if (notifyerror) {
+        console.error("Error fetching calls:", notifyerror.message);
         return;
       }
-      if (myuser) {
-        setMuser(myuser)
+     if (notifications) {
+       setUnreadcounts(Number(notifications.length) )
+       setNotificate(notifications);
       }
+
       setIsLoading(false);
     }
     fetchCalls();
@@ -61,27 +67,39 @@ const MyProfile = (props: {
       .channel("my_calls")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, fetchCalls)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications" }, fetchCalls)
       .subscribe();
+    
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [user]);
+
+  const handleClick2 = () => {
+  setActiveTab1(1); 
+  setHasUnread(false); // hide the badge on click
+  setUnreadcounts(0)
+  };
+  const handleClick1 = () => {
+  setHasUnread(true); // hide the badge on click
+  setActiveTab1(0)
+  };
   
   return (<>
     <div className="rounded border border-gray-100">
       <div className="tab">
-        <button className={`tab-item ${activeTab1 === 0 ? 'active' : ''}`} onClick={() => setActiveTab1(0)}>My Account</button>
-        <button className={`tab-item ${activeTab1 === 1 ? 'active' : ''}`} onClick={() => setActiveTab1(1)}>Notifications <span className="ml-1 text-gray-400">5</span></button>
+        <button className={`tab-item ${activeTab1 === 0 ? 'active' : ''}`} onClick={() => handleClick1() }>My Account</button>
+        <button className={`tab-item ${activeTab1 === 1 ? 'active' : ''}`} onClick={() => handleClick2()}>Notifications {!isLoading && hasUnread && unreadcounts > 0 && (<span className="ml-1 text-gray-400">{ unreadcounts}</span>)}</button>
       </div>
       <div className="bg-white text-black p-5 space-y-4 overflow-auto max-h-[400px] sm:max-h-[500px] rounded-b">
         {
           activeTab1 == 0 ? <>
             <div className="flex gap-3">
               <div className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center">
-                {isLoading || ! muser.length ? <img src={IconUser} className="w-10 h-10" /> : muser[0].avatar==null?<img src={IconUser} className="w-10 h-10" />:
-                <><img src={muser[0].avatar} className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center" />
+                {user?.avatar==null?<img src={IconUser} className="w-10 h-10" />:
+                <><img src={user.avatar} className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center" />
                 <div className="absolute right-0 bottom-0 circle bg-dark1">
-                 <span className={"badge-rank-" + muser[0].rank}></span> 
+                 <span className={"badge-rank-" + user?.rank}></span> 
                 </div></>}
                 
               </div>
@@ -93,121 +111,61 @@ const MyProfile = (props: {
                   </div>
                   <button className="text-black/40 font-bold" onClick={logout}><img src={IconLogout} className="w-4 h-4" /></button>
                 </div>
-                
-                {isLoading ?
-                  <div className="sm:hidden flex flex-wrap gap-1">
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Rank</span>
-                    <span className="text-xs text-black font-semibold">...</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Win rate</span>
-                    <span className="text-xs text-black font-semibold">...</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Calls</span>
-                    <span className="text-xs text-black font-semibold">...</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Account age</span>
-                    <span className="text-xs text-black font-semibold">...</span>
-                  </div>
-                </div> :
-                  <div className="sm:hidden flex flex-wrap gap-1">
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Rank</span>
-                    <span className="text-xs text-black font-semibold">{muser[0].rank }</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Win rate</span>
-                    <span className="text-xs text-black font-semibold">{muser[0].winrate }%</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Calls</span>
-                    <span className="text-xs text-black font-semibold">{muser[0].callcount }</span>
-                  </div>
-                  <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
-                    <span className="text-xs text-black/60">Account age</span>
-                    <span className="text-xs text-black font-semibold">{formatTimestamp(muser[0].created_at) }</span>
-                  </div>
-                </div> }
-                
-                {
-                  isLoading ?
+
+                <div className="sm:hidden flex flex-wrap gap-1">
+                <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                  <span className="text-xs text-black/60">Rank</span>
+                  <span className="text-xs text-black font-semibold">{user?.rank }</span>
+                </div>
+                <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                  <span className="text-xs text-black/60">Win rate</span>
+                  <span className="text-xs text-black font-semibold">{user?.winrate }%</span>
+                </div>
+                <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                  <span className="text-xs text-black/60">Calls</span>
+                  <span className="text-xs text-black font-semibold">{user?.callcount }</span>
+                </div>
+                <div className="flex px-1.5 py-1 bg-black/10 gap-1 rounded-full">
+                  <span className="text-xs text-black/60">Account age</span>
+                  <span className="text-xs text-black font-semibold">{formatTimestamp(user?.created_at) }</span>
+                </div>
+              </div> 
+        
                   <div className="hidden sm:block text-black/60 text-sm space-y-2">
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Win rate</p>
-                        <p className="col-span-7">...</p>
+                        <p className="col-span-7">{user?.winrate }%</p>
                   </div>
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Calls</p>
-                    <p className="col-span-7 sm w-14 h-14">...
-                    </p>
+                    <p className="col-span-7">{user?.callcount }</p>
                   </div>
                   <div className="grid grid-cols-12 gap-5">
                     <p className="col-span-5">Account age</p>
-                    <p className="col-span-7">...</p>
-                  </div>
-                </div> :
-                  <div className="hidden sm:block text-black/60 text-sm space-y-2">
-                  <div className="grid grid-cols-12 gap-5">
-                    <p className="col-span-5">Win rate</p>
-                        <p className="col-span-7">{muser[0].winrate }%</p>
-                  </div>
-                  <div className="grid grid-cols-12 gap-5">
-                    <p className="col-span-5">Calls</p>
-                    <p className="col-span-7">{muser[0].callcount }</p>
-                  </div>
-                  <div className="grid grid-cols-12 gap-5">
-                    <p className="col-span-5">Account age</p>
-                    <p className="col-span-7">{formatTimestamp(muser[0].created_at) } ago</p>
+                    <p className="col-span-7">{formatTimestamp(user?.created_at) } ago</p>
                   </div>
                 </div>                
-                  }
                 <div className="sm:hidden flex flex-wrap gap-1">
-
                 </div>
               </div>
             </div>
-            <div className="border border-black/15"></div>
-           
-
-            {
-              isLoading || !callList.length ?
-              <div className="space-y-2 text-black">
-              <div className="flex justify-between items-center">
-                <span className="font-bold">Rank progression</span>
-                <div className="flex gap-3 items-center">
-                  <span className="circle-item bg-red-300 w-8 h-8 text-xs font-bold">R</span>
-                  <span className="text-sm text-black/60">Rank</span>
-                </div>
-              </div>
-              <div className="w-full bg-black/15 h-3 rounded-full overflow-hidden">
-                <div className="bg-red-300 h-full" style={{ width: '0%' }}></div>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm">0XP</span>
-                <span className="text-black/60 text-sm">1000 XP</span>
-              </div>
-            </div>
-              :
+            
             <div className="space-y-2 text-black">
               <div className="flex justify-between items-center">
                 <span className="font-bold">Rank progression</span>
                 <div className="flex gap-3 items-center">
-                      <span className="circle-item bg-red-300 w-8 h-8 text-xs font-bold">{getRankChar(muser[0].rank) }</span>
-                  <span className="text-sm text-black/60">Rank {muser[0].rank }</span>
+                      <span className="circle-item bg-red-300 w-8 h-8 text-xs font-bold">{getRankChar(user?.rank) }</span>
+                  <span className="text-sm text-black/60">Rank {user?.rank }</span>
                 </div>
               </div>
               <div className="w-full bg-black/15 h-3 rounded-full overflow-hidden">
-                <div className="bg-red-300 h-full" style={{ width: `${muser[0].xp*100/1000}%` }}></div>
+                <div className="bg-red-300 h-full" style={{ width: `${user?.xp*100/1000}%` }}></div>
               </div>
               <div className="flex justify-between">
-                    <span className="text-sm">{muser[0].xp}XP</span>
+                    <span className="text-sm">{user?.xp}XP</span>
                 <span className="text-black/60 text-sm">1000 XP</span>
               </div>
             </div>
-              }
             
             <div className="rounded-[25px] bg-dark3 text-white p-4 space-y-2.5">
               <span>Archievements</span>
@@ -226,57 +184,83 @@ const MyProfile = (props: {
               </div>
             </div>
           </> : <>
-            <div className="space-y-3">
-              <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
-                <div className="flex justify-between">
-                  <div className="flex gap-3 items-center">
-                    <span className="badge-social-twitter"></span>
-                    <span className="text-black font-bold">X Linked</span>
-                  </div>
-                  <div>
-                    <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
-                  </div>
-                </div>
-                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
-              </div>
-              <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
-                <div className="flex justify-between">
-                  <div className="flex gap-3 items-center">
-                    <div className="circle bg-dark1"><span className="badge-rank-5"></span></div>
-                    <span className="text-black font-bold">Rank 5 reached</span>
-                  </div>
-                </div>
-                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
-              </div>
-              <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
-                <div className="flex justify-between">
-                  <div className="flex gap-3 items-center">
-                    <span className="badge-social-telegram"></span>
-                    <span className="text-black font-bold">Telegram Linked</span>
-                  </div>
-                  <div>
-                    <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
-                  </div>
-                </div>
-                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
-              </div>
-              <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
-                <div className="flex justify-between">
-                  <div className="flex gap-3 items-center">
-                    <div className="circle bg-dark1"><span className="badge-rank-4"></span></div>
-                    <span className="text-black font-bold">Rank 4 reached</span>
-                  </div>
-                  <div>
-                    <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span>
-                  </div>
-                </div>
-                <p className="text-black/70 text-sm !leading-[135%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sit amet interdum </p>
-              </div>
+              <div className="space-y-3">
+                { 
+                  notificates.map((notificate) => 
+                    <>
+                      { 
+                        notificate.type == "rankup" ?
+                          <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
+                           <div className="flex justify-between">
+                            <div className="flex gap-3 items-center">
+                                <div className="circle bg-dark1"><span className={`badge-rank-${notificate.value}`}></span></div>
+                                <span className="text-black font-bold">{ notificate.title}</span>
+                              </div>
+                              </div>
+                            <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
+                          </div> :
+                        notificate.type == "x" ?
+                         <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
+                          <div className="flex justify-between">
+                           <div className="flex gap-3 items-center">
+                            <span className="badge-social-twitter"></span>
+                            <span className="text-black font-bold">X Linked</span>
+                           </div>
+                           </div>
+                              <p className="text-black/70 text-sm !leading-[135%]">{notificate.content} ({notificate.created_at})</p>
+                         </div> :
+                      notificate.type == "t" ? 
+                         <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
+                          <div className="flex justify-between">
+                           <div className="flex gap-3 items-center">
+                           <span className="badge-social-telegram"></span>
+                           <span className="text-black font-bold">Telegram Linked</span>
+                            </div>
+                           </div>
+                         <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
+                         </div> :     
+                       notificate.type == "s" ? 
+                         <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
+                          <div className="flex justify-between">
+                           <div className="flex gap-3 items-center">
+                           <span className="badge-social-solana"></span>
+                           <span className="text-black font-bold">Solana Linked</span>
+                            </div>
+                           </div>
+                         <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
+                         </div> :
+                      notificate.type == "bio" ? 
+                      <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
+                      <div className="flex justify-between">
+                        <div className="flex gap-3 items-center">
+                        <span className="text-sm">✏️</span>
+                        <span className="text-black font-bold">BIO Changed</span>
+                         </div>
+                         </div>
+                        <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
+                      </div> :
+                      <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
+                      <div className="flex justify-between">
+                        <div className="flex gap-3 items-center">
+                       <img className="w-8 h-8 rounded-full object-cover" src={IconUser}></img>
+                        <span className="text-black font-bold">Avatar Changed</span>
+                        </div>
+                        <div>
+                      </div>
+                      </div>
+                      <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
+                      </div>               
+                      }
+                    </>
+                  )
+                }
+
             </div>
           </>
         }
       </div>
     </div>
+
     {/* My Calls / My Trades Tabs */}
     <div className={`rounded border border-gray-100 grow flex flex-col ${isLoading ? 'loading' : ''}`}>
       <div className="tab">
@@ -292,9 +276,10 @@ const MyProfile = (props: {
                 <div className="flex gap-1 items-center">
                   <img src={call.image} className="w-8 h-8 sm:w-[40px] sm:h-[40px] circle"/>
                   <span className="font-bold text-sm sm:text-base">${call.symbol}</span>
-                  {/* <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">200X</span> */}
+                  {call.is_featured ? <span className="rounded-full bg-green-600 px-2 py-1.5 text-xs text-black font-semibold">{call.featured}X</span> : <></>}
                 </div>
-                {/* <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+10 XP</span> */}
+                {call.addXP == 0 ? <></> : call.addXP < 0 ? <span className="rounded-full bg-red-500 px-2 py-1.5 text-xs text-black font-semibold">{call.addXP}XP</span> :
+                   <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">{call.addXP}XP</span>}
               </div>
               ))
             }

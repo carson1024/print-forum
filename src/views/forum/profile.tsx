@@ -20,7 +20,8 @@ const ProfileDetail = () => {
   const [profile, setProfile] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [mainid, setMainid] = useState('');
-  const { isLogin,session } = useAuth();
+  const { isLogin, session,user } = useAuth();
+  const [avatar, setAvatar] = useState("");
   const forumData = [
     { id: 1, name: "$PEPESI", multiplier: "10X", rank: "1", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
     { id: 2, name: "$PEPESI", multiplier: "100X", rank: "2", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
@@ -48,17 +49,56 @@ const ProfileDetail = () => {
         }
     if (data.length > 0) {
       setProfile(data)
+      setAvatar(data[0].avatar)
     } else {
     }};
     scan(); 
    setIsLoading(false);
   }, []);
   const handleReprofile = async (xaddress: string, taddress: string, saddress: string, bio: string, preview: string) => { 
-    profile[0].xaddress = xaddress;
-    profile[0].taddress = taddress;
-    profile[0].saddress = saddress;
+    setAvatar(preview);
+    if (profile[0].avatar !== preview) {
+    const { error: updatenotificationError } = await supabase
+    .from("notifications")
+    .insert({ user_id: profile[0].id, type: "avatar", title: "Avatar Changed",value:"changed", content:"Your avatar image is changed." });
+      if (updatenotificationError) {
+        console.error("Update failed:", updatenotificationError);}
+      profile[0].avatar = preview;
+      user.avatar = preview;
+    }
+    if (profile[0].xaddress !== xaddress) {
+         const { error: updatenotificationError } = await supabase
+          .from("notifications")
+          .insert({ user_id: profile[0].id, type: "x", title: "X Linked",value:xaddress, content:"Your X-link address is changed." });
+           if (updatenotificationError) {
+             console.error("Update failed:", updatenotificationError);}
+         profile[0].xaddress = xaddress;
+    }
+    if (profile[0].taddress !== taddress) {
+         const { error: updatenotificationError } = await supabase
+          .from("notifications")
+          .insert({ user_id: profile[0].id, type: "t", title: "Telegram Linked",value:taddress, content:"Your Telegram address is changed." });
+           if (updatenotificationError) {
+             console.error("Update failed:", updatenotificationError);}
+         profile[0].taddress = taddress;
+    }
+    if (profile[0].saddress !== saddress) {
+      const { error: updatenotificationError } = await supabase
+      .from("notifications")
+      .insert({ user_id: profile[0].id, type: "s", title: "Solana Linked",value:saddress, content:"Your Solana address is changed." });
+        if (updatenotificationError) {
+          console.error("Update failed:", updatenotificationError);}
+      profile[0].saddress = saddress;
+    }
+  if (profile[0].bio !== bio) {
+    const { error: updatenotificationError } = await supabase
+    .from("notifications")
+    .insert({ user_id: profile[0].id, type: "bio", title: "BIO Changed",value:"changed", content:"Your BIO description is changed." });
+      if (updatenotificationError) {
+        console.error("Update failed:", updatenotificationError);}
     profile[0].bio = bio;
-    profile[0].avatar = preview;
+  }
+
   }
   return <ForumLayout>
     {isLoading ? <SkeletonList /> :
@@ -73,7 +113,7 @@ const ProfileDetail = () => {
               <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
               <FaChevronLeft />
               </button>
-              {profile[0].avatar !==null?<img src={profile[0].avatar} className="w-8 h-8 circle"/>:<img src={User} className="w-8 h-8 circle"/> }
+              {avatar !==null?<img src={avatar} className="w-8 h-8 circle"/>:<img src={User} className="w-8 h-8 circle"/> }
                   <span className="font-bold text-base sm:text-lg">{profile[0].name}</span>
                   { 
                     isLogin && session.user.id == profile[0].id ? <button className="btn btn-gray flex btn-sm gap-1 items-center ml-auto md:ml-0" onClick={() => setIsEditProfileModalOpen(true)}><MdEdit /> Edit Profile</button>

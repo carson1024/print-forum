@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {useSearchParams } from 'react-router-dom';
 import ForumLayout from "./layout"
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import { supabase } from "lib/supabase";
@@ -33,9 +33,10 @@ const ForumList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(searchParams.get('level') || "All Ranks");
   const wrapperRef = React.useRef(null);
+ 
   useOutsideAlerter(wrapperRef, setIsOpen);
   useEffect(() => {
-  // setSearchParams({ type: activeTab,level: filters });
+
    setIsLoading(true);
    const fetchCalls = async () => {
    const { data, error } = await supabase
@@ -82,7 +83,7 @@ const ForumList = () => {
 
   const featuredlist = () => {
     setActiveTab("featured");
-    setSearchParams({ type: "featured",level: filters });
+    setSearchParams({ type: "featured", level: filters });
   }
   
   const lastestlist = () => {

@@ -26,7 +26,7 @@ import { getRankChar } from "../../utils/style";
 import { useSearchParams } from "react-router-dom";
 
 const TokenDetail = () => {
-  const { isLogin,session } = useAuth();
+  const { isLogin,session,user } = useAuth();
   const navigate = useNavigate();
   const [userid, setUserid] = useState("");
   const [isDiscussionOpen, setDiscussionOpen] = useState(false);
@@ -41,7 +41,6 @@ const TokenDetail = () => {
   const [discussions, setDiscussions] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
   const [sitem, setSitem] = useState([]);
-  const [scall, setScall] = useState([]);
   const [me, setMe] = useState([]);
   const [confirmVote, setConfirmVote] = useState(0);
   const [ratioVote, setRatioVote] = useState(0);
@@ -94,9 +93,6 @@ const TokenDetail = () => {
             }
             setXLoading(false);
           }
-      
-
-
           const { data: ratio, error: ratioerror } = await supabase
             .from("vote")
             .select("*")
@@ -120,10 +116,10 @@ const TokenDetail = () => {
           }
 
           const { data, error } = await supabase
-            .from("callers")
-            .select("user_id, created_at, users(*)")
+            .from("calls")
+            .select("*, users(*)")
             .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
+            .order("addXP", { ascending: false });
           if (error) {
             console.error("Error fetching calls:", error.message);
           } else {
@@ -153,17 +149,6 @@ const TokenDetail = () => {
             setSitem(item);
           }
 
-          const { data: findcall, error: findcallerror } = await supabase
-            .from("calls")
-            .select("*, users(*)")
-            .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
-          if (findcallerror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            setScall(findcall)
-          }
-
           const { data: findcomment, error: commenterror } = await supabase
             .from("comments")
             .select("*, users(*)")
@@ -178,10 +163,7 @@ const TokenDetail = () => {
               if (mycomment > 0) {
                 setAdded(true)
               }
-            
           }
-
-
           let _top3Holders: TopHolderType[] = [];
           let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
           result.topHolders.map((holder, index) => {
@@ -234,10 +216,10 @@ const TokenDetail = () => {
           }
 
           const { data, error } = await supabase
-            .from("callers")
-            .select("user_id, created_at, users(*)")
+            .from("calls")
+            .select("*, users(*)")
             .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
+            .order("addXP", { ascending: false });
           if (error) {
             console.error("Error fetching calls:", error.message);
           } else {
@@ -267,17 +249,6 @@ const TokenDetail = () => {
             setSitem(item);
           }
 
-          const { data: findcall, error: findcallerror } = await supabase
-            .from("calls")
-            .select("*, users(*)")
-            .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
-          if (findcallerror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            setScall(findcall)
-          }
-
           const { data: findcomment, error: commenterror } = await supabase
             .from("comments")
             .select("*, users(*)")
@@ -287,10 +258,7 @@ const TokenDetail = () => {
             console.error("Error fetching calls:", error.message);
           } else {
             setDiscussions(findcomment)
-      
-            
           }
-
 
           let _top3Holders: TopHolderType[] = [];
           let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
@@ -309,9 +277,6 @@ const TokenDetail = () => {
           setIsLoading(false);
         }
         fetchCall();
-
-
-
     }
   }, [session]);
 
@@ -622,13 +587,15 @@ const TokenDetail = () => {
                           <div className="flex gap-1">
                             <span className="text-xs">Marketcap</span>
                             { 
-                             scall[index].featured > 1?<><span className="text-xs text-primary font-semibold">{scall[index].featured}X</span></>:<></>
+                             caller.featured > 1?<><span className="text-xs text-primary font-semibold">{caller.featured}X</span></>:<></>
                             }
                           </div>
-                          <span className="text-xs text-white"><b>{formatNumber(scall[index].init_market_cap)}</b> to <b>{formatNumber(scall[index].changedCap)}</b></span>
+                          <span className="text-xs text-white"><b>{formatNumber(caller.init_market_cap)}</b> to <b>{formatNumber(caller.changedCap)}</b></span>
                         </div>
                         <div className="">
-                          {scall[index].addXP > 5 ? <> <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+{scall[index].addXP}XP</span></>:<></> }   
+                            {caller.addXP > 5 ? <> <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+{caller.addXP}XP</span></> :
+                              caller.addXP ==0 ?<></>:
+                              <> <span className="rounded-full bg-red-500 px-2 py-1.5 text-xs text-black font-semibold">{caller.addXP}XP</span></>}   
                         </div>
                       </div>
                     </Link>
@@ -671,8 +638,9 @@ const TokenDetail = () => {
                     discussions.map((discussion) => <>
                   <div className="flex gap-4">
                     <div>
-                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item">
-                        <img src={IconUser} className="w-2.5 h-2.5" />
+                      <div >
+                       {discussion.users.avatar==null?<img src={IconUser} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />:<img src={discussion.users.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />
+                       }
                       </div>
                     </div>
                     <div className="space-y-1 flex-grow">
@@ -698,7 +666,9 @@ const TokenDetail = () => {
             ! isLoading && isLogin && <div className="relative rounded-full bg-gray-100 px-12 mx-1 sm:mx-3 py-2 flex items-center">
                 <div className="absolute left-1 flex items-center">
                   <div className="relative w-8 h-8 bg-black circle-item">
-                    <img src={IconUser} className="w-2.5 h-2.5" />
+                    {user.avatar==null?<img src={IconUser} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />:<img src={user?.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />
+                    }
+                    
                   </div>
                 </div>
                 <input type="text" className="w-full bg-transparent outline-none text-white" id="com"

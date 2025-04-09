@@ -50,10 +50,28 @@ export const checkPrice = async () => {
       if (184 <= user.xp && user.xp < 244) { newrank = 7 }
       if (244 <= user.xp && user.xp < 292) { newrank = 8 }
       if (292 <= user.xp && user.xp < 364) { newrank = 9 }
-      if (364 <= user.xp && user.xp <= 524) { newrank = 10 }
+      if (364 <= user.xp ) { newrank = 10 }
       const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("user_id", user.id);
       let counts = owncalls.length;
       let wincalls = (owncalls.filter(call => call.is_featured === true)).length
+      if (newrank !== user.rank) { 
+        const { error: updatenotificationError } = await supabase
+          .from("notifications")
+          .insert({ user_id: user.id, type: "rankup", title: `Rank${newrank} reached`,value:`${newrank}`,content:`Congraturation! You reached to Rank${newrank}.` });
+        if (updatenotificationError) {
+          console.error("Update failed:", updatenotificationError);
+        } 
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({rank:newrank })
+          .eq("id", user.id);
+        if (updateError) {
+          console.error("Update failed:", updateError);
+        } else {
+          console.log("winrateUpdate successful");
+        }
+      }
+
       if (wincalls > 0) {
         let winrate = wincalls * 100 / counts;
         let rounded = Math.ceil(winrate);
@@ -67,7 +85,7 @@ export const checkPrice = async () => {
           console.log("winrateUpdate successful");
         }
       }
-       else {
+       else if(wincalls == 0) {
         const { error: updatewinrateError } = await supabase
           .from("users")
           .update({ callcount:counts,rank:newrank })
@@ -78,6 +96,8 @@ export const checkPrice = async () => {
           console.log("winrateUpdate successful");
         }
       }
+
+
     })
     // Fetch all calls ordered by created_at
     const { data: calls, error } = await supabase.from("calls").select("*, users(*)").order("created_at");
@@ -177,6 +197,15 @@ export const checkPrice = async () => {
         }
         else if (call.featured == 1) {
           xpmark -= 6;
+          const { error: updateError } = await supabase
+            .from("calls")
+            .update({ addXP: -6 })
+            .eq("id", call.id);
+          if (updateError) {
+            console.error("Update failed:", updateError);
+          } else {
+            console.log("Update successful");        
+          }
         }
         if (xpmark < 0) { xpmark = 0; }
         const { error: updateError } = await supabase

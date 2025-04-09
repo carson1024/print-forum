@@ -4,9 +4,6 @@ import React from "react";
 import ForumList from "views/forum/list";
 
 // Icon Imports
-import {
-  MdHome,
-} from "react-icons/md";
 import TokenDetail from "views/forum/token";
 import ProfileDetail from "views/forum/profile";
 import Leaderboard from "views/leaderboard";

@@ -1,5 +1,4 @@
 import { supabase } from "lib/supabase";
-
 export const login = async (provider: string, email?: string): Promise<boolean> => {
   switch (provider) {
     case 'twitter':

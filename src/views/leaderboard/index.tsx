@@ -20,10 +20,10 @@ const Leaderboard = () => {
         console.error("Error fetching calls:", error.message);
         return;
       }
-      if (data) { setUsers(data) }
+    if (data.length > 0) { setUsers(data);setIsLoading(false); }
      }
     fetchCalls();   
-    setIsLoading(false);
+    
   }, []);
   return (<LeaderboardLayout>
     <div className="card flex-grow p-0 flex flex-col overflow-hidden">
@@ -34,11 +34,8 @@ const Leaderboard = () => {
       </div> 
       <div className="p-4 sm:p-6 flex flex-col gap-5 overflow-auto flex-grow">
         { 
-          isLoading ? <SkeletonList /> : 
-            !users.length ? <>
-                            <SkeletonRow opacity={60} />
-                            <SkeletonRow opacity={30} />
-                            </> :
+          isLoading || !users.length ? (<SkeletonList />)
+            : (
           <>{users.map((item, index) => (<Link to={`/profile?id=${item.id}`} key={index}>
           <div className="bg-gray-50 p-1.5 rounded sm:rounded-[40px] flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-3">
@@ -85,7 +82,7 @@ const Leaderboard = () => {
             </button>
           </div>
         </Link>
-        ))}</>
+        ))}</>)
      }  
      </div>
     </div>
