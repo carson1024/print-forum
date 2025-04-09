@@ -32,9 +32,9 @@ const Leaderboard = () => {
           <h2 className="text-base sm:text-lg font-semibold">Leaderboard</h2>
         </div>
       </div> 
-      <div className="p-4 sm:p-6 flex flex-col gap-5 overflow-auto flex-grow">
+      <div className="p-4 sm:p-6 flex flex-col gap-5 overflow-auto flex-grow loading">
         { 
-          isLoading || !users.length ? (<SkeletonList />)
+          isLoading || !users.length ? (<><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={70} /><SkeletonRow opacity={50} /><SkeletonRow opacity={30} /></>)
             : (
           <>{users.map((item, index) => (<Link to={`/profile?id=${item.id}`} key={index}>
           <div className="bg-gray-50 p-1.5 rounded sm:rounded-[40px] flex items-center justify-between">

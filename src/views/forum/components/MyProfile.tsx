@@ -151,7 +151,7 @@ const MyProfile = (props: {
             </div>
             
             <div className="space-y-2 text-black">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center pt-5">
                 <span className="font-bold">Rank progression</span>
                 <div className="flex gap-3 items-center">
                       <span className="circle-item bg-red-300 w-8 h-8 text-xs font-bold">{getRankChar(user?.rank) }</span>
@@ -197,7 +197,7 @@ const MyProfile = (props: {
                                 <span className="text-black font-bold">{ notificate.title}</span>
                               </div>
                               </div>
-                            <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
+                            <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} </p>
                           </div> :
                         notificate.type == "x" ?
                          <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
@@ -207,7 +207,7 @@ const MyProfile = (props: {
                             <span className="text-black font-bold">X Linked</span>
                            </div>
                            </div>
-                              <p className="text-black/70 text-sm !leading-[135%]">{notificate.content} ({notificate.created_at})</p>
+                              <p className="text-black/70 text-sm !leading-[135%]">{notificate.content} </p>
                          </div> :
                       notificate.type == "t" ? 
                          <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
@@ -217,9 +217,8 @@ const MyProfile = (props: {
                            <span className="text-black font-bold">Telegram Linked</span>
                             </div>
                            </div>
-                         <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
-                         </div> :     
-                       notificate.type == "s" ? 
+                         <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} </p>
+                         </div> :      
                          <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
                           <div className="flex justify-between">
                            <div className="flex gap-3 items-center">
@@ -227,29 +226,8 @@ const MyProfile = (props: {
                            <span className="text-black font-bold">Solana Linked</span>
                             </div>
                            </div>
-                         <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
-                         </div> :
-                      notificate.type == "bio" ? 
-                      <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
-                      <div className="flex justify-between">
-                        <div className="flex gap-3 items-center">
-                        <span className="text-sm">✏️</span>
-                        <span className="text-black font-bold">BIO Changed</span>
-                         </div>
-                         </div>
-                        <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
-                      </div> :
-                      <div className="rounded-[20px] border border-black/15 p-4 space-y-2">
-                      <div className="flex justify-between">
-                        <div className="flex gap-3 items-center">
-                       <img className="w-8 h-8 rounded-full object-cover" src={IconUser}></img>
-                        <span className="text-black font-bold">Avatar Changed</span>
-                        </div>
-                        <div>
-                      </div>
-                      </div>
-                      <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content} ({notificate.created_at})</p>
-                      </div>               
+                         <p className="text-black/70 text-sm !leading-[135%]">{ notificate.content}</p>
+                         </div>            
                       }
                     </>
                   )

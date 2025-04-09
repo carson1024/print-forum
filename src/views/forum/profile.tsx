@@ -12,6 +12,7 @@ import { act, useEffect } from "react";
 import { supabase } from "lib/supabase";
 import { SkeletonList, SkeletonRow } from "../../../src/components/skeleton/forum";
 import { useAuth } from "contexts/AuthContext";
+
   
 const ProfileDetail = () => {
   const navigate = useNavigate();
@@ -50,22 +51,16 @@ const ProfileDetail = () => {
     if (data.length > 0) {
       setProfile(data)
       setAvatar(data[0].avatar)
+     setIsLoading(false);
     } else {
     }};
     scan(); 
-   setIsLoading(false);
+
   }, []);
   const handleReprofile = async (xaddress: string, taddress: string, saddress: string, bio: string, preview: string) => { 
     setAvatar(preview);
-    if (profile[0].avatar !== preview) {
-    const { error: updatenotificationError } = await supabase
-    .from("notifications")
-    .insert({ user_id: profile[0].id, type: "avatar", title: "Avatar Changed",value:"changed", content:"Your avatar image is changed." });
-      if (updatenotificationError) {
-        console.error("Update failed:", updatenotificationError);}
-      profile[0].avatar = preview;
-      user.avatar = preview;
-    }
+    user.avatar = preview;
+    profile[0].avatar = preview;
     if (profile[0].xaddress !== xaddress) {
          const { error: updatenotificationError } = await supabase
           .from("notifications")
@@ -90,55 +85,49 @@ const ProfileDetail = () => {
           console.error("Update failed:", updatenotificationError);}
       profile[0].saddress = saddress;
     }
-  if (profile[0].bio !== bio) {
-    const { error: updatenotificationError } = await supabase
-    .from("notifications")
-    .insert({ user_id: profile[0].id, type: "bio", title: "BIO Changed",value:"changed", content:"Your BIO description is changed." });
-      if (updatenotificationError) {
-        console.error("Update failed:", updatenotificationError);}
-    profile[0].bio = bio;
-  }
 
   }
   return <ForumLayout>
-    {isLoading ? <SkeletonList /> :
-              !profile.length ? <>
-                <SkeletonRow opacity={60} />
-                <SkeletonRow opacity={30} />
-              </> :<>
-                <div className="overflow-auto md:overflow-hidden flex-grow space-y-4">
-         <div className="card md:h-full p-0 flex flex-col md:overflow-hidden">
+    <div className="overflow-auto md:overflow-hidden flex-grow space-y-4">
+      <div className="card md:h-full p-0 flex flex-col md:overflow-hidden">
         <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
-             <div className="flex gap-2 sm:gap-3 items-center grow">
+          <div className="flex gap-2 sm:gap-3 items-center grow loading">
               <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
               <FaChevronLeft />
               </button>
-              {avatar !==null?<img src={avatar} className="w-8 h-8 circle"/>:<img src={User} className="w-8 h-8 circle"/> }
-                  <span className="font-bold text-base sm:text-lg">{profile[0].name}</span>
-                  { 
-                    isLogin && session.user.id == profile[0].id ? <button className="btn btn-gray flex btn-sm gap-1 items-center ml-auto md:ml-0" onClick={() => setIsEditProfileModalOpen(true)}><MdEdit /> Edit Profile</button>
-                   :<></>
-              }
-            
+              {isLoading?<img src={User} className="w-8 h-8 circle"/> : <img src={avatar} className="w-8 h-8 circle"/> }
+              {
+              isLoading || ! profile.length ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> : <>
+                <span className="font-bold text-base sm:text-lg">{profile[0].name}</span>
+                {
+                  isLogin && session.user.id == profile[0].id ? <button className="btn btn-gray flex btn-sm gap-1 items-center ml-auto md:ml-0" onClick={() => setIsEditProfileModalOpen(true)}><MdEdit /> Edit Profile</button>
+                    : <></>
+                }
+              </>}          
           </div>
-         <div className="hidden md:flex btn-group light">
-            <button className={`btn btn-sm ${activeTab == 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>Profile</button>
-            <button className={`btn btn-sm ${activeTab == 'calls' ? 'active' : ''}`} onClick={() => setActiveTab('calls')}>Calls</button>
-            <button className={`btn btn-sm hidden ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
-         </div>
+             <div className="hidden md:flex btn-group light">
+               <button className={`btn btn-sm ${activeTab == 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>Profile</button>
+               <button className={`btn btn-sm ${activeTab == 'calls' ? 'active' : ''}`} onClick={() => setActiveTab('calls')}>Calls</button>
+               <button className={`btn btn-sm hidden ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
+             </div>
         </div>
-        <div className="hidden md:block flex-grow relative overflow-hidden">
+        <div className="p-4 sm:p-6 flex flex-col gap-5 flex-grow hidden md:block flex-grow relative overflow-hidden loading">
           {
-            activeTab == 'profile' ?
-              <ProfileTab myprofile={profile[0]} />
-            : activeTab == 'calls' ?
-              <CallsTab myprofile={profile[0]}/>
-            :
-              <TradeLeadingTab />
-          }
+            isLoading || !profile.length ? <><SkeletonList /></>:<>
+              {
+                activeTab == 'profile' ?
+                  <ProfileTab myprofile={profile[0]} />
+                  : activeTab == 'calls' ?
+                    <CallsTab myprofile={profile[0]} />
+                    :
+                    <TradeLeadingTab />
+              }</> }
         </div>
-        <div className="md:hidden">
-          <ProfileTab myprofile={profile[0]} />
+        <div className="md:hidden loading">
+          {
+            isLoading || !profile.length ? <><SkeletonList /></> : <>
+              <ProfileTab myprofile={profile[0]} />
+            </>}
         </div>
       </div>
       <div className="card md:!hidden p-0">
@@ -149,8 +138,11 @@ const ProfileDetail = () => {
             <button className='btn btn-sm'>Previous</button>
           </div>
         </div>
-        <div>
-          <CallsTab myprofile={profile[0]} />
+        <div className="loading">
+          {
+            isLoading || ! profile.length ? <><SkeletonList /></> : <>
+              <CallsTab myprofile={profile[0]} />
+            </>}
         </div>
       </div>
       <div className="card md:!hidden p-0">
@@ -163,8 +155,6 @@ const ProfileDetail = () => {
       </div>
     </div>
           <EditProfileModal isOpen={isEditProfileModalOpen} onChange={(xaddress,taddress,saddress,bio,preview)=>handleReprofile(xaddress,taddress,saddress,bio,preview)} onOk={() => setIsEditProfileModalOpen(false)} onCancel={() => setIsEditProfileModalOpen(false)} />
-       </>
-     }
     </ForumLayout>
     }
 

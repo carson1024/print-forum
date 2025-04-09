@@ -87,21 +87,22 @@ const EditProfileModal = ({
         }
   }
   return <Modal isOpen={isOpen} onClose={onCancel} extraClass="w-[620px]">
-    {isLoading ? <div className="space-y-6"><br/><br/><div className="border-b-[1px] border-gray-100"></div><SkeletonList/></div> :
-    <div className="space-y-6">
+
+    <div className="space-y-6 loading">
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-3">
-          {/* <img src={User} className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" alt="User avatar" /> */}
-          {preview ? (
-            <img src={preview} alt="Avatar" className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />
-            ) : profile[0].avatar !==null?(<img src={profile[0].avatar} className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />):(<img src={ IconUser} className="w-[12px] h-[12px] sm:w-[82px] sm:h-[82px] circle" />)
+          {isLoading ? <img src={IconUser} className="w-[12px] h-[12px] sm:w-[82px] sm:h-[82px] circle" /> : <>
+            {preview ? (
+              <img src={preview} alt="Avatar" className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />
+            ) : profile[0].avatar !== null ? (<img src={profile[0].avatar} className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />) : (<img src={IconUser} className="w-[12px] h-[12px] sm:w-[82px] sm:h-[82px] circle" />)
                 
-           }
+            }</>}
           <div className="space-y-2">
-            <h2 className="text-base sm:text-lg font-bold">{profile[0].name }</h2>
-            <button className=" sm:flex items-center gap-2 text-sm bg-gray-50 px-3 py-2 rounded-full" onClick={handleButtonClick}>
+            {isLoading ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> : <h2 className="text-base sm:text-lg font-bold">{profile[0].name}</h2>}
+            {isLoading?<div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div>: <button className=" sm:flex items-center gap-2 text-sm bg-gray-50 px-3 py-2 rounded-full" onClick={handleButtonClick}>
               <img src={IconUpload} className="w-5 h-5" /> Upload new picture
-            </button>
+            </button>}
+            
              <input
               type="file"
               accept="image/*"
@@ -118,50 +119,53 @@ const EditProfileModal = ({
         <div className="flex items-center bg-gray-50 rounded-full px-5 py-2.5 gap-2">
           <img src={IconTwitter} className="w-5 h-5 opacity-60" />
           <span className="text-xs sm:text-sm text-gray-600">x.com/</span>
-          <input
-            type="text"
-            placeholder="address"
-            defaultValue={xaddress}
-            onChange={(e) => setXaddress(e.target.value)}
-            className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
-          />
+          {isLoading ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> :
+            <input
+              type="text"
+              placeholder="address"
+              defaultValue={xaddress}
+              onChange={(e) => setXaddress(e.target.value)}
+              className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
+            />}
         </div>
         <div className="flex items-center bg-gray-50 rounded-full px-5 py-2.5 gap-2">
           <img src={IconTelegram} className="w-[28px] h-[28px] opacity-60" />
           <span className="text-xs sm:text-sm text-gray-600">t.com/</span>
-          <input
-            type="text"
-            placeholder="address"
-            defaultValue={taddress}
-            onChange={(e) => setTaddress(e.target.value)}
-            className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
-          />
+          {isLoading ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> :
+            <input
+              type="text"
+              placeholder="address"
+              defaultValue={taddress}
+              onChange={(e) => setTaddress(e.target.value)}
+              className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
+            />}
         </div>
         <div className="flex items-center bg-gray-50 rounded-full px-5 py-2.5 gap-2">
           <img src={IconSolana} className="w-6 h-6 opacity-60" />
           <span className="text-xs sm:text-sm text-gray-600">address:</span>
-          <input
-            type="text"
-            placeholder="address"
-            defaultValue={saddress}
-            onChange={(e) => setSaddress(e.target.value)}
-            className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
-          />
+          {isLoading ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> :
+            <input
+              type="text"
+              placeholder="address"
+              defaultValue={saddress}
+              onChange={(e) => setSaddress(e.target.value)}
+              className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-xs sm:text-sm"
+            />}
         </div>
         <div className="flex items-start bg-gray-50 rounded-[20px] px-5 py-2.5">
           <span className="text-gray-600 mr-2">Bio</span>
-          <textarea
-            placeholder="Write a short bio..."
-            defaultValue={bio}
-            onChange={(e) => setBio(e.target.value)}
-            className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 resize-none text-xs sm:text-sm !leading-[135%]"
-            ></textarea>  
+          {isLoading ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> :
+            <textarea
+              placeholder="Write a short bio..."
+              defaultValue={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 resize-none text-xs sm:text-sm !leading-[135%]"
+            ></textarea>}
         </div>
       </div>
       {/* Save Button */}
       <button className="w-full btn py-3 text-sm sm:text-base" onClick={onsaveInfo}>Save</button>
     </div>
-    }
   </Modal>
  }
 export default EditProfileModal;
