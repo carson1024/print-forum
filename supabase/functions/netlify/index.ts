@@ -130,9 +130,9 @@ serve(async (req) => {
       if (!resave?.data || resave.data.length === 0) continue;
         const tokenId = calls[index].token_address;
         const newPrice = resave.data[tokenId].price;
-    const oldPrice = calls[index].price;
-    const priceRatio = newPrice / oldPrice;
-    const timelimit = new Date(calls[index].created_at).getTime() + 86400000 - Date.now()    
+        const oldPrice = calls[index].price;
+        const priceRatio = newPrice / oldPrice;
+        const timelimit = new Date(calls[index].created_at).getTime() + 86400000 - Date.now()    
         
     // Determine new `featured` value
     let newFeatured = 0;
@@ -146,11 +146,18 @@ serve(async (req) => {
     else if (priceRatio >= 200 && priceRatio < 500) newFeatured = 200;
     else if (priceRatio >= 500 && priceRatio < 1000) newFeatured = 500;
     else if (priceRatio >= 1000) newFeatured = 1000;
-    if (timelimit>=0 && calls[index].featured < newFeatured) {
-        // Update the call record
+      
+    const { data: featureduser, error: featuredusererror } = await supabase.from("users").select("*").eq("id", calls[index].user_id).order("created_at");
+    const newxp = featureduser[0].xp;
+    if (calls[index].xpCheck==0 && timelimit>=0 && calls[index].featured < newFeatured) {
+      // Update the call record
+      const newaddxp = 0;
+      if (newFeatured == 2) { newaddxp = 8; }
+      else if (newFeatured == 5) { newaddxp = 10; }
+      else if (newFeatured >= 10) { newaddxp = 12; }
     const { error: userinfoerror } = await supabase
       .from("calls")
-      .update({ changedPrice:newPrice, changedCap: newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)), is_featured: true, featured: newFeatured,percentage:Math.ceil(100 * (newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)))/(calls[index].init_market_cap) )})
+      .update({ changedPrice:newPrice, addXP:newaddxp, changedCap: newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)), is_featured: true, featured: newFeatured,percentage:Math.ceil(100 * (newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)))/(calls[index].init_market_cap) )})
       .eq("id", calls[index].id);
        if (userinfoerror) {
            return new Response(
@@ -158,7 +165,47 @@ serve(async (req) => {
            { status: 500, headers: { "Content-Type": "application/json" } }
           );
        }
-      }
+      
+      if (newFeatured == 2) { newxp += 8; }
+      else if (newFeatured == 5) { newxp += 10; }
+      else if (newFeatured >= 10) { newxp += 12; }
+      const { error: newxperror } = await supabase
+          .from("users")
+          .update({xp:newxp})
+          .eq("id", calls[index].user_id);
+       if (newxperror) {
+           return new Response(
+           JSON.stringify({ success: false, error: newxperror.message }),
+           { status: 500, headers: { "Content-Type": "application/json" } }
+          );
+         }
+    }
+      
+    else if (priceRatio <= 0.8 && calls[index].xpCheck == 0 && timelimit >= 0 && calls[index].is_featured==false) { 
+      const fallxp = newxp - 6;
+      if (fallxp < 0) { fallxp = 0; }
+      const { error: fallxperror } = await supabase
+          .from("users")
+          .update({xp:fallxp})
+          .eq("id", calls[index].user_id);
+       if (fallxperror) {
+           return new Response(
+           JSON.stringify({ success: false, error: fallxperror.message }),
+           { status: 500, headers: { "Content-Type": "application/json" } }
+          );
+       }
+      
+      const { error: badstateerror } = await supabase
+          .from("calls")
+          .update({xpCheck:1,addXP:-6, changedPrice:newPrice, changedCap: newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)), percentage:Math.ceil(100 * (newPrice * calls[index].supply / (Math.pow(10,calls[index].decimals)))/(calls[index].init_market_cap))})
+          .eq("id", calls[index].id);
+       if (badstateerror) {
+           return new Response(
+           JSON.stringify({ success: false, error: badstateerror.message }),
+           { status: 500, headers: { "Content-Type": "application/json" } }
+          );
+         }
+    }
     else {
         // Update the call record
         const { error: normallerror } = await supabase
@@ -173,54 +220,16 @@ serve(async (req) => {
          }
         }
     }
+    
+    //timeout handle
     calls.map(async(call, index) => {
       const time = new Date(call.created_at).getTime() + 86400000 - Date.now();    
       let xpmark = call.users.xp;
-      if (call.xpCheck == 0 && time < 0) {
-        if (call.featured == 2) {
-          xpmark += 8;
-          const { error: xperror } = await supabase
+
+      if (call.xpCheck == 0 && time < 0 && call.featured == 1 ) {
+        const { error: callxperror } = await supabase
             .from("calls")
-            .update({ addXP: 8 })
-            .eq("id", call.id);
-        if (xperror) {
-          return new Response(
-           JSON.stringify({ success: false, error: xperror.message }),
-           { status: 500, headers: { "Content-Type": "application/json" } }
-          );
-         }
-        }
-        else if (call.featured == 5) {
-          xpmark += 10;
-          const { error: markerror } = await supabase
-            .from("calls")
-            .update({ addXP: 10 })
-            .eq("id", call.id);
-          if (markerror) {
-          return new Response(
-           JSON.stringify({ success: false, error: markerror.message }),
-           { status: 500, headers: { "Content-Type": "application/json" } }
-          );
-         }
-        }
-        else if (call.featured >= 10) {
-          xpmark += 12;
-          const { error: xpmarkerror } = await supabase
-            .from("calls")
-            .update({ addXP: 12 })
-            .eq("id", call.id);
-        if (xpmarkerror) {
-          return new Response(
-           JSON.stringify({ success: false, error: xpmarkerror.message }),
-           { status: 500, headers: { "Content-Type": "application/json" } }
-          );
-         }
-        }
-        else if (call.featured == 1) {
-          xpmark -= 6;
-          const { error: callxperror } = await supabase
-            .from("calls")
-            .update({ addXP: -6 })
+            .update({ addXP: -6, xpCheck:1})
             .eq("id", call.id);
          if (callxperror) {
          return new Response(
@@ -228,18 +237,8 @@ serve(async (req) => {
            { status: 500, headers: { "Content-Type": "application/json" } }
           );
          }
-        }
+        xpmark -= 6;
         if (xpmark < 0) { xpmark = 0; }
-        const { error: xpcheckerror } = await supabase
-          .from("calls")
-          .update({ xpCheck: 1 })
-          .eq("id", call.id);
-        if (xpcheckerror) {
-         return new Response(
-           JSON.stringify({ success: false, error: xpcheckerror.message }),
-           { status: 500, headers: { "Content-Type": "application/json" } }
-          );
-         }
         const { error: updateError1 } = await supabase
           .from("users")
           .update({ xp: xpmark })
@@ -249,22 +248,23 @@ serve(async (req) => {
            JSON.stringify({ success: false, error: updateError1.message }),
            { status: 500, headers: { "Content-Type": "application/json" } }
           );
-         }
+        }      
       }
+     else if (call.xpCheck == 0 && time < 0 && call.featured !== 1 ) {
+        const { error: callxperror } = await supabase
+            .from("calls")
+            .update({ xpCheck:1})
+            .eq("id", call.id);
+         if (callxperror) {
+         return new Response(
+           JSON.stringify({ success: false, error: callxperror.message }),
+           { status: 500, headers: { "Content-Type": "application/json" } }
+          );
+         }     
+      }
+
     })
 
-
-
-
-
-
-
-
-
-
-
-
- 
 
 
 

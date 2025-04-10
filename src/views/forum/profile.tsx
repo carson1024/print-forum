@@ -71,7 +71,7 @@ const ProfileDetail = () => {
     if (profile[0].xaddress !== xaddress) {
        const { error: updatenotificationError } = await supabase
           .from("notifications")
-          .insert({ user_id: profile[0].id, type: "x", title: "X Linked",value:xaddress, content:"Your X-link address is changed." });
+          .insert({ user_id: profile[0].id, type: "x", title: "X Linked",value:xaddress, content:"Thanks for adding X." });
        if (updatenotificationError) {
            console.error("Update failed:", updatenotificationError);}
        const updatedProfile = [...profile];  // Create a copy of the array
@@ -81,7 +81,7 @@ const ProfileDetail = () => {
     if (profile[0].taddress !== taddress) {
        const { error: updatenotificationError } = await supabase
           .from("notifications")
-          .insert({ user_id: profile[0].id, type: "t", title: "Telegram Linked",value:taddress, content:"Your Telegram address is changed." });
+          .insert({ user_id: profile[0].id, type: "t", title: "Telegram Linked",value:taddress, content:"Thanks for adding Telegram." });
        if (updatenotificationError) {
              console.error("Update failed:", updatenotificationError);}
        const updatedProfile = [...profile];  // Create a copy of the array
@@ -91,7 +91,7 @@ const ProfileDetail = () => {
     if (profile[0].saddress !== saddress) {
       const { error: updatenotificationError } = await supabase
       .from("notifications")
-      .insert({ user_id: profile[0].id, type: "s", title: "Solana Linked",value:saddress, content:"Your Solana address is changed." });
+      .insert({ user_id: profile[0].id, type: "s", title: "Solana Linked",value:saddress, content:"Thanks for adding Solana." });
       if (updatenotificationError) {
           console.error("Update failed:", updatenotificationError);}
       const updatedProfile = [...profile];  // Create a copy of the array
@@ -108,7 +108,7 @@ const ProfileDetail = () => {
               <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
               <FaChevronLeft />
               </button>
-              {isLoading?<img src={User} className="w-8 h-8 circle"/> : <img src={avatar} className="w-8 h-8 circle"/> }
+              {isLoading || avatar==null?<img src={User} className="w-8 h-8 circle"/> : <img src={avatar} className="w-8 h-8 circle"/> }
               {
               isLoading || ! profile.length ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> : <>
                 <span className="font-bold text-base sm:text-lg">{profile[0].name}</span>

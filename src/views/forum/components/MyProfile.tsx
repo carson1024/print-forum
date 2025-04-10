@@ -80,15 +80,19 @@ const MyProfile = (props: {
   setHasUnread(false); // hide the badge on click
   setUnreadcounts(0)
   };
-  const handleClick1 = () => {
+  const handleClick1 = async() => {
   setHasUnread(true); // hide the badge on click
-  setActiveTab1(0)
+  setActiveTab1(0);
+  const { error } = await supabase
+  .from("users")
+  .update({ achievements: ["update", "array", "data"] })
+  .eq("id", user.id);
   };
   
   return (<>
     <div className="rounded border border-gray-100">
       <div className="tab">
-        <button className={`tab-item ${activeTab1 === 0 ? 'active' : ''}`} onClick={() => handleClick1() }>My Account</button>
+        <button className={`tab-item ${activeTab1 === 0 ? 'active' : ''}`} onClick={() => handleClick1()}>My Account</button>
         <button className={`tab-item ${activeTab1 === 1 ? 'active' : ''}`} onClick={() => handleClick2()}>Notifications {!isLoading && hasUnread && unreadcounts > 0 && (<span className="ml-1 text-gray-400">{ unreadcounts}</span>)}</button>
       </div>
       <div className="bg-white text-black p-5 space-y-4 overflow-auto max-h-[400px] sm:max-h-[500px] rounded-b">
@@ -171,16 +175,18 @@ const MyProfile = (props: {
               <span>Archievements</span>
               <div className="flex justify-between">
                 <div className="flex gap-2">
-                  <span className="badge-money-50k"></span>
+                  {user?.achievements.includes("OG") ? <span className="badge-other-og"></span> : <></>}
+                   {user?.achievements.includes("1x")? <span className="badge-rank-1"></span>:<></> }
+                  {/* <span className="badge-money-50k"></span>
                   <span className="badge-register-1m"></span>
                   <span className="badge-social-twitter"></span>
                   <span className="badge-social-telegram"></span>
                   <span className="badge-social-solana"></span>
                   <span className="badge-call-10X !hidden sm:!flex"></span>
                   <span className="badge-user-50 !hidden sm:!flex"></span>
-                  <span className="badge-other-bughunter !hidden sm:!flex"></span>
+                  <span className="badge-other-bughunter !hidden sm:!flex"></span> */}
                 </div>
-                <button className="w-8 h-8 text-xs font-bold bg-white circle-item text-black">+5</button>
+                {/* <button className="w-8 h-8 text-xs font-bold bg-white circle-item text-black">+5</button> */}
               </div>
             </div>
           </> : <>

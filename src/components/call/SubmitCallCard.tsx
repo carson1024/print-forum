@@ -9,7 +9,7 @@ import { checkCall } from "utils/blockchain";
 import { login, logout } from "utils/auth";
 
 const SubmitCallCard = () => {
-  const { isLogin, session } = useAuth();
+  const { isLogin, session,user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [callToken, setCallToken] = useState("");
@@ -80,7 +80,7 @@ const SubmitCallCard = () => {
       setIsCallModalOpen(false);
       return;
     }
-
+    user.callcount += 1;
     const { data: dataCaller, error: errorCaller } = await supabase
       .from("callers")
       .insert([
