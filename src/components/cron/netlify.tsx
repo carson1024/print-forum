@@ -1,7 +1,15 @@
-import { supabase } from "lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 
-export const checkPrice = async () => {
+const supabase = createClient(process.env.VITE_SUPABASE_URL as string, process.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string);
+
+exports.handler = async (event: any) => {
   try {
+     if (event.httpMethod !== "POST") {
+      return {
+        statusCode: 405,
+        body: JSON.stringify({ error: "Method Not Allowed" }),
+      };
+    }
     //update the weeklt and monthly winrate
      const { data: allusers, error: allusererror } = await supabase.from("users").select("*").order("created_at");
      allusers.map(async (user) => { 
@@ -230,5 +238,9 @@ export const checkPrice = async () => {
     })
   } catch (error) {
     console.error("Unexpected error:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Internal Server Error" }),
+    };
   }
 };

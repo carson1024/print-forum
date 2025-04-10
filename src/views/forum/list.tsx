@@ -5,7 +5,7 @@ import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import { supabase } from "lib/supabase";
 import { SkeletonList } from "components/skeleton/forum";
 import { CallRow } from "./components/CallRow";
-import { checkPrice } from "components/cron/netlify";
+// import { checkPrice } from "components/cron/netlify";
 
 const options = ["All Ranks", "Level 1", "Level 2", "Level 3","Level 4","Level 5","Level 6","Level 7","Level 8","Level 9","Level 10"];
 
@@ -68,7 +68,7 @@ const ForumList = () => {
     fetchCalls();   
    const interval = setInterval(() => {
     fetchCalls();   
-    checkPrice();
+    // checkPrice();
     }, 20000);
     
    const channel  = supabase

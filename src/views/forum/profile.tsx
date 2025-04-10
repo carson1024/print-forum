@@ -55,35 +55,48 @@ const ProfileDetail = () => {
     } else {
     }};
     scan(); 
-
+    const channel = supabase
+      .channel("my_calls")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, scan)
+      .subscribe();
+    
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
   const handleReprofile = async (xaddress: string, taddress: string, saddress: string, bio: string, preview: string) => { 
     setAvatar(preview);
     user.avatar = preview;
     profile[0].avatar = preview;
     if (profile[0].xaddress !== xaddress) {
-         const { error: updatenotificationError } = await supabase
+       const { error: updatenotificationError } = await supabase
           .from("notifications")
           .insert({ user_id: profile[0].id, type: "x", title: "X Linked",value:xaddress, content:"Your X-link address is changed." });
-           if (updatenotificationError) {
-             console.error("Update failed:", updatenotificationError);}
-         profile[0].xaddress = xaddress;
+       if (updatenotificationError) {
+           console.error("Update failed:", updatenotificationError);}
+       const updatedProfile = [...profile];  // Create a copy of the array
+       updatedProfile[0] = { ...updatedProfile[0], xaddress: xaddress };  // Update the specific element
+       setProfile(updatedProfile);
     }
     if (profile[0].taddress !== taddress) {
-         const { error: updatenotificationError } = await supabase
+       const { error: updatenotificationError } = await supabase
           .from("notifications")
           .insert({ user_id: profile[0].id, type: "t", title: "Telegram Linked",value:taddress, content:"Your Telegram address is changed." });
-           if (updatenotificationError) {
+       if (updatenotificationError) {
              console.error("Update failed:", updatenotificationError);}
-         profile[0].taddress = taddress;
+       const updatedProfile = [...profile];  // Create a copy of the array
+       updatedProfile[0] = { ...updatedProfile[0], taddress: taddress };  // Update the specific element
+       setProfile(updatedProfile);
     }
     if (profile[0].saddress !== saddress) {
       const { error: updatenotificationError } = await supabase
       .from("notifications")
       .insert({ user_id: profile[0].id, type: "s", title: "Solana Linked",value:saddress, content:"Your Solana address is changed." });
-        if (updatenotificationError) {
+      if (updatenotificationError) {
           console.error("Update failed:", updatenotificationError);}
-      profile[0].saddress = saddress;
+      const updatedProfile = [...profile];  // Create a copy of the array
+      updatedProfile[0] = { ...updatedProfile[0], saddress: saddress };  // Update the specific element
+      setProfile(updatedProfile);
     }
 
   }

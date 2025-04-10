@@ -613,8 +613,11 @@ const TokenDetail = () => {
               ! isLoading && preshow ? <>
                 <div className="flex gap-4">
                     <div>
-                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item">
-                        <img src={IconUser} className="w-2.5 h-2.5" />
+                        <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item">
+                          { 
+                            user.avatar == null ? <img src={IconUser} className="w-2.5 h-2.5" />:
+                           <img src={user.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" /> 
+                          }      
                       </div>
                     </div>
                     <div className="space-y-1 flex-grow">
@@ -665,10 +668,9 @@ const TokenDetail = () => {
             {
             ! isLoading && isLogin && <div className="relative rounded-full bg-gray-100 px-12 mx-1 sm:mx-3 py-2 flex items-center">
                 <div className="absolute left-1 flex items-center">
-                  <div className="relative w-8 h-8 bg-black circle-item">
-                    {user.avatar==null?<img src={IconUser} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />:<img src={user?.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />
+                  <div className="">
+                    {user.avatar==null?<img src={IconUser} className="w-8 h-8 sm:w-[40px] sm:h-[40px] bg-black circle-item" />:<img src={user?.avatar} className="w-8 h-8 sm:w-[40px] sm:h-[40px] bg-black circle-item" />
                     }
-                    
                   </div>
                 </div>
                 <input type="text" className="w-full bg-transparent outline-none text-white" id="com"
