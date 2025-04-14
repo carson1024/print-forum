@@ -36,9 +36,10 @@ const TokenDetail = () => {
   const [callReport, setCallReport] = useState<CallReportType | null>(null);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-   const [xLoading, setXLoading] = useState(true);
+  const [xLoading, setXLoading] = useState(true);
   const [topCallers, setTopCallers] = useState([]);
   const [discussions, setDiscussions] = useState([]);
+  const [admindiscussions, setAdminDiscussions] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
   const [sitem, setSitem] = useState([]);
   const [me, setMe] = useState([]);
@@ -149,6 +150,17 @@ const TokenDetail = () => {
             setSitem(item);
           }
 
+          const { data: findadmincomment, error: admincommenterror } = await supabase
+            .from("admincomments")
+            .select("*")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (admincommenterror) {
+            console.error("Error fetching calls:", admincommenterror.message);
+          } else {
+            setAdminDiscussions(findadmincomment)
+          }
+
           const { data: findcomment, error: commenterror } = await supabase
             .from("comments")
             .select("*, users(*)")
@@ -247,6 +259,17 @@ const TokenDetail = () => {
             console.error("Error fetching calls:", itemerror.message);
           } else {
             setSitem(item);
+          }
+
+           const { data: findadmincomment, error: admincommenterror } = await supabase
+            .from("admincomments")
+            .select("*")
+            .eq("address", pairAddress)
+            .order("created_at", { ascending: false });
+          if (admincommenterror) {
+            console.error("Error fetching calls:", admincommenterror.message);
+          } else {
+            setAdminDiscussions(findadmincomment)
           }
 
           const { data: findcomment, error: commenterror } = await supabase
@@ -641,8 +664,8 @@ const TokenDetail = () => {
                     discussions.map((discussion) => <>
                   <div className="flex gap-4">
                     <div>
-                      <div >
-                       {discussion.users.avatar==null?<img src={IconUser} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />:<img src={discussion.users.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />
+                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" >
+                       {discussion.users.avatar==null?<img src={IconUser} className="w-2 h-2 sm:w-4 sm:h-4" />:<img src={discussion.users.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />
                        }
                       </div>
                     </div>
@@ -660,7 +683,31 @@ const TokenDetail = () => {
                         </div>
                       </div>
                      <div className="border-b-[1px] border-gray-100"></div>
-                    </>)   
+                    </>) 
+                  
+                }
+                {isLoading? <></>:
+                  admindiscussions?.map((admindiscussion) => <>
+                  <div className="flex gap-4">
+                    <div>
+                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" >
+                      <img src={IconUser} className="w-2 h-2 sm:w-4 sm:h-4" />
+                      </div>
+                    </div>
+                    <div className="space-y-1 flex-grow">
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-1 items-center">
+                          <span className="font-bold text-sm text-gray-600">Administrator</span>
+                        </div>
+                        <span className="text-sm text-gray-600">{formatTimestamp(admindiscussion.created_at)}</span>
+                         </div>
+                         <p className="text-sm sm:text-base !leading-[135%]">
+                        { admindiscussion.comment}  </p>
+                        </div>
+                      </div>
+                     <div className="border-b-[1px] border-gray-100"></div>
+                    </>) 
+                  
                 }
               
               </div>

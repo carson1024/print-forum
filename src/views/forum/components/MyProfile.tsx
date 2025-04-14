@@ -85,7 +85,7 @@ const MyProfile = (props: {
   setActiveTab1(0);
   const { error } = await supabase
   .from("users")
-  .update({ achievements: ["update", "array", "data"] })
+  .update({ achievements: ["OG", "1x"] })
   .eq("id", user.id);
   };
   
@@ -176,7 +176,7 @@ const MyProfile = (props: {
               <div className="flex justify-between">
                 <div className="flex gap-2">
                   {user?.achievements.includes("OG") ? <span className="badge-other-og"></span> : <></>}
-                   {user?.achievements.includes("1x")? <span className="badge-rank-1"></span>:<></> }
+                  {user?.achievements.includes("1x")? <span className="badge-rank-1"></span>:<></> }
                   {/* <span className="badge-money-50k"></span>
                   <span className="badge-register-1m"></span>
                   <span className="badge-social-twitter"></span>
