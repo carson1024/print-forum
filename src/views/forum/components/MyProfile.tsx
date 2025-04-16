@@ -76,18 +76,18 @@ const MyProfile = (props: {
   }, [user]);
 
   const handleClick2 = () => {
-  setActiveTab1(1); 
-  setHasUnread(false); // hide the badge on click
-  setUnreadcounts(0)
-  };
-  const handleClick1 = async() => {
-  setHasUnread(true); // hide the badge on click
-  setActiveTab1(0);
-  const { error } = await supabase
-  .from("users")
-  .update({ achievements: ["OG", "1x"] })
-  .eq("id", user.id);
-  };
+        setActiveTab1(1); 
+        setHasUnread(false); // hide the badge on click
+        setUnreadcounts(0)
+        };
+        const handleClick1 = async() => {
+        setHasUnread(true); // hide the badge on click
+        setActiveTab1(0);
+        const { error } = await supabase
+        .from("users")
+        .update({ achievements: ["OG", "1x"] })
+        .eq("id", user.id);
+        };
   
   return (<>
     <div className="rounded border border-gray-100">
@@ -175,38 +175,39 @@ const MyProfile = (props: {
               <span>Archievements</span>
               <div className="flex justify-between">
                 <div className="flex gap-2">
-                {user?.achievements.includes("1x") ? <span className="badge-rank-1"></span> : <></>}
-                {user?.achievements.includes("2x") ? <span className="badge-rank-2"></span> : <></>}
-                {user?.achievements.includes("3x") ? <span className="badge-rank-3"></span> : <></>}
-                {user?.achievements.includes("4x") ? <span className="badge-rank-4"></span> : <></>}
-                {user?.achievements.includes("5x") ? <span className="badge-rank-5"></span> : <></>}
-                {user?.achievements.includes("6x") ? <span className="badge-rank-6"></span> : <></>}
-                {user?.achievements.includes("7x") ? <span className="badge-rank-7"></span> : <></>}
-                {user?.achievements.includes("8x") ? <span className="badge-rank-8"></span> : <></>}
-                {user?.achievements.includes("9x") ? <span className="badge-rank-9"></span> : <></>}
-                {user?.achievements.includes("10x") ? <span className="badge-rank-1"></span> : <></>}
-                {user?.achievements.includes("t") ? <span className="badge-social-telegram"></span> : <></>}
-                {user?.achievements.includes("x") ? <span className="badge-social-twitter"></span> : <></>}
-                {user?.achievements.includes("s") ? <span className="badge-social-solana"></span> : <></>}
-                {user?.achievements.includes("c5x") ? <span className="badge-call-5X"></span> : <></>}
-                {user?.achievements.includes("c10x") ? <span className="badge-call-10X"></span> : <></>}
-                {user?.achievements.includes("c50x") ? <span className="badge-call-50X"></span> : <></>}
-                {user?.achievements.includes("c100x") ? <span className="badge-call-100X"></span> : <></>}
-                {user?.achievements.includes("u10") ? <span className="badge-user-10"></span> : <></>}
-                {user?.achievements.includes("u50") ? <span className="badge-user-50"></span> : <></>}
-                {user?.achievements.includes("u100") ? <span className="badge-user-100"></span> : <></>}
-                {user?.achievements.includes("m50k") ? <span className="badge-money-50k"></span> : <></>}
-                {user?.achievements.includes("m100k") ? <span className="badge-money-100k"></span> : <></>}
-                {user?.achievements.includes("m500k") ? <span className="badge-money-500k"></span> : <></>}
-                {user?.achievements.includes("m1m") ? <span className="badge-money-1m"></span> : <></>}
-                {user?.achievements.includes("reg1m") ? <span className="badge-register-1m"></span> : <></>}
-                {user?.achievements.includes("reg3m") ? <span className="badge-register-3m"></span> : <></>}
-                {user?.achievements.includes("reg1y") ? <span className="badge-register-1y"></span> : <></>}
+                {user?.achievements.includes("1x") ? <span className="badge-rank-1" title="You reached rank 1"></span> : <></>}
+                {user?.achievements.includes("2x") ? <span className="badge-rank-2" title="You reached rank 2"></span> : <></>}
+                {user?.achievements.includes("3x") ? <span className="badge-rank-3" title="You reached rank 3"></span> : <></>}
+                {user?.achievements.includes("4x") ? <span className="badge-rank-4" title="You reached rank 4"></span> : <></>}
+                {user?.achievements.includes("5x") ? <span className="badge-rank-5" title="You reached rank 5"></span> : <></>}
+                {user?.achievements.includes("6x") ? <span className="badge-rank-6" title="You reached rank 6"></span> : <></>}
+                {user?.achievements.includes("7x") ? <span className="badge-rank-7" title="You reached rank 7"></span> : <></>}
+                {user?.achievements.includes("8x") ? <span className="badge-rank-8" title="You reached rank 8"></span> : <></>}
+                {user?.achievements.includes("9x") ? <span className="badge-rank-9" title="You reached rank 9"></span> : <></>}
+                {user?.achievements.includes("10x") ? <span className="badge-rank-10" title="You reached rank 10"></span> : <></>}
+                {user?.achievements.includes("t") ? <span className="badge-social-telegram" title="You set your Telegram address"></span> : <></>}
+                {user?.achievements.includes("x") ? <span className="badge-social-twitter" title="You set your Twitter address"></span> : <></>}
+                {user?.achievements.includes("s") ? <span className="badge-social-solana" title="You set your Solana address"></span> : <></>}
+                {user?.achievements.includes("c5x") ? <span className="badge-call-5X" title="You get 5X marketCap"></span> : <></>}
+                {user?.achievements.includes("c10x") ? <span className="badge-call-10X" title="You get 10X marketCap"></span> : <></>}
+                {user?.achievements.includes("c50x") ? <span className="badge-call-50X" title="You get 50X marketCap"></span> : <></>}
+                {user?.achievements.includes("c100x") ? <span className="badge-call-100X" title="You get 100X marketCap"></span> : <></>}
+                {user?.achievements.includes("u10") ? <span className="badge-user-10" title="10 people copytrade you"></span> : <></>}
+                {user?.achievements.includes("u50") ? <span className="badge-user-50" title="50 people copytrade you"></span> : <></>}
+                {user?.achievements.includes("u100") ? <span className="badge-user-100" title="100 people copytrade you"></span> : <></>}
+                {user?.achievements.includes("m50k") ? <span className="badge-money-50k" title="You earn 50K-money"></span> : <></>}
+                {user?.achievements.includes("m100k") ? <span className="badge-money-100k" title="You earn 100K-money"></span> : <></>}
+                {user?.achievements.includes("m500k") ? <span className="badge-money-500k" title="You earn 500K-money"></span> : <></>}
+                {user?.achievements.includes("m1m") ? <span className="badge-money-1m" title="You earn 1m-money"></span> : <></>}
+                {user?.achievements.includes("reg1m") ? <span className="badge-register-1m" title="Your account has 1 month history"></span> : <></>}
+                {user?.achievements.includes("reg3m") ? <span className="badge-register-3m" title="Your account has 3 month history"></span> : <></>}
+                {user?.achievements.includes("reg1y") ? <span className="badge-register-1y" title="Your account has 1 year history"></span> : <></>}
                 {user?.achievements.includes("influ") ? <span className="badge-other-influencer"></span> : <></>}
                 {user?.achievements.includes("alpha") ? <span className="badge-other-alpha"></span> : <></>}
-                {user?.achievements.includes("partner") ? <span className="badge-other-partner"></span> : <></>}
+                {user?.achievements.includes("partner") ? <span className="badge-other-partner" title="You have best partner"></span> : <></>}
                 {user?.achievements.includes("never") ? <span className="badge-other-neverskip"></span> : <></>}
-                {user?.achievements.includes("bug") ? <span className="badge-other-bughunter"></span> : <></>}
+                {user?.achievements.includes("bug") ? <span className="badge-other-bughunter" title="You find bugs of this site"></span> : <></>}
+                {user?.achievements.includes("OG") ? <span className="badge-other-og" title="You registed in this site"></span> : <></>}
                 </div>
                 {/* <button className="w-8 h-8 text-xs font-bold bg-white circle-item text-black">+5</button> */}
               </div>

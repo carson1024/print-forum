@@ -81,7 +81,17 @@ serve(async (req) => {
            JSON.stringify({ success: false, error: rankupdateError.message }),
            { status: 500, headers: { "Content-Type": "application/json" } }
           );
-          } 
+        } 
+        //add achievements
+        let achieve = []; 
+        achieve = user.achievements ? [...user.achievements] : []; 
+        achieve.push(`${newrank}x`);
+
+        const { error: achieveerror } = await supabase
+          .from("users")
+          .update({ achievements: achieve })
+          .eq("id", user.id);
+        
          }
 
       if (wincalls > 0) {
@@ -181,7 +191,7 @@ serve(async (req) => {
          }
     }
       
-    else if (priceRatio <= 0.8 && calls[index].xpCheck == 0 && timelimit >= 0 && calls[index].is_featured==false) { 
+    else if (priceRatio <= 0.2 && calls[index].xpCheck == 0 && timelimit >= 0 && calls[index].is_featured==false) { 
       const fallxp = newxp - 6;
       if (fallxp < 0) { fallxp = 0; }
       const { error: fallxperror } = await supabase
@@ -264,9 +274,6 @@ serve(async (req) => {
       }
 
     })
-
-
-
 
     // Return success response
     return new Response(

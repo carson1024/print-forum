@@ -36,7 +36,6 @@ const ForumList = () => {
  
   useOutsideAlerter(wrapperRef, setIsOpen);
   useEffect(() => {
-
    setIsLoading(true);
    const fetchCalls = async () => {
    const { data, error } = await supabase
@@ -66,10 +65,10 @@ const ForumList = () => {
        setIsLoading(false);
     }
     fetchCalls();   
-   const interval = setInterval(() => {
-    fetchCalls();   
-    // checkPrice();
-    }, 20000);
+  //  const interval = setInterval(() => {
+  //   fetchCalls();   
+  //   // checkPrice();
+  //   }, 20000);
     
    const channel  = supabase
       .channel("my_calls")
@@ -77,7 +76,7 @@ const ForumList = () => {
       .subscribe();
      return () => {
       supabase.removeChannel(channel );
-      clearInterval(interval);
+      // clearInterval(interval);
     };
   }, [filters,activeTab]);
 

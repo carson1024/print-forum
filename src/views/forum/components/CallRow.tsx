@@ -313,11 +313,11 @@ export const CallRow = ({
                     call.percentage==100?<></>:call.percentage>100?
                     <div className="bg-green-600 px-1.5 py-1 sm:px-2 sm:py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                       <AiFillCaretUp />
-                      <span>{call.percentage}%</span>
+                    <span>{Number(call.percentage) - 100}%</span>
                     </div> :
                     <div className="bg-red-400 px-1.5 py-1 sm:px-2 sm:py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                       <AiFillCaretDown />
-                      <span>{call.percentage}%</span>
+                    <span>{100-Number(call.percentage)}%</span>
                     </div>
                   }
                 </div>
