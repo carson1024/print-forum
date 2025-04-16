@@ -40,8 +40,11 @@ const Navbar = (props: {
       </div>
       {
         route.pathname == '/profile' ?
-          <button onClick={() => navigate(-1)} className='w-8 h-8 circle-item bg-gray-100 ml-3'>
-            <MdClose size={20} />
+          // <button onClick={() => navigate(-1)} className='w-8 h-8 circle-item bg-gray-100 ml-3'>
+          //   <MdClose size={20} />
+          // </button>
+          <button onClick={() => navigate(-1)}>
+            
           </button>
         :
           <Link to={`/profile?tab=${currentRoute}`} className='sm:!hidden w-8 h-8 circle-item bg-gray-100'>

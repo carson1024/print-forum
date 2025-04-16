@@ -29,6 +29,7 @@ const EditProfileModal = ({
   const [profile, setProfile] = useState([]);
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(null);
+  const [myfile, setMyFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -36,6 +37,7 @@ const EditProfileModal = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files[0];
+    setMyFile(file);
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -74,17 +76,39 @@ const EditProfileModal = ({
    }, [session]);
   
   const onsaveInfo = async () => { 
-     const { error: updateError } = await supabase
-          .from("users")
-          .update({ xaddress: xaddress,taddress:taddress,saddress:saddress,avatar:preview, bio: bio })
-          .eq("id", session.user.id);
-        if (updateError) {
-          console.error("Update failed:", updateError);
-        } else {
-          showToastr("Your information is changed", "success");
-          onChange(xaddress, taddress, saddress, bio, preview);
-          onOk();
-        }
+    const file = myfile; // e.g., from input type="file"
+    console.log(file)
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${session.user.id}.${fileExt}`;
+    const filePath = `avatars/${fileName}`; // "avatars" is your bucket folder
+
+    const { data, error: uploadError } = await supabase.storage
+      .from('avatars') // replace with your actual bucket name
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error('Upload failed:', uploadError.message);
+      return;
+    }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('avatars')
+    .getPublicUrl(filePath);
+
+  const { error: updateError } = await supabase
+      .from("users")
+      .update({ xaddress: xaddress,taddress:taddress,saddress:saddress,avatar:publicUrl, bio: bio })
+      .eq("id", session.user.id);
+    if (updateError) {
+      console.error("Update failed:", updateError);
+    } else {
+      showToastr("Your information is changed", "success");
+      onChange(xaddress, taddress, saddress, bio, preview);
+      onOk();
+    }
   }
   return <Modal isOpen={isOpen} onClose={onCancel} extraClass="w-[620px]">
 

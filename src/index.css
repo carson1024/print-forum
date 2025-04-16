@@ -199,3 +199,13 @@ input {
 .loading .skeleton {
   animation: shimmer 2s infinite linear;
 }
+.pagination {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+}

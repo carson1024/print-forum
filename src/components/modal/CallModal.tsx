@@ -49,7 +49,7 @@ const CallModal = ({
       {/* Token Info */}
       <div className="flex items-center gap-3 justify-between">
         <div className="flex gap-2 items-center">
-          <img src={callReport?.fileMeta.image} className="w-[50px] h-[50px] sm:w-16 sm:h-16 rounded-full" />
+          <img src={callReport?.info.imageUrl} className="w-[50px] h-[50px] sm:w-16 sm:h-16 rounded-full" />
           <div>
             <h2 className="text-base sm:text-lg font-bold mb-1">${callReport?.tokenMeta.symbol}</h2>
             <p className="text-sm sm:text-base text-gray-600">New call</p>
@@ -80,13 +80,13 @@ const CallModal = ({
         </div>
         <div className="flex gap-2 items-center">
           <span className="text-sm sm:text-base">Top 10 holders</span> 
-          <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{top10HolderInfo.pct.toFixed(2)}% (${formatNumber(top10HolderInfo.uiAmount)})</span>
+          <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{top10HolderInfo.pct.toFixed(2)}% (${formatNumber(top10HolderInfo.uiAmount*((callReport?.marketCap * Math.pow(10, callReport?.token.decimals)) / callReport?.token.supply))})</span>
         </div>
         <div className="flex gap-2 flex-wrap items-center">
           <span className="text-sm sm:text-base">Top 3 holders</span>
           <div className="flex gap-0.5 sm:gap-2"> 
             {top3Holders.map((holder, index) => (
-              <span key={index} className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{holder.pct.toFixed(2)}% (${formatNumber(holder.uiAmount)})</span>
+              <span key={index} className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{holder.pct.toFixed(2)}% (${formatNumber(holder.uiAmount*((callReport?.marketCap * Math.pow(10, callReport?.token.decimals)) / callReport?.token.supply))})</span>
             ))}
           </div>
         </div>

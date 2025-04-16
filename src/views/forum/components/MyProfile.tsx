@@ -32,34 +32,36 @@ const MyProfile = (props: {
   const [readcounts, setReadcounts] = useState(0);
   useEffect(() => {
     //  setIsLoading(true);
-   const fetchCalls = async () => {
+    const fetchCalls = async () => {
       if (!user) return;
-      const { data, error } = await supabase
-        .from("calls")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (error) {
-        console.error("Error fetching calls:", error.message);
-        return;
-      }
-      setCallList(data);
+      else {
+        const { data, error } = await supabase
+          .from("calls")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+        if (error) {
+          console.error("Error fetching calls:", error.message);
+          return;
+        }
+        setCallList(data);
 
-      const { data:notifications, error:notifyerror } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (notifyerror) {
-        console.error("Error fetching calls:", notifyerror.message);
-        return;
-      }
-     if (notifications) {
-       setUnreadcounts(Number(notifications.length) )
-       setNotificate(notifications);
-      }
+        const { data: notifications, error: notifyerror } = await supabase
+          .from("notifications")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+        if (notifyerror) {
+          console.error("Error fetching calls:", notifyerror.message);
+          return;
+        }
+        if (notifications) {
+          setUnreadcounts(Number(notifications.length))
+          setNotificate(notifications);
+        }
 
-      setIsLoading(false);
+        setIsLoading(false);
+      }
     }
     fetchCalls();
     // Subscribe to real-time changes in the "calls" table
@@ -100,7 +102,7 @@ const MyProfile = (props: {
           activeTab1 == 0 ? <>
             <div className="flex gap-3">
               <div className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center">
-                {user?.avatar==null?<img src={IconUser} className="w-10 h-10" />:
+                {user?.avatar==null?<img src={IconUser} className="w-5 h-5" />:
                 <><img src={user.avatar} className="relative min-w-[80px] w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] bg-black circle flex items-center justify-center" />
                 <div className="absolute right-0 bottom-0 circle bg-dark1">
                  <span className={"badge-rank-" + user?.rank}></span> 

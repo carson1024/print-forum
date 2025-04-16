@@ -124,9 +124,9 @@ const ProfileDetail = () => {
                <button className={`btn btn-sm hidden ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
              </div>
         </div>
-        <div className="p-4 sm:p-6 flex flex-col gap-5 flex-grow hidden md:block flex-grow relative overflow-hidden loading">
+        <div className="flex flex-col gap-5 flex-grow hidden md:block flex-grow relative ">
           {
-            isLoading || !profile.length ? <><SkeletonList /></>:<>
+            isLoading || !profile.length ? <div className="p-4 sm:p-6 overflow-hidden loading"><SkeletonList /></div>:<>
               {
                 activeTab == 'profile' ?
                   <ProfileTab myprofile={profile[0]} />

@@ -60,8 +60,8 @@ const CallsTab = ({ myprofile }: Props) => {
         <button className={`btn btn-sm  ${state == 0 ? 'active' : ''}`} onClick={() => buttonPrev()}>Previous Calls</button>
       </div>
       <div className="flex-grow overflow-auto">
-        <div className='flex flex-col gap-3'>
-          {isLoading ? <SkeletonList /> :
+        <div className="flex flex-col gap-3">
+          {isLoading ? <div className="loading"><SkeletonList /></div> :
             <>
               {state == 0 ? <>
                 {

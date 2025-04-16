@@ -10,29 +10,34 @@ const Icons = () => {
   const [profile, setProfile] = useState([]);
 
   useEffect(() => {
-   if (!session) { return;}
-    setIsLoading(true)
-     const scan = async () => {
-     const { data, error } = await supabase
-              .from("users")
-              .select("*")
-              .match({ "id": session.user.id });
-           if (error) {
-              console.error("Fetch failed:", error);
-              return; 
-               }
-           if (data.length > 0) {
-             setProfile(data)
-             setIsLoading(false)
-             } else {
-            }};
-     scan();   
-   const channel = supabase
-      .channel("my_users")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, scan)
-      .subscribe();
-    return () => {
-      supabase.removeChannel(channel);};
+    if (!session) { return; }
+    else {
+      setIsLoading(true)
+      const scan = async () => {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .match({ "id": session.user.id });
+        if (error) {
+          console.error("Fetch failed:", error);
+          return;
+        }
+        if (data.length > 0) {
+          setProfile(data)
+          setIsLoading(false)
+        } else {
+        }
+      };
+      scan();
+    
+      const channel = supabase
+        .channel("my_users")
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, scan)
+        .subscribe();
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
     }, [session]);
   
     return (
