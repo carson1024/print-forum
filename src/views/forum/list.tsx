@@ -166,15 +166,15 @@ const ForumList = () => {
   </div>
 
   {/* Fixed pagination bar inside the map div */}
-  {showPagination && isPaginationVisible && (
-  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-    <div className="flex items-center space-x-1 bg-black text-yellow-400 px-2 py-1 rounded-lg shadow-md text-sm">
-      
+ {showPagination && isPaginationVisible && (
+  <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-50">
+    <div className="flex items-center space-x-2 bg-black text-primary px-3 py-2 rounded-xl shadow-lg text-base">
+
       {/* First */}
       <button
         onClick={() => setPage(1)}
         disabled={page === 1}
-        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
         &laquo;
       </button>
@@ -183,41 +183,41 @@ const ForumList = () => {
       <button
         onClick={() => setPage((p) => Math.max(p - 1, 1))}
         disabled={page === 1}
-        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
         &lsaquo;
       </button>
 
-      {/* Current Page Input */}
+      {/* Page Input */}
       <div className="flex items-center space-x-1">
-  <input
-    type="text"
-    inputMode="numeric" // Mobile-friendly numeric input
-    value={inputValue}
-    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value); // Let user freely type
-    }}
-    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        const val = Number(inputValue);
-        if (!isNaN(val) && val >= 1 && val <= totalPages) {
-          setPage(val); // Valid page
+        <input
+        type="text"
+        inputMode="numeric"
+        value={inputValue}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setInputValue(e.target.value);
+        }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === 'Enter') {
+            const val = Number(inputValue);
+            if (!isNaN(val) && val >= 1 && val <= totalPages) {
+              setPage(val);
             } else {
-              setInputValue(String(page)); // Reset to current page if invalid
+              setInputValue(String(page));
             }
           }
         }}
-        className="w-12 text-center text-black rounded px-1 py-0.5 text-sm"
-        placeholder="Page"
+        className="w-9 h-9 bg-gray-300 text-white text-base text-center rounded-full"
+        placeholder="Pg"
       />
-      <span className="text-yellow-400 text-sm">/ {totalPages}</span>
-    </div>
+        <span className="text-yellow-400 text-base">/ {totalPages}</span>
+      </div>
 
       {/* Next */}
       <button
         onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
         disabled={page === totalPages}
-        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
         &rsaquo;
       </button>
@@ -226,11 +226,10 @@ const ForumList = () => {
       <button
         onClick={() => setPage(totalPages)}
         disabled={page === totalPages}
-        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
         &raquo;
       </button>
-
     </div>
   </div>
 )}

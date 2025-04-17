@@ -63,253 +63,135 @@ const TokenDetail = () => {
   }
 
   useEffect(() => {
-    if (isLogin) {
-      if (!session) {
-        return;
-      }
-      else {
-        setIsLoading(true);
-        const fetchCall = async () => {
-          const pairAddress = location.pathname.substring(location.pathname.lastIndexOf('/') + 1).split('?')[0];
-          const params = new URLSearchParams(window.location.search);
-          const id = params.get("id");
-          const myuser = params.get("user");
-          if (localStorage.getItem(pairAddress + myuser) == "yes") { setConfirmVote(1) }
-          if (localStorage.getItem(pairAddress + myuser) == "no") { setConfirmVote(2) }
-          if (isLogin) {
-            if (!session.user) return;
-            else setMyid(session.user.id);
-          }
+  const fetchData = async () => {
+    const pairAddress = location.pathname.substring(location.pathname.lastIndexOf('/') + 1).split('?')[0];
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const myuser = params.get("user");
 
-          if (isLogin) {
-            setXLoading(true);
-            const { data: mine, error: findmine } = await supabase
-              .from("users")
-              .select("*")
-              .eq("id", myid)
-              .order("created_at", { ascending: false });
-            if (findmine) {
-              console.error("Error fetching calls:", findmine.message);
-            } else {
-              setMe(mine)
-            }
-            setXLoading(false);
-          }
-          const { data: ratio, error: ratioerror } = await supabase
-            .from("vote")
-            .select("*")
-            .match({ "call_name": pairAddress, user_id: myuser });
-          if (ratioerror) {
-            console.error("Fetch failed:", ratioerror);
-            return; // Stop execution if there's an error
-          }
-          if (ratio.length > 0) {
-            setRatioVote(ratio[0].ratio)
-          } else {
-            setRatioVote(0)
-          };
+    setConfirmVote(localStorage.getItem(pairAddress + myuser) === "yes" ? 1 : localStorage.getItem(pairAddress + myuser) === "no" ? 2 : 0);
+    setUserid(myuser);
+    setPaddress(pairAddress);
+    setIsLoading(true);
 
-          setUserid(myuser);
-          setPaddress(pairAddress)
+    const fetchCalls = supabase
+      .from("calls")
+      .select("*, users(*)")
+      .eq("address", pairAddress)
+      .order("addXP", { ascending: false });
 
-          const { data, error } = await supabase
-            .from("calls")
-            .select("*, users(*)")
-            .eq("address", pairAddress)
-            .order("addXP", { ascending: false });
-          if (error) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            setCallersCount(data.length);
-            const uniqueCallers = Array.from(new Map(data.map(item => [item.user_id, item])).values());
-            setTopCallers(uniqueCallers);
-          }
+    const fetchItem = supabase
+      .from("calls")
+      .select("*")
+      .eq("id", id)
+      .order("created_at", { ascending: false });
 
-          const { data: item, error: itemerror } = await supabase
-            .from("calls")
-            .select("*")
-            .eq("id", id)
-            .order("created_at", { ascending: false });
-          if (itemerror) {
-            console.error("Error fetching calls:", itemerror.message);
-          } else {
-            setSitem(item);
-          }
+    const fetchVoteRatio = supabase
+      .from("vote")
+      .select("*")
+      .match({ "call_name": pairAddress, user_id: myuser });
 
-          const { data: findadmincomment, error: admincommenterror } = await supabase
-            .from("admincomments")
-            .select("*")
-            .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
-          if (admincommenterror) {
-            console.error("Error fetching calls:", admincommenterror.message);
-          } else {
-            setAdminDiscussions(findadmincomment)
-          }
+    const fetchAdminComments = supabase
+      .from("admincomments")
+      .select("*")
+      .eq("address", pairAddress)
+      .order("created_at", { ascending: false });
 
-          const { data: findcomment, error: commenterror } = await supabase
-            .from("comments")
-            .select("*, users(*)")
-            .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
-          if (commenterror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            setDiscussions(findcomment)
-            
-              let mycomment = (findcomment.filter(com => com.user_id === myid)).length
-              if (mycomment > 0) {
-                setAdded(true)
-              }
-          }
-           setIsLoading(false);
+    const fetchComments = supabase
+      .from("comments")
+      .select("*, users(*)")
+      .eq("address", pairAddress)
+      .order("created_at", { ascending: false });
 
-          let result = await checkCall(pairAddress);
-          if (!result) {
-            console.log("Invalid CA", pairAddress);
-            return;
-          }
+    const callCheck = checkCall(pairAddress);
 
-          const { error: saveerror } = await supabase
-            .from("calls")
-            .update({ supply: result.token.supply })
-            .eq("address", pairAddress);
-          if (saveerror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            console.log("upgrade supply seccessful")
-          }
-    
-          
-          let _top3Holders: TopHolderType[] = [];
-          let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
-          result.topHolders.map((holder, index) => {
-            if (index < 3) {
-              _top3Holders.push(holder);
-            }
-            if (index < 10) {
-              _top10HolderInfo.pct += holder.pct;
-              _top10HolderInfo.uiAmount += holder.uiAmount;
-            }
-          });
-          setCallReport(result);
-          setTop3Holders(_top3Holders);
-          setTop10HolderInfo(_top10HolderInfo);
-          setIsTopLoading(false)
-        }
-        fetchCall();
+    let userFetch;
+    if (isLogin && session?.user) {
+      setMyid(session.user.id);
+      setXLoading(true);
+      userFetch = supabase
+        .from("users")
+        .select("*")
+        .eq("id", session.user.id)
+        .order("created_at", { ascending: false });
+    }
+
+    const [
+      { data: calls, error: callsError },
+      { data: item, error: itemError },
+      { data: ratio, error: ratioError },
+      { data: adminComments, error: adminCommentsError },
+      { data: comments, error: commentsError },
+      result,
+      userResult
+    ] = await Promise.all([
+      fetchCalls,
+      fetchItem,
+      fetchVoteRatio,
+      fetchAdminComments,
+      fetchComments,
+      callCheck,
+      userFetch ?? Promise.resolve({ data: null,error:null })
+    ]);
+
+    // Handle user info
+    if (userResult?.error) {
+      console.error("User fetch error:", userResult.error.message);
+    } else if (userResult?.data) {
+      setMe(userResult.data);
+    }
+    setXLoading(false);
+
+    // Handle other fetch results
+    if (!ratioError && ratio.length > 0) setRatioVote(ratio[0].ratio);
+    else setRatioVote(0);
+
+    if (!callsError && calls) {
+      setCallersCount(calls.length);
+      const uniqueCallers = Array.from(new Map(calls.map(item => [item.user_id, item])).values());
+      setTopCallers(uniqueCallers);
+    }
+
+    if (!itemError && item) setSitem(item);
+    if (!adminCommentsError && adminComments) setAdminDiscussions(adminComments);
+    if (!commentsError && comments) {
+      setDiscussions(comments);
+      if (session?.user) {
+        const userCommented = comments.some(com => com.user_id === session.user.id);
+        if (userCommented) setAdded(true);
       }
     }
-    else { 
-       setIsLoading(true);
-        const fetchCall = async () => {
-          const pairAddress = location.pathname.substring(location.pathname.lastIndexOf('/') + 1).split('?')[0];
-          const params = new URLSearchParams(window.location.search);
-          const id = params.get("id");
-          const myuser = params.get("user");
-          if (localStorage.getItem(pairAddress + myuser) == "yes") { setConfirmVote(1) }
-          if (localStorage.getItem(pairAddress + myuser) == "no") { setConfirmVote(2) }
-      
-          const { data: ratio, error: ratioerror } = await supabase
-            .from("vote")
-            .select("*")
-            .match({ "call_name": pairAddress, user_id: myuser });
-          if (ratioerror) {
-            console.error("Fetch failed:", ratioerror);
-            return; // Stop execution if there's an error
-          }
-          if (ratio.length > 0) {
-            setRatioVote(ratio[0].ratio)
-          } else {
-            setRatioVote(0)
-          };
 
-          setUserid(myuser);
-          setPaddress(pairAddress)
+    if (!result) {
+      console.log("Invalid CA", pairAddress);
+    } else {
+      setCallReport(result);
 
-          const { data, error } = await supabase
-            .from("calls")
-            .select("*, users(*)")
-            .eq("address", pairAddress)
-            .order("addXP", { ascending: false });
-          if (error) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            setCallersCount(data.length);
-            const uniqueCallers = Array.from(new Map(data.map(item => [item.user_id, item])).values());
-            setTopCallers(uniqueCallers);
-          }
+      const top3 = result.topHolders.slice(0, 3);
+      const top10 = result.topHolders.slice(0, 10).reduce((acc, holder) => {
+        acc.pct += holder.pct;
+        acc.uiAmount += holder.uiAmount;
+        return acc;
+      }, { pct: 0, uiAmount: 0 });
 
+      setTop3Holders(top3);
+      setTop10HolderInfo(top10);
 
-          const { data: item, error: itemerror } = await supabase
-            .from("calls")
-            .select("*")
-            .eq("id", id)
-            .order("created_at", { ascending: false });
-          if (itemerror) {
-            console.error("Error fetching calls:", itemerror.message);
-          } else {
-            setSitem(item);
-          }
+      const { error: updateError } = await supabase
+        .from("calls")
+        .update({ supply: result.token.supply })
+        .eq("address", pairAddress);
 
-           const { data: findadmincomment, error: admincommenterror } = await supabase
-            .from("admincomments")
-            .select("*")
-            .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
-          if (admincommenterror) {
-            console.error("Error fetching calls:", admincommenterror.message);
-          } else {
-            setAdminDiscussions(findadmincomment)
-          }
-
-          const { data: findcomment, error: commenterror } = await supabase
-            .from("comments")
-            .select("*, users(*)")
-            .eq("address", pairAddress)
-            .order("created_at", { ascending: false });
-          if (commenterror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            setDiscussions(findcomment)
-          }
-          setIsLoading(false);
-
-          let result = await checkCall(pairAddress);
-          if (!result) {
-            console.log("Invalid CA", pairAddress);
-            return;
-          }
-
-          const { error: saveerror } = await supabase
-            .from("calls")
-            .update({ supply: result.token.supply })
-            .eq("address", pairAddress);
-          if (saveerror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            console.log("upgrade supply seccessful")
-          }
-
-          let _top3Holders: TopHolderType[] = [];
-          let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
-          result.topHolders.map((holder, index) => {
-            if (index < 3) {
-              _top3Holders.push(holder);
-            }
-            if (index < 10) {
-              _top10HolderInfo.pct += holder.pct;
-              _top10HolderInfo.uiAmount += holder.uiAmount;
-            }
-          });
-          setCallReport(result);
-          setTop3Holders(_top3Holders);
-          setTop10HolderInfo(_top10HolderInfo);
-          setIsTopLoading(false);
-        }
-        fetchCall();
+      if (updateError) console.error("Error updating supply:", updateError.message);
+      else console.log("Supply updated successfully");
     }
-  }, [session]);
+
+    setIsLoading(false);
+    setIsTopLoading(false);
+  };
+
+  fetchData();
+}, [session]);
 
    const handleVotelike = () => {
       localStorage.setItem(paddress + sitem[0].user_id, "yes")

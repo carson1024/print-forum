@@ -41,10 +41,11 @@ const CallsTab = ({ myprofile }: Props) => {
               setPrevcall(active);
               const prev = (data.filter(call => new Date(call.created_at).getTime() + 86400000 - Date.now() <= 0));
               setActivecall(prev)
+              setIsLoading(false);
             }
       };
     scan(); 
-    setIsLoading(false);
+  
   }, []);
  
   const buttonActive = () => {
