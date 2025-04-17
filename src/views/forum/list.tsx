@@ -38,10 +38,11 @@ const ForumList = () => {
   const itemsPerPage = 7;
   const [isPaginationVisible, setPaginationVisible] = useState(true);
   const hideTimer = useRef(null);
+ const [inputValue, setInputValue] = useState<string>(String(page));
 
   useOutsideAlerter(wrapperRef, setIsOpen);
   useEffect(() => {
-
+    setInputValue(String(page));
     setIsLoading(true);
     const fetchCalls = async() => {
     const from = (page - 1) * itemsPerPage;
@@ -99,7 +100,7 @@ const ForumList = () => {
     // Hide after 2 seconds
     hideTimer.current = setTimeout(() => {
       setPaginationVisible(false);
-    }, 2000);
+    }, 8000);
   };
 
   const featuredlist = () => {
@@ -154,7 +155,7 @@ const ForumList = () => {
   <div className="relative h-full flex flex-col">
   {/* Scrollable content */}
   <div
-    className={`flex-1 overflow-auto p-2 sm:p-4 pb-24 flex flex-col gap-4 sm:gap-5`}
+    className={`flex-1 overflow-auto p-2 sm:p-4 pb-24 flex flex-col gap-4 sm:gap-5 ${isLoading? "overflow-hidden loading" : "overflow-auto"  }`}
     onClick={() => setIsOpen(false)}
   >
     {isLoading || !callList.length ? (
@@ -166,42 +167,73 @@ const ForumList = () => {
 
   {/* Fixed pagination bar inside the map div */}
   {showPagination && isPaginationVisible && (
-    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-      <div className="flex items-center space-x-1 bg-black text-white px-4 py-2 rounded-xl shadow-lg ">
-        <button
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
-          disabled={page === 1}
-          className="px-2 py-1 rounded hover:bg-white hover:text-black transition disabled:opacity-50"
-        >
-          Prev
-        </button>
+  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+    <div className="flex items-center space-x-1 bg-black text-yellow-400 px-2 py-1 rounded-lg shadow-md text-sm">
+      
+      {/* First */}
+      <button
+        onClick={() => setPage(1)}
+        disabled={page === 1}
+        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+      >
+        &laquo;
+      </button>
 
-        {[...Array(totalPages).keys()]
-          .slice(Math.max(0, page - 2), Math.min(totalPages, page + 2))
-          .map((i) => (
-            <button
-              key={i}
-              onClick={() => setPage(i + 1)}
-              className={`px-3 py-1 rounded ${
-                page === i + 1
-                  ? "bg-white text-black font-semibold"
-                  : "hover:bg-white hover:text-black transition"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
+      {/* Prev */}
+      <button
+        onClick={() => setPage((p) => Math.max(p - 1, 1))}
+        disabled={page === 1}
+        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+      >
+        &lsaquo;
+      </button>
 
-        <button
-          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-          disabled={page === totalPages}
-          className="px-2 py-1 rounded hover:bg-white hover:text-black transition disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      {/* Current Page Input */}
+      <div className="flex items-center space-x-1">
+  <input
+    type="text"
+    inputMode="numeric" // Mobile-friendly numeric input
+    value={inputValue}
+    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputValue(e.target.value); // Let user freely type
+    }}
+    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        const val = Number(inputValue);
+        if (!isNaN(val) && val >= 1 && val <= totalPages) {
+          setPage(val); // Valid page
+            } else {
+              setInputValue(String(page)); // Reset to current page if invalid
+            }
+          }
+        }}
+        className="w-12 text-center text-black rounded px-1 py-0.5 text-sm"
+        placeholder="Page"
+      />
+      <span className="text-yellow-400 text-sm">/ {totalPages}</span>
     </div>
-  )}
+
+      {/* Next */}
+      <button
+        onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+        disabled={page === totalPages}
+        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+      >
+        &rsaquo;
+      </button>
+
+      {/* Last */}
+      <button
+        onClick={() => setPage(totalPages)}
+        disabled={page === totalPages}
+        className="px-1 py-0.5 rounded hover:bg-yellow-400 hover:text-black transition disabled:opacity-50"
+      >
+        &raquo;
+      </button>
+
+    </div>
+  </div>
+)}
 </div>
       
     </div>

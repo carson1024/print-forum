@@ -36,6 +36,7 @@ const TokenDetail = () => {
   const [callReport, setCallReport] = useState<CallReportType | null>(null);
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
+  const [isTopLoading, setIsTopLoading] = useState(true);
   const [xLoading, setXLoading] = useState(true);
   const [topCallers, setTopCallers] = useState([]);
   const [discussions, setDiscussions] = useState([]);
@@ -110,11 +111,6 @@ const TokenDetail = () => {
 
           setUserid(myuser);
           setPaddress(pairAddress)
-          let result = await checkCall(pairAddress);
-          if (!result) {
-            console.log("Invalid CA", pairAddress);
-            return;
-          }
 
           const { data, error } = await supabase
             .from("calls")
@@ -129,16 +125,6 @@ const TokenDetail = () => {
             setTopCallers(uniqueCallers);
           }
 
-          const { error: saveerror } = await supabase
-            .from("calls")
-            .update({ supply: result.token.supply })
-            .eq("address", pairAddress);
-          if (saveerror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            console.log("upgrade supply seccessful")
-          }
-    
           const { data: item, error: itemerror } = await supabase
             .from("calls")
             .select("*")
@@ -176,6 +162,25 @@ const TokenDetail = () => {
                 setAdded(true)
               }
           }
+           setIsLoading(false);
+
+          let result = await checkCall(pairAddress);
+          if (!result) {
+            console.log("Invalid CA", pairAddress);
+            return;
+          }
+
+          const { error: saveerror } = await supabase
+            .from("calls")
+            .update({ supply: result.token.supply })
+            .eq("address", pairAddress);
+          if (saveerror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            console.log("upgrade supply seccessful")
+          }
+    
+          
           let _top3Holders: TopHolderType[] = [];
           let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
           result.topHolders.map((holder, index) => {
@@ -190,7 +195,7 @@ const TokenDetail = () => {
           setCallReport(result);
           setTop3Holders(_top3Holders);
           setTop10HolderInfo(_top10HolderInfo);
-          setIsLoading(false);
+          setIsTopLoading(false)
         }
         fetchCall();
       }
@@ -221,11 +226,6 @@ const TokenDetail = () => {
 
           setUserid(myuser);
           setPaddress(pairAddress)
-          let result = await checkCall(pairAddress);
-          if (!result) {
-            console.log("Invalid CA", pairAddress);
-            return;
-          }
 
           const { data, error } = await supabase
             .from("calls")
@@ -240,16 +240,7 @@ const TokenDetail = () => {
             setTopCallers(uniqueCallers);
           }
 
-          const { error: saveerror } = await supabase
-            .from("calls")
-            .update({ supply: result.token.supply })
-            .eq("address", pairAddress);
-          if (saveerror) {
-            console.error("Error fetching calls:", error.message);
-          } else {
-            console.log("upgrade supply seccessful")
-          }
-    
+
           const { data: item, error: itemerror } = await supabase
             .from("calls")
             .select("*")
@@ -282,6 +273,23 @@ const TokenDetail = () => {
           } else {
             setDiscussions(findcomment)
           }
+          setIsLoading(false);
+
+          let result = await checkCall(pairAddress);
+          if (!result) {
+            console.log("Invalid CA", pairAddress);
+            return;
+          }
+
+          const { error: saveerror } = await supabase
+            .from("calls")
+            .update({ supply: result.token.supply })
+            .eq("address", pairAddress);
+          if (saveerror) {
+            console.error("Error fetching calls:", error.message);
+          } else {
+            console.log("upgrade supply seccessful")
+          }
 
           let _top3Holders: TopHolderType[] = [];
           let _top10HolderInfo: TopHolderType = { pct: 0, uiAmount: 0 };
@@ -297,7 +305,7 @@ const TokenDetail = () => {
           setCallReport(result);
           setTop3Holders(_top3Holders);
           setTop10HolderInfo(_top10HolderInfo);
-          setIsLoading(false);
+          setIsTopLoading(false);
         }
         fetchCall();
     }
@@ -421,8 +429,8 @@ const TokenDetail = () => {
   }
 
   return <ForumLayout>
-    <div className={`card flex-grow p-0 flex flex-col overflow-hidden ${isLoading ? 'loading' : ''}`}>
-      <div className="px-4 py-4 sm:px-6 sm:py-2.5 border-b-[1px] border-gray-100 flex 2xl:justify-between items-center gap-3">
+    <div className={`card flex-grow p-0 flex flex-col overflow-hidden ${isLoading || isTopLoading ? 'loading' : ''}`}>
+      <div className="px-4 flex py-4 sm:px-6 sm:py-2.5 border-b-[1px] border-gray-100 f0lex 2xl:justify-between items-center gap-3">
         <div className="flex gap-3 items-center">
           <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
             <FaChevronLeft />
@@ -443,22 +451,22 @@ const TokenDetail = () => {
                 <div className="bg-gray-100 px-2 py-1.5 rounded-full flex text-xs gap-1">
                   Marketcap {formatNumber(sitem[0].init_market_cap)} to {formatNumber(sitem[0].changedCap)}
                 </div>
-                  {sitem[0].percentage >= 100 ? <>
+                  {sitem[0].percentage == 100 ?<></>:sitem[0].percentage > 100 ? <>
                     <div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretUp />
-                    <span>{sitem[0].percentage}%</span>
+                    <span>{Number(sitem[0].percentage-100)}%</span>
                   </div>
                   </> :
-                    <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
+                    <><div className="bg-red-400 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretDown />
-                      <span>{ sitem[0].percentage}%</span>
+                      <span>{Number(100-sitem[0].percentage)}%</span>
                     </div>
                   </>}
               </div>
             </div>
           }
         </div>
-        <div className={`flex gap-1 ${isLoading ? 'hidden' : ''}`}>
+        <div className={`flex gap-1 justify-end ${isLoading ? 'hidden' : ''}`}>
           <div className="flex gap-1 items-center">
              {  confirmVote ==0?
                           <div className="flex gap-1 items-center">
@@ -506,17 +514,17 @@ const TokenDetail = () => {
                 {
                   isLoading ? <div className="skeleton w-3/4 h-5 rounded"></div> :
                   <div className="flex gap-3 flex-wrap">
-                    <span className={`badge-multiplier-200X`}></span>
+                    {/* <span className={`badge-multiplier-200X`}></span> */}
                     <div className="bg-gray-100 px-2 py-1.5 rounded-full flex text-xs gap-1">
-                      Marketcap {formatNumber(sitem[0].init_market_cap)} to {formatNumber(sitem[0].changedcap)}
+                      Marketcap {formatNumber(sitem[0].init_market_cap)} to {formatNumber(sitem[0].changedCap)}
                     </div>
-                    {sitem[0].percentage >= 100 ? <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
+                    {sitem[0].percentage == 100 ?<></>: sitem[0].percentage > 100 ? <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretUp />
-                    <span>{sitem[0].percentage}%</span>
+                    <span>{Number(sitem[0].percentage-100)}%</span>
                      </div></> :
-                    <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
+                    <><div className="bg-red-300 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretDown />
-                      <span>{ sitem[0].percentage}%</span>
+                      <span>{Number(100-sitem[0].percentage)}%</span>
                      </div></>}
                   </div>
                 }
@@ -536,7 +544,7 @@ const TokenDetail = () => {
                 <div className="flex items-center gap-2">
                   <span className="text-xs sm:text-base">Top 10 holders</span> 
                   {
-                    isLoading ? <div className="w-20 h-5 rounded skeleton"></div> :
+                    isTopLoading ? <div className="w-20 h-5 rounded skeleton"></div> :
                     <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{top10HolderInfo.pct.toFixed(2)}% (${formatNumber(top10HolderInfo.uiAmount*sitem[0].changedPrice)})</span>
                   }
                 </div>
@@ -544,7 +552,7 @@ const TokenDetail = () => {
                   <span className="text-xs sm:text-base">Top 3 holders</span>
                   <div className="flex gap-2">
                     {
-                      isLoading ? <>
+                      isTopLoading ? <>
                         <div className="w-20 h-5 rounded skeleton"></div>
                         <div className="w-20 h-5 rounded skeleton"></div>
                         <div className="w-20 h-5 rounded skeleton"></div>

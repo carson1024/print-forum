@@ -209,3 +209,24 @@ input {
   padding: 10px 20px;
   border-radius: 8px;
 }
+
+.pagination-wrapper {
+  position: absolute;
+  bottom: 20px; /* or top: 20px if you want it on top */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.7); /* optional: dark background */
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.tippy-box[data-theme~='yellowTooltip'] {
+ 
+  color: #facc15;           /* Tailwind's yellow-400 */
+  font-size: 0.875rem;      /* text-sm */
+  border-radius: 0.25rem;   /* rounded */
+  padding: 4px 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+}

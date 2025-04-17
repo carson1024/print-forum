@@ -165,12 +165,6 @@ export const CallRow = ({
     setCounter(counter + 1)
   }
 
-  const profilepage =async (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    window.location.href=`/profile?id=${call.users.id}`;
-  }
-
   const handleVotelikemobile =async (e: React.MouseEvent<HTMLDivElement>) => {
      e.preventDefault();
      e.stopPropagation();
@@ -273,15 +267,10 @@ export const CallRow = ({
    };
     insertdislikeUser();
   }
-
-  const gotoenpage = () => {
-   window.location.href=`/token/${call.address}?id=${call.id} &user=${call.user_id}`; 
-  }
   
 
-
-  return <>
-    <div className="bg-gray-50 p-1.5 pr-3 rounded sm:rounded-[40px] flex flex-col gap-2 sm:gap-3 cursor-pointer" onClick={gotoenpage}>
+  return <Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`}>
+    <div className="bg-gray-50 p-1.5 pr-3 rounded sm:rounded-[40px] flex flex-col gap-2 sm:gap-3 cursor-pointer" >
         <div className="flex items-center gap-2.5">
           <div className="flex flex-wrap grow">
             <div className="flex grow gap-2 sm:gap-3 items-center">
@@ -327,7 +316,7 @@ export const CallRow = ({
               {
               call.users && 
               <Link to={`/profile?id=${call.users.id}`} key={call.id}>
-                  <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs" onClick={profilepage}>
+                  <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs" >
                     <span className={`badge-rank-${call.users.rank}`}></span>
                     <div>
                       <div className="text-gray-600">Caller</div>
@@ -406,6 +395,6 @@ export const CallRow = ({
         }
       </div>
      </div>
-   </>
+   </Link>
 
 }
