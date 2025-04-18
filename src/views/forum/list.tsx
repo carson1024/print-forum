@@ -178,13 +178,13 @@ const ForumList = () => {
       bottom: isPaginationVisible ? '0.5rem' : '-3rem',
     }}
   >
-    <div className="flex items-center gap-1.5 bg-darker/70 text-primary px-3 py-2 rounded-full shadow-lg text-base">
+    <div className="flex items-center gap-1.5 bg-darker/80 text-white px-3 py-2 rounded-full shadow-lg text-base">
 
       {/* First */}
       <button
         onClick={() => setPage(1)}
         disabled={page === 1}
-        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
         <span className=""><FaAnglesLeft /></span>
       </button>
@@ -193,7 +193,7 @@ const ForumList = () => {
       <button
         onClick={() => setPage((p) => Math.max(p - 1, 1))}
         disabled={page === 1}
-        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
         <span className=""><FaAngleLeft /></span>
       </button>
@@ -217,7 +217,7 @@ const ForumList = () => {
             }
           }
         }}
-        className="w-8 h-7 bg-dark/50 text-white text-base text-center rounded-md focus:outline-none border-[1px] border-primary/30"
+        className="w-8 h-7 bg-dark/50 text-white text-base text-center rounded-md focus:outline-none border-[1px] border-gray-300"
         placeholder="Pg"
       />
         <span>/</span>
@@ -228,7 +228,7 @@ const ForumList = () => {
       <button
         onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
         disabled={page === totalPages}
-        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
         <span className=""><FaAngleRight /></span>
       </button>
@@ -237,7 +237,7 @@ const ForumList = () => {
       <button
         onClick={() => setPage(totalPages)}
         disabled={page === totalPages}
-        className="w-7 h-7 leading-none flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
         <span className=""><FaAnglesRight /></span>
       </button>
