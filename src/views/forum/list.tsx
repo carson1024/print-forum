@@ -124,7 +124,7 @@ const ForumList = () => {
   };
 
   return <ForumLayout>
-    <div className="card flex-grow p-0 flex flex-col overflow-hidden">
+    <div className="relative card flex-grow p-0 flex flex-col overflow-hidden">
       <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
         <div className="flex gap-5 items-center">
           <h2 className="hidden md:block text-lg font-semibold">Forum Listing</h2>
@@ -154,7 +154,7 @@ const ForumList = () => {
         </div>
       </div>
   <div 
-    className="relative h-full flex flex-col"
+    className="h-full flex flex-col"
     onMouseEnter={() => setPaginationVisible(true)}
     onMouseLeave={() => setPaginationVisible(false)}
     >
@@ -170,6 +170,7 @@ const ForumList = () => {
     )}
   </div>
 
+</div>
   {/* Fixed pagination bar inside the map div */}
  {showPagination && (
   <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2 z-50'
@@ -244,7 +245,6 @@ const ForumList = () => {
     </div>
   </div>
 )}
-</div>
       
     </div>
   </ForumLayout>
