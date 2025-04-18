@@ -174,7 +174,7 @@ const ForumList = () => {
  {showPagination && (
   <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2 z-50'
     style={{ 
-      transition: 'bottom 0.25s ease-out',
+      transition: 'bottom 0.15s ease-in-out',
       bottom: isPaginationVisible ? '0.5rem' : '-3rem',
     }}
   >
