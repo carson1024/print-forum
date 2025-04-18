@@ -42,7 +42,7 @@ const TokenDetail = () => {
   const [discussions, setDiscussions] = useState([]);
   const [admindiscussions, setAdminDiscussions] = useState([]);
   const [isCopied, setIsCopied] = useState(false);
-  const [sitem, setSitem] = useState([]);
+  const [sitem, setSitem] = useState<any>({});
   const [me, setMe] = useState([]);
   const [confirmVote, setConfirmVote] = useState(0);
   const [ratioVote, setRatioVote] = useState(0);
@@ -84,7 +84,8 @@ const TokenDetail = () => {
       .from("calls")
       .select("*")
       .eq("id", id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .single();
 
     const fetchVoteRatio = supabase
       .from("vote")
@@ -192,14 +193,14 @@ const TokenDetail = () => {
 }, [session]);
 
    const handleVotelike = () => {
-      localStorage.setItem(paddress + sitem[0].user_id, "yes")
+      localStorage.setItem(paddress + sitem?.user_id, "yes")
      setConfirmVote(1)
     let v2 = [];
     const insertUser = async () => {
      const { data, error } = await supabase
         .from("vote")
         .select("*")
-        .match({ "call_name": paddress, user_id: sitem[0].user_id });
+        .match({ "call_name": paddress, user_id: sitem?.user_id });
     if (error) {
         console.error("Fetch failed:", error);
         return; // Stop execution if there's an error
@@ -210,7 +211,7 @@ const TokenDetail = () => {
         const { error: updateError } = await supabase
            .from('vote')
            .delete()
-           .match({ "call_name": paddress, user_id: sitem[0].user_id });
+           .match({ "call_name": paddress, user_id: sitem?.user_id });
             if (updateError) {
             console.error("Update failed:", updateError);
             } else {
@@ -219,7 +220,7 @@ const TokenDetail = () => {
             }
               const { error: insertError } = await supabase
               .from("vote")
-              .insert([{ call_name: paddress,user_id: sitem[0].user_id, like_number: v2[0].like_number+1, dislike_number: v2[0].dislike_number, ratio:Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))) }]);
+              .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: v2[0].like_number+1, dislike_number: v2[0].dislike_number, ratio:Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))) }]);
               if (insertError) {
                console.error("Insert failed:", insertError);
               } else {
@@ -229,7 +230,7 @@ const TokenDetail = () => {
       else {
             const { error: insertError } = await supabase
               .from("vote")
-              .insert([{ call_name: paddress,user_id: sitem[0].user_id, like_number: 1, dislike_number: 0, ratio:100 }]);
+              .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: 1, dislike_number: 0, ratio:100 }]);
               if (insertError) {
                console.error("Insert failed:", insertError);
               } else {
@@ -242,14 +243,14 @@ const TokenDetail = () => {
     }
     
     const handleVotedislike = () => {
-      localStorage.setItem(paddress + sitem[0].user_id, "no")
+      localStorage.setItem(paddress + sitem?.user_id, "no")
        setConfirmVote(2)
      let v1 = [];
      const insertdislikeUser = async () => {
      const { data, error } = await supabase
          .from("vote")
          .select("*")
-         .match({ "call_name": paddress, user_id: sitem[0].user_id });
+         .match({ "call_name": paddress, user_id: sitem?.user_id });
      if (error) {
          console.error("Fetch failed:", error);
          return; }
@@ -259,7 +260,7 @@ const TokenDetail = () => {
        const { error: updateError } = await supabase
            .from('vote')
            .delete()
-            .match({ "call_name": paddress, user_id: sitem[0].user_id });
+            .match({ "call_name": paddress, user_id: sitem?.user_id });
         if (updateError) {
              console.error("Update failed:", updateError);
          } else {
@@ -267,7 +268,7 @@ const TokenDetail = () => {
         }
        const { error: insertError } = await supabase
                .from("vote")
-               .insert([{ call_name: paddress,user_id: sitem[0].user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number+1, ratio:Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
+               .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number+1, ratio:Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
                if (insertError) {
                 console.error("Insert failed:", insertError);
                } else {
@@ -277,7 +278,7 @@ const TokenDetail = () => {
         
          const { error: insertError } = await supabase
              .from("vote")
-             .insert([{ call_name: paddress,user_id: sitem[0].user_id, like_number: 0, dislike_number: 1, ratio:0 }]);
+             .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: 0, dislike_number: 1, ratio:0 }]);
          if (insertError) {
              console.error("Insert failed:", insertError);
          } else { 
@@ -324,22 +325,22 @@ const TokenDetail = () => {
             <div className="flex gap-3">
               <span className="font-bold text-base sm:text-lg">${callReport?.baseToken.symbol}</span>
                 <div className="hidden md:flex gap-3 flex-wrap">
-                  {sitem[0].is_featured ? <>
-                    <span className={`badge-multiplier-${sitem[0].featured}X`}></span> </> :
+                  {sitem?.is_featured ? <>
+                    <span className={`badge-multiplier-${sitem?.featured}X`}></span> </> :
                     <></>
                   }       
                 <div className="bg-gray-100 px-2 py-1.5 rounded-full flex text-xs gap-1">
-                  Marketcap {formatNumber(sitem[0].init_market_cap)} to {formatNumber(sitem[0].changedCap)}
+                  Marketcap {formatNumber(sitem?.init_market_cap)} to {formatNumber(sitem?.changedCap)}
                 </div>
-                  {sitem[0].percentage == 100 ?<></>:sitem[0].percentage > 100 ? <>
+                  {sitem?.percentage == 100 ?<></>:sitem?.percentage > 100 ? <>
                     <div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretUp />
-                    <span>{Number(sitem[0].percentage-100)}%</span>
+                    <span>{Number(sitem?.percentage-100)}%</span>
                   </div>
                   </> :
                     <><div className="bg-red-400 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretDown />
-                      <span>{Number(100-sitem[0].percentage)}%</span>
+                      <span>{Number(100-sitem?.percentage)}%</span>
                     </div>
                   </>}
               </div>
@@ -396,15 +397,15 @@ const TokenDetail = () => {
                   <div className="flex gap-3 flex-wrap">
                     {/* <span className={`badge-multiplier-200X`}></span> */}
                     <div className="bg-gray-100 px-2 py-1.5 rounded-full flex text-xs gap-1">
-                      Marketcap {formatNumber(sitem[0].init_market_cap)} to {formatNumber(sitem[0].changedCap)}
+                      Marketcap {formatNumber(sitem?.init_market_cap)} to {formatNumber(sitem?.changedCap)}
                     </div>
-                    {sitem[0].percentage == 100 ?<></>: sitem[0].percentage > 100 ? <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
+                    {sitem?.percentage == 100 ?<></>: sitem?.percentage > 100 ? <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretUp />
-                    <span>{Number(sitem[0].percentage-100)}%</span>
+                    <span>{Number(sitem?.percentage-100)}%</span>
                      </div></> :
                     <><div className="bg-red-300 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
                     <AiFillCaretDown />
-                      <span>{Number(100-sitem[0].percentage)}%</span>
+                      <span>{Number(100-sitem?.percentage)}%</span>
                      </div></>}
                   </div>
                 }
@@ -425,7 +426,7 @@ const TokenDetail = () => {
                   <span className="text-xs sm:text-base">Top 10 holders</span> 
                   {
                     isTopLoading ? <div className="w-20 h-5 rounded skeleton"></div> :
-                    <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{top10HolderInfo.pct.toFixed(2)}% (${formatNumber(top10HolderInfo.uiAmount*sitem[0].changedPrice)})</span>
+                    <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{top10HolderInfo.pct.toFixed(2)}% (${formatNumber(top10HolderInfo.uiAmount*sitem?.changedPrice)})</span>
                   }
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -438,7 +439,7 @@ const TokenDetail = () => {
                         <div className="w-20 h-5 rounded skeleton"></div>
                       </> :
                       top3Holders.map((holder, index) => (
-                      <span key={index} className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{holder.pct.toFixed(2)}% (${formatNumber(holder.uiAmount*sitem[0].changedPrice)})</span>
+                      <span key={index} className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{holder.pct.toFixed(2)}% (${formatNumber(holder.uiAmount*sitem?.changedPrice)})</span>
                     ))}
                   </div>
                 </div>
