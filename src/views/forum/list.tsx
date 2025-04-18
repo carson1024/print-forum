@@ -124,7 +124,11 @@ const ForumList = () => {
   };
 
   return <ForumLayout>
-    <div className="relative card flex-grow p-0 flex flex-col overflow-hidden">
+    <div 
+      className="relative card flex-grow p-0 flex flex-col overflow-hidden"
+      onMouseEnter={() => setPaginationVisible(true)}
+      onMouseLeave={() => setPaginationVisible(false)}
+    >
       <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
         <div className="flex gap-5 items-center">
           <h2 className="hidden md:block text-lg font-semibold">Forum Listing</h2>
@@ -155,8 +159,6 @@ const ForumList = () => {
       </div>
   <div 
     className="h-full flex flex-col"
-    onMouseEnter={() => setPaginationVisible(true)}
-    onMouseLeave={() => setPaginationVisible(false)}
     >
   {/* Scrollable content */}
   <div
