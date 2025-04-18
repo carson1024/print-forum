@@ -1,6 +1,7 @@
 import React, { useState, useEffect,useRef  } from 'react';
 import {useSearchParams } from 'react-router-dom';
 import ForumLayout from "./layout"
+import { FaAngleLeft, FaAnglesLeft, FaAngleRight, FaAnglesRight } from "react-icons/fa6";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import { supabase } from "lib/supabase";
 import { SkeletonList } from "components/skeleton/forum";
@@ -94,13 +95,13 @@ const ForumList = () => {
   }, [filters, activeTab, page]);
   
   const handleMouseMove = () => {
-    setPaginationVisible(true);
-    // Reset timer
-    if (hideTimer.current) clearTimeout(hideTimer.current);
-    // Hide after 2 seconds
-    hideTimer.current = setTimeout(() => {
-      setPaginationVisible(false);
-    }, 8000);
+    // setPaginationVisible(true);
+    // // Reset timer
+    // if (hideTimer.current) clearTimeout(hideTimer.current);
+    // // Hide after 2 seconds
+    // hideTimer.current = setTimeout(() => {
+    //   setPaginationVisible(false);
+    // }, 8000);
   };
 
   const featuredlist = () => {
@@ -152,7 +153,11 @@ const ForumList = () => {
         )}
         </div>
       </div>
-  <div className="relative h-full flex flex-col">
+  <div 
+    className="relative h-full flex flex-col"
+    onMouseEnter={() => setPaginationVisible(true)}
+    onMouseLeave={() => setPaginationVisible(false)}
+    >
   {/* Scrollable content */}
   <div
     className={`flex-1 overflow-auto p-2 sm:p-4 pb-24 flex flex-col gap-4 sm:gap-5 ${isLoading? "overflow-hidden loading" : "overflow-auto"  }`}
@@ -166,30 +171,35 @@ const ForumList = () => {
   </div>
 
   {/* Fixed pagination bar inside the map div */}
- {showPagination && isPaginationVisible && (
-  <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-50">
-    <div className="flex items-center space-x-2 bg-black text-primary px-3 py-2 rounded-xl shadow-lg text-base">
+ {showPagination && (
+  <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2 z-50'
+    style={{ 
+      transition: 'bottom 0.25s ease-out',
+      bottom: isPaginationVisible ? '0.5rem' : '-3rem',
+    }}
+  >
+    <div className="flex items-center gap-1.5 bg-darker/70 text-primary px-3 py-2 rounded-full shadow-lg text-base">
 
       {/* First */}
       <button
         onClick={() => setPage(1)}
         disabled={page === 1}
-        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
-        &laquo;
+        <span className=""><FaAnglesLeft /></span>
       </button>
 
       {/* Prev */}
       <button
         onClick={() => setPage((p) => Math.max(p - 1, 1))}
         disabled={page === 1}
-        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
-        &lsaquo;
+        <span className=""><FaAngleLeft /></span>
       </button>
 
       {/* Page Input */}
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center gap-2 px-1">
         <input
         type="text"
         inputMode="numeric"
@@ -207,28 +217,29 @@ const ForumList = () => {
             }
           }
         }}
-        className="w-9 h-9 bg-gray-300 text-white text-base text-center rounded-full"
+        className="w-8 h-7 bg-dark/50 text-white text-base text-center rounded-md focus:outline-none border-[1px] border-primary/30"
         placeholder="Pg"
       />
-        <span className="text-yellow-400 text-base">/ {totalPages}</span>
+        <span>/</span>
+        <span className="">{totalPages}</span>
       </div>
 
       {/* Next */}
       <button
         onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
         disabled={page === totalPages}
-        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
-        &rsaquo;
+        <span className=""><FaAngleRight /></span>
       </button>
 
       {/* Last */}
       <button
         onClick={() => setPage(totalPages)}
         disabled={page === totalPages}
-        className="w-9 h-9 text-xl leading-none font-bold flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
+        className="w-7 h-7 leading-none flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:opacity-50"
       >
-        &raquo;
+        <span className=""><FaAnglesRight /></span>
       </button>
     </div>
   </div>
