@@ -218,7 +218,7 @@ const ForumList = () => {
           }
         }}
         className="w-8 h-7 bg-dark/50 text-white text-base text-center rounded-md focus:outline-none border-[1px] border-gray-300"
-        placeholder="Pg"
+        placeholder="1"
       />
         <span>/</span>
         <span className="">{totalPages}</span>
