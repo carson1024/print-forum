@@ -103,7 +103,32 @@ const TokenDetail = () => {
       .eq("address", pairAddress)
       .order("created_at", { ascending: false });
 
-    const callCheck = checkCall(pairAddress);
+    checkCall(pairAddress).then(async (result) => {
+      if (!result) {
+        console.log("Invalid CA", pairAddress);
+      } else {
+        setCallReport(result);
+  
+        const top3 = result.topHolders.slice(0, 3);
+        const top10 = result.topHolders.slice(0, 10).reduce((acc, holder) => {
+          acc.pct += holder.pct;
+          acc.uiAmount += holder.uiAmount;
+          return acc;
+        }, { pct: 0, uiAmount: 0 });
+  
+        setTop3Holders(top3);
+        setTop10HolderInfo(top10);
+  
+        const { error: updateError } = await supabase
+          .from("calls")
+          .update({ supply: result.token.supply })
+          .eq("address", pairAddress);
+  
+        if (updateError) console.error("Error updating supply:", updateError.message);
+        else console.log("Supply updated successfully");
+      }
+      setIsTopLoading(false);
+    })
 
     let userFetch;
     if (isLogin && session?.user) {
@@ -122,7 +147,6 @@ const TokenDetail = () => {
       { data: ratio, error: ratioError },
       { data: adminComments, error: adminCommentsError },
       { data: comments, error: commentsError },
-      result,
       userResult
     ] = await Promise.all([
       fetchCalls,
@@ -130,7 +154,6 @@ const TokenDetail = () => {
       fetchVoteRatio,
       fetchAdminComments,
       fetchComments,
-      callCheck,
       userFetch ?? Promise.resolve({ data: null,error:null })
     ]);
 
@@ -162,32 +185,7 @@ const TokenDetail = () => {
       }
     }
 
-    if (!result) {
-      console.log("Invalid CA", pairAddress);
-    } else {
-      setCallReport(result);
-
-      const top3 = result.topHolders.slice(0, 3);
-      const top10 = result.topHolders.slice(0, 10).reduce((acc, holder) => {
-        acc.pct += holder.pct;
-        acc.uiAmount += holder.uiAmount;
-        return acc;
-      }, { pct: 0, uiAmount: 0 });
-
-      setTop3Holders(top3);
-      setTop10HolderInfo(top10);
-
-      const { error: updateError } = await supabase
-        .from("calls")
-        .update({ supply: result.token.supply })
-        .eq("address", pairAddress);
-
-      if (updateError) console.error("Error updating supply:", updateError.message);
-      else console.log("Supply updated successfully");
-    }
-
     setIsLoading(false);
-    setIsTopLoading(false);
   };
 
   fetchData();
