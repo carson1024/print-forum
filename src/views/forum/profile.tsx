@@ -23,6 +23,7 @@ const ProfileDetail = () => {
   const [mainid, setMainid] = useState('');
   const { isLogin, session,user } = useAuth();
   const [avatar, setAvatar] = useState("");
+  const [shouldRun, setShouldRun] = useState(true);
   const forumData = [
     { id: 1, name: "$PEPESI", multiplier: "10X", rank: "1", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
     { id: 2, name: "$PEPESI", multiplier: "100X", rank: "2", caller: "UsernameLong", marketcap: "475.5k to 880.4k", percentage: "519%" },
@@ -35,7 +36,7 @@ const ProfileDetail = () => {
   ];
 
   useEffect(() => {
-     setIsLoading(true);
+    setIsLoading(true);
    const params = new URLSearchParams(window.location.search);
    const id = params.get("id");
     setMainid(id);
@@ -53,17 +54,16 @@ const ProfileDetail = () => {
       setAvatar(data[0].avatar)
      setIsLoading(false);
     } else {
-    }};
-    scan(); 
-    const channel = supabase
-      .channel("my_calls")
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users" }, scan)
-      .subscribe();
-    
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+     }
+   };
+      scan();
+      setShouldRun(false);
+   const intervalId = setInterval(() => {
+     scan();
+    }, 20000); 
+
+    return () => clearInterval(intervalId);
+  }, [shouldRun]);
   const handleReprofile = async (xaddress: string, taddress: string, saddress: string, bio: string, preview: string) => { 
     setAvatar(preview);
     user.avatar = preview;
@@ -98,6 +98,7 @@ const ProfileDetail = () => {
       updatedProfile[0] = { ...updatedProfile[0], saddress: saddress };  // Update the specific element
       setProfile(updatedProfile);
     }
+    setShouldRun(true);
 
   }
   return <ForumLayout>

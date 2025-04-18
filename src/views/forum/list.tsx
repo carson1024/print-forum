@@ -33,7 +33,7 @@ const ForumList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(searchParams.get('level') || "All Ranks");
   const wrapperRef = React.useRef(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(Number(searchParams.get('page') || 1));
   const [showPagination, setShowPagination] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 7;
@@ -182,7 +182,7 @@ const ForumList = () => {
 
       {/* First */}
       <button
-        onClick={() => setPage(1)}
+        onClick={() => { setSearchParams({ type: activeTab, level: filters, page: "1" }); setPage(1); }}
         disabled={page === 1}
         className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
@@ -191,7 +191,7 @@ const ForumList = () => {
 
       {/* Prev */}
       <button
-        onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                onClick={() => { setPage((p) => Math.max(p - 1, 1));setSearchParams({ type: activeTab, level: filters, page: String(Number(page-1)) }); }}
         disabled={page === 1}
         className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
@@ -226,7 +226,7 @@ const ForumList = () => {
 
       {/* Next */}
       <button
-        onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                onClick={() => { setPage((p) => Math.min(p + 1, totalPages));setSearchParams({ type: activeTab, level: filters, page: String(Number(page+1)) });  }}
         disabled={page === totalPages}
         className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
@@ -235,7 +235,7 @@ const ForumList = () => {
 
       {/* Last */}
       <button
-        onClick={() => setPage(totalPages)}
+                onClick={() => { setPage(totalPages); setSearchParams({ type: activeTab, level: filters, page: String(totalPages) }); }}
         disabled={page === totalPages}
         className="w-7 h-7 leading-none flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >

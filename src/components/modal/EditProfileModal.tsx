@@ -76,17 +76,17 @@ const EditProfileModal = ({
    }, [session]);
   
   const onsaveInfo = async () => { 
-    const file = myfile; // e.g., from input type="file"
-    console.log(file)
+    if (myfile !== null) {
+    const file = myfile;
     const fileExt = file.name.split('.').pop();
-    const fileName = `${session.user.id}.${fileExt}`;
-    const filePath = `avatars/${fileName}`; // "avatars" is your bucket folder
+    const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
 
-    const { data, error: uploadError } = await supabase.storage
-      .from('avatars') // replace with your actual bucket name
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
       .upload(filePath, file, {
         cacheControl: '3600',
-        upsert: true
+        upsert: true, // Optional since you're using a new name
       });
 
     if (uploadError) {
@@ -94,14 +94,34 @@ const EditProfileModal = ({
       return;
     }
 
-  const { data: { publicUrl } } = supabase.storage
-    .from('avatars')
-    .getPublicUrl(filePath);
+    const { data: { publicUrl } } = await supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
 
-  const { error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from("users")
-      .update({ xaddress: xaddress,taddress:taddress,saddress:saddress,avatar:publicUrl, bio: bio })
+      .update({ 
+        xaddress : xaddress, 
+        taddress : taddress, 
+        saddress : saddress, 
+        avatar: publicUrl, 
+        bio : bio
+      })
       .eq("id", session.user.id);
+
+    if (updateError) {
+      console.error("Update failed:", updateError);
+    } else {
+      showToastr("Your information is changed", "success");
+      onChange(xaddress, taddress, saddress, bio, publicUrl);
+      onOk();
+    }
+  } else {
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ xaddress, taddress, saddress, bio })
+      .eq("id", session.user.id);
+
     if (updateError) {
       console.error("Update failed:", updateError);
     } else {
@@ -109,6 +129,7 @@ const EditProfileModal = ({
       onChange(xaddress, taddress, saddress, bio, preview);
       onOk();
     }
+  }
   }
   return <Modal isOpen={isOpen} onClose={onCancel} extraClass="w-[620px]">
 
