@@ -310,7 +310,7 @@ const TokenDetail = () => {
   }
 
   return <ForumLayout>
-    <div className={`card flex-grow p-0 flex flex-col overflow-hidden ${isLoading || isTopLoading ? 'loading' : ''}`}>
+    <div className={`card flex-grow p-0 flex flex-col overflow-hidden ${isLoading ? 'loading' : ''}`}>
       <div className="px-4 flex py-4 sm:px-6 sm:py-2.5 border-b-[1px] border-gray-100 f0lex 2xl:justify-between items-center gap-3">
         <div className="flex gap-3 items-center">
           <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
@@ -422,14 +422,14 @@ const TokenDetail = () => {
                     <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{callersCount}</span>
                   }
                 </div>
-                <div className="flex items-center gap-2">
+                <div className={`flex items-center gap-2 ${isTopLoading ? 'loading' : ''}`}>
                   <span className="text-xs sm:text-base">Top 10 holders</span> 
                   {
                     isTopLoading ? <div className="w-20 h-5 rounded skeleton"></div> :
                     <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{top10HolderInfo.pct.toFixed(2)}% (${formatNumber(top10HolderInfo.uiAmount*sitem?.changedPrice)})</span>
                   }
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className={`flex items-center gap-2 flex-wrap ${isTopLoading ? 'loading' : ''}`}>
                   <span className="text-xs sm:text-base">Top 3 holders</span>
                   <div className="flex gap-2">
                     {
