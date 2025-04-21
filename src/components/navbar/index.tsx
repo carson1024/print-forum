@@ -32,7 +32,7 @@ const Navbar = (props: {
           <Link to="/" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'forum' ? 'active' : ''}`}>Forum</Link>
           <button className={`nav-item btn-sm md:btn-lg ${currentRoute == 'alpha' ? 'active' : ''}`} onClick={() => setIsModalOpen(true)}>Alpha</button>
           <Link to="/leaderboard" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'leaderboard' ? 'active' : ''}`}>Leaderboard</Link>
-          <Link to="/copytrading" className={`nav-item hidden btn-sm md:btn-lg ${currentRoute == 'copytrading' ? 'active' : ''}`}>Copy Trading</Link>
+          <Link to="/copytrading" className={`nav-item btn-sm md:btn-lg ${currentRoute == 'copytrading' ? 'active' : ''}`}>CopyTrading</Link>
         </div>
       </div>
       <div className="flex w-full justify-end">

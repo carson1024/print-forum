@@ -410,7 +410,7 @@ const MyProfile = (props: {
     <div className={`rounded border border-gray-100 grow flex flex-col ${isLoading ? 'loading' : ''}`}>
       <div className="tab">
         <button className={`tab-item ${activeTab2 === 0 ? 'active' : ''}`} onClick={() => setActiveTab2(0)}>My Calls</button>
-        <button className={`tab-item hidden ${activeTab2 === 1 ? 'active' : ''}`} onClick={() => setActiveTab2(1)}>My Trades</button>
+        <button className={`tab-item ${activeTab2 === 1 ? 'active' : ''}`} onClick={() => setActiveTab2(1)}>My Trades</button>
       </div>
       <div className="bg-white text-black flex-1 overflow-auto rounded-b">
         {activeTab2 === 0 ? (

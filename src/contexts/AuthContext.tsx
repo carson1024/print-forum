@@ -20,9 +20,10 @@ export interface UserType {
 }
 
 export interface AuthContextType {
+  isLogin: boolean;
   session: Session | null;
   user: UserType | null;
-  isLogin: boolean;
+ 
 }
 
 

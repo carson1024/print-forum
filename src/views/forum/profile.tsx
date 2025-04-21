@@ -122,7 +122,7 @@ const ProfileDetail = () => {
              <div className="hidden md:flex btn-group light">
                <button className={`btn btn-sm ${activeTab == 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>Profile</button>
                <button className={`btn btn-sm ${activeTab == 'calls' ? 'active' : ''}`} onClick={() => setActiveTab('calls')}>Calls</button>
-               <button className={`btn btn-sm hidden ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
+               <button className={`btn btn-sm ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
              </div>
         </div>
         <div className="flex flex-col gap-5 flex-grow hidden md:block flex-grow relative ">
