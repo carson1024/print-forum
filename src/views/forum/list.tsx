@@ -33,10 +33,10 @@ const ForumList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(searchParams.get('level') || "All Ranks");
   const wrapperRef = React.useRef(null);
-  const [page, setPage] = useState(Number(searchParams.get('page') || 1));
+  const [page, setPage] = useState(Number(searchParams.get('page') || 5));
   const [showPagination, setShowPagination] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 7;
+  const itemsPerPage = 6;
   const [isPaginationVisible, setPaginationVisible] = useState(true);
   const hideTimer = useRef(null);
  const [inputValue, setInputValue] = useState<string>(String(page));
@@ -47,7 +47,7 @@ const ForumList = () => {
     setIsLoading(true);
     const fetchCalls = async() => {
     const from = (page - 1) * itemsPerPage;
-    const to = from + itemsPerPage - 1;
+    const to = from + itemsPerPage;
     const { data, error } = await supabase
         .from("calls")
         .select("*, users(*)")
