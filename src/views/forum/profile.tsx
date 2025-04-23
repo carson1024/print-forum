@@ -134,7 +134,7 @@ const ProfileDetail = () => {
                   : activeTab == 'calls' ?
                     <CallsTab myprofile={profile[0]} />
                     :
-                    <TradeLeadingTab />
+                    <TradeLeadingTab myprofile={profile[0]} />
               }</> }
         </div>
         <div className="md:hidden loading">
@@ -164,7 +164,7 @@ const ProfileDetail = () => {
           <span className="font-bold text-base sm:text-lg">Trade leading</span>
         </div>
         <div>
-          <TradeLeadingTab />
+          <TradeLeadingTab myprofile={profile[0]}/>
         </div>
       </div>
     </div>
