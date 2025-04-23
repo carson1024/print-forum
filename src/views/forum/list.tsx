@@ -33,7 +33,7 @@ const ForumList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(searchParams.get('level') || "All Ranks");
   const wrapperRef = React.useRef(null);
-  const [page, setPage] = useState(Number(searchParams.get('page') || 5));
+  const [page, setPage] = useState(Number(searchParams.get('page') || 1));
   const [showPagination, setShowPagination] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 6;
