@@ -164,7 +164,11 @@ const ProfileDetail = () => {
           <span className="font-bold text-base sm:text-lg">Trade leading</span>
         </div>
         <div>
-          <TradeLeadingTab myprofile={profile[0]}/>
+          {
+            isLoading || ! profile.length ? <><SkeletonList /></> : <>
+               <TradeLeadingTab myprofile={profile[0]}/>
+            </>}
+   
         </div>
       </div>
     </div>
