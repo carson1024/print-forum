@@ -2,19 +2,23 @@ import { FaChevronRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { MdStar } from "react-icons/md";
 
-const FavouritesTab = () => {
+const FavouritesTab = ({
+  users
+}: {
+  users: any[]
+}) => {
   return (<>
-    {Array(4).fill(0).map((item, index) => (<Link to="" key={index}>
+    {users.map((user, index) => (<Link to="" key={index}>
       <div className="bg-gray-50 p-1.5 rounded-[22px] flex items-center justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-full border border-gray-150 flex items-center gap-2.5">
-                <span className="badge-rank-8"></span>
+                <span className={`badge-rank-${user.rank}`}></span>
                 <div className="space-y-0.5">
-                  <div className="text-xs text-gray-600">Rank 5</div>
+                  <div className="text-xs text-gray-600">Rank {user.rank}</div>
                   <div className="flex gap-1 items-center">
-                    <span className="font-bold text-sm">UsernameLong</span>
+                    <span className="font-bold text-sm">{user.name}</span>
                   </div>
                 </div>
               </div>
@@ -37,7 +41,7 @@ const FavouritesTab = () => {
                 </div>
                 <div className="text-xs bg-gray-100 px-2 py-1.5 flex items-center gap-1 rounded-full">
                   <span className="text-gray-600">Win Ratio</span>
-                  <span className="text-primary">56%</span>
+                  <span className="text-primary">{user.winrate}%</span>
                 </div>
               </div>
               <div className="flex items-center gap-1">

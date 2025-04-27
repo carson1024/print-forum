@@ -12,7 +12,9 @@ import FavouritesTab from "./components/tab/FavouritesTab";
 import { IoSearchSharp } from "react-icons/io5";
 import { MdFilterListAlt } from "react-icons/md";
 import CopyFilterModal from "components/modal/CopyFilterModal";
-
+import React, { act, useEffect} from "react";
+import { supabase } from "lib/supabase";
+import { SkeletonList,SkeletonRow } from "../../components/skeleton/forum";
 interface SubTabType {
   portfolios: string;
   traders: string;
@@ -20,7 +22,8 @@ interface SubTabType {
 }
 
 const CopyTrading = () => {
-
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [activeTab,setActiveTab] = useState<'portfolios' | 'traders' | 'favorites'>('portfolios');
   const [activeSubTab, setActiveSubTab] = useState<SubTabType>({
@@ -35,6 +38,24 @@ const CopyTrading = () => {
       [tab]: subTab
     }));
   }
+
+    useEffect(() => {
+    setIsLoading(true);
+    const fetchCalls = async () => {
+    const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .order('rank', { ascending: false })  // higher rank first
+          .order('winrate', { ascending: false }); 
+        if (error) {
+          console.error("Error fetching calls:", error.message);
+          return;
+        }
+      if (data.length > 0) { setUsers(data);setIsLoading(false); }
+       }
+      fetchCalls();   
+      
+    }, []);
 
   return <CopyTradingLayout>
     <div className="flex items-center mb-4 flex-wrap gap-3 justify-center">
@@ -95,16 +116,21 @@ const CopyTrading = () => {
           </div>
         </div>
       </div>
-      
-      <div className="p-4 md:p-6 flex flex-col gap-5 overflow-auto flex-grow">
+      {
+        isLoading || !users.length ?<div className="p-4 md:p-6 flex flex-col gap-5 overflow-auto flex-grow loading">
+        <><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={70} /><SkeletonRow opacity={50} /><SkeletonRow opacity={30} /></>
+        </div> :
+        <div className="p-4 md:p-6 flex flex-col gap-5 overflow-auto flex-grow">
         {
           activeTab == 'portfolios' ?
-            <PortfoliosTab />
+            <PortfoliosTab users={users} />
           : activeTab == 'traders' ?
-            <TradersTab />
-          : <FavouritesTab />
+           <TradersTab users={users} />
+          : <FavouritesTab users={users}/>
         }
       </div>
+      }
+    
     </div>
     <CopyFilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
   </CopyTradingLayout>
