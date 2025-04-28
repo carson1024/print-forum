@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getRankChar } from "utils/style";
 import IconUser from 'assets/img/icons/user.svg';
 import IconLink from 'assets/img/icons/link.svg';
@@ -12,23 +12,31 @@ import WithdrawModal from "components/modal/WithdrawModal";
 import DepositModal from "components/modal/DepositModal";
 import AllTradesModal from "components/modal/AllTradesModal";
 import { Link } from "react-router-dom";
+import { useAuth } from "contexts/AuthContext";
+import { supabase } from "lib/supabase";
 
 const CopyTradingProfile = (props: {
   logout: () => void
 }) => {
   const { logout } = props;
+  const { isLogin, session, user } = useAuth();
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab2, setActiveTab2] = useState(0);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isAllTradesModalOpen, setIsAllTradesModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   return (<>
     <div className="rounded border border-gray-100">
       <div className="bg-white text-black p-5 space-y-4 rounded">
         <div className="flex gap-3 items-center">
           <div className="relative w-[65px] h-[65px] bg-black circle flex items-center justify-center">
-            <img src={IconUser} className="w-4 h-4" />
+            { 
+              isLogin && (user.avatar !== null || user.avatar !== "") ? <img src={user.avatar} className="w-12 h-12" /> :
+              <img src={IconUser} className="w-4 h-4" />
+            }
+            
           </div>
           <div className="space-y-2 flex justify-between grow items-center">
             <div>
