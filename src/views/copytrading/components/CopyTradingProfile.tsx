@@ -11,9 +11,13 @@ import Token from 'assets/img/sample/token.png';
 import WithdrawModal from "components/modal/WithdrawModal";
 import DepositModal from "components/modal/DepositModal";
 import AllTradesModal from "components/modal/AllTradesModal";
+import ConfirmwithdrawModalModal from "components/modal/ConfirmwithdrawModal";
 import { Link } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
+import { Connection, clusterApiUrl, PublicKey } from '@solana/web3.js';
+import { showToastr } from "components/toastr";
+import { Keypair } from '@solana/web3.js';
 
 const CopyTradingProfile = (props: {
   logout: () => void
@@ -22,25 +26,82 @@ const CopyTradingProfile = (props: {
   const { isLogin, session, user } = useAuth();
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab2, setActiveTab2] = useState(0);
+  const [amount, setAmount] = useState(0);
+  const [toaddress, setToAddress] = useState("");
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isConfirmWithdrawModalOpen, setIsConfirmWithdrawModalOpen] = useState(false);
   const [isAllTradesModalOpen, setIsAllTradesModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [mySKey, setMySKey] = useState({});
+  const [balance, setBalance] = useState<number | null>(null);
+  const getBalance = async (publicKeyStr: string) => {
+  const connection = new Connection(clusterApiUrl('devnet'), 'confirmed'); // or 'mainnet-beta'
+  const publicKey = new PublicKey(publicKeyStr);
 
+  try {
+    const balance = await connection.getBalance(publicKey);
+    return balance / 1e9; // Convert lamports to SOL
+  } catch (error) {
+    console.error('Error fetching balance:', error);
+    return null;
+  }
+};
+  
+  useEffect(() => {
+  if (!user) return; // If there's no user, stop execution
+
+  let interval: NodeJS.Timeout;
+
+  const fetchBalance = async (publicKeyStr: string) => {
+    const balance = await getBalance(publicKeyStr);
+    setBalance(balance);
+    };
+    
+    const privateKeyString = user.wallet_saddress;
+    const privateKeyObject = JSON.parse(privateKeyString);
+    const privateKeyArray = Object.values(privateKeyObject).map(Number);
+    const privateKeyUint8Array = Uint8Array.from(privateKeyArray);
+    const myKeypair = Keypair.fromSecretKey(privateKeyUint8Array);
+    console.log(myKeypair);
+     setMySKey(myKeypair);
+  const fetchcall = async () => {
+    try {
+        // setMyKey(data.wallet_paddress);
+        await fetchBalance(user.wallet_paddress);
+        setIsLoading(false);
+
+        // Set interval AFTER you have the wallet address
+        interval = setInterval(() => {
+          fetchBalance(user.wallet_paddress);
+        }, 5000);
+    } catch (error) {
+      console.error('Error fetching user info', error);
+    }
+  };
+
+  fetchcall();
+
+  // Cleanup
+  return () => {
+    if (interval) clearInterval(interval);
+  };
+}, [user]);
   return (<>
     <div className="rounded border border-gray-100">
       <div className="bg-white text-black p-5 space-y-4 rounded">
         <div className="flex gap-3 items-center">
           <div className="relative w-[65px] h-[65px] bg-black circle flex items-center justify-center">
             { 
-              isLogin && (user.avatar !== null || user.avatar !== "") ? <img src={user.avatar} className="w-12 h-12" /> :
+              isLogin && user?.avatar ? <img src={user.avatar} className="w-12 h-12" /> :
               <img src={IconUser} className="w-4 h-4" />
             }
             
           </div>
           <div className="space-y-2 flex justify-between grow items-center">
             <div>
-              <div className="text-md font-semibold"><span className="text-xl font-bold">2.1</span> SOL</div>
+              {isLoading ? <div className="text-md font-semibold"><span className="text-xl font-bold">...</span> SOL</div> :
+              <div className="text-md font-semibold"><span className="text-xl font-bold">{balance}</span> SOL</div>}
               <p className="text-black/60">Current Balance</p>
             </div>
             <div className="flex">
@@ -121,9 +182,10 @@ const CopyTradingProfile = (props: {
         )}
       </div>
     </div>
-    <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => setIsWithdrawModalOpen(false)} />
+    <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => { setIsWithdrawModalOpen(false); }} maxsol={balance} onWithdraw={(amount: number, tooneaddress: string) => { setIsConfirmWithdrawModalOpen(true); setAmount(amount); setToAddress(tooneaddress)}} />
     <DepositModal isOpen={isDepositModalOpen} onClose={() => setIsDepositModalOpen(false)} />
     <AllTradesModal isOpen={isAllTradesModalOpen} onClose={() => setIsAllTradesModalOpen(false)} />
+    <ConfirmwithdrawModalModal isOpen={isConfirmWithdrawModalOpen} onClose={() => { setIsConfirmWithdrawModalOpen(false); setIsWithdrawModalOpen(false); }} maxsol={balance} withdraw={amount} privateKey={mySKey} to={toaddress} />
   </>)
 }
 

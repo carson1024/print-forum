@@ -1,10 +1,13 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Session } from '@supabase/supabase-js';
+import { Keypair } from '@solana/web3.js';
 
 export interface UserType {
   id: string,
   avatar: string | null;
+  wallet_paddress: string;
+  wallet_saddress: string;
   name: string;
   email: string;
   taddress: string;
@@ -51,6 +54,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(dataUser);
     }
   }, [user]);
+
+async function handleUserLogin() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    console.log('No user logged in');
+    return;
+  }
+
+  // Check if the user already has a wallet address
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', user.id) // assuming 'id' is the PK from auth.users
+    .single();
+
+  if (error) {
+    console.error('Error fetching user:', error);
+    return;
+  }
+
+  // If the wallet_address is missing, generate a new one
+  if (!data.wallet_paddress || !data.wallet_saddress) {
+    const keypair = Keypair.generate(); // Generate a new Solana wallet
+    const walletPaddress = keypair.publicKey.toBase58(); // Get the public address
+    const walletSaddress = keypair.secretKey; // Get the securite address
+    // Save the wallet address in the database (only once)
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ wallet_paddress: walletPaddress, wallet_saddress: walletSaddress })
+      .eq('id', user.id);
+
+    if (updateError) {
+      console.error('Error updating wallet address:', updateError);
+    } else {
+      console.log('Wallet address generated and saved successfully');
+    }
+  } 
+}
+
+
+
   useEffect(() => {
     setLoading(true);
 
@@ -66,6 +111,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     };
     checkSession();
+
+    const checkAndCreateWallet = async () => {
+    await handleUserLogin();
+    };
+
+    checkAndCreateWallet();
+
+
+
+
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, _session: Session | null) => {
         setSession(_session);
