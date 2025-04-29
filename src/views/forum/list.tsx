@@ -238,7 +238,7 @@ const ForumList = () => {
 
       {/* Last */}
       <button
-                onClick={() => { setPage(totalPages); setSearchParams({ type: activeTab, level: filters, page: String(totalPages) }); }}
+        onClick={() => { setPage(totalPages); setSearchParams({ type: activeTab, level: filters, page: String(totalPages) }); }}
         disabled={page === totalPages}
         className="w-7 h-7 leading-none flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
       >
