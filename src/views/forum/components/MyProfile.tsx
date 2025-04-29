@@ -15,6 +15,9 @@ import { getRankChar } from "../../../../src/utils/style";
 import { formatNumber, formatShortAddress, formatTimestamp } from "../../../utils/blockchain";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import { Connection, clusterApiUrl, PublicKey } from '@solana/web3.js';
+import { Keypair } from '@solana/web3.js';
+import ConfirmwithdrawModalModal from "components/modal/ConfirmwithdrawModal";
 const MyProfile = (props: {
   logout: () => void
 }) => {
@@ -32,6 +35,24 @@ const MyProfile = (props: {
   const [hasUnread, setHasUnread] = useState(true);
   const [unreadcounts, setUnreadcounts] = useState(0);
   const [readcounts, setReadcounts] = useState(0);
+  const [amount, setAmount] = useState(0);
+  const [toaddress, setToAddress] = useState("");
+  const [isConfirmWithdrawModalOpen, setIsConfirmWithdrawModalOpen] = useState(false);
+  const [mySKey, setMySKey] = useState({});
+  const [balance, setBalance] = useState<number | null>(null);
+  const getBalance = async (publicKeyStr: string) => {
+  const connection = new Connection(clusterApiUrl('devnet'), 'confirmed'); // or 'mainnet-beta'
+  const publicKey = new PublicKey(publicKeyStr);
+
+  try {
+    const balance = await connection.getBalance(publicKey);
+    return balance / 1e9; // Convert lamports to SOL
+  } catch (error) {
+    console.error('Error fetching balance:', error);
+    return null;
+  }
+};
+
   useEffect(() => {
     //  setIsLoading(true);
     const fetchCalls = async () => {
@@ -61,11 +82,51 @@ const MyProfile = (props: {
           setUnreadcounts(Number(notifications.length))
           setNotificate(notifications);
         }
-
         setIsLoading(false);
       }
     }
     fetchCalls();
+
+    if (user?.wallet_paddress) {
+      let interval: NodeJS.Timeout;
+      const fetchBalance = async (publicKeyStr: string) => {
+        const balance = await getBalance(publicKeyStr);
+        setBalance(balance);
+        if (user.balance !== balance) {
+          user.balance = balance;
+          const { error: balanceError } = await supabase
+                .from('users')
+                .update({ balance:balance })
+                .eq('id', user.id);
+                if (balanceError) {
+                console.error('Error updating balance error', balanceError);
+              }
+        }
+      };
+      const privateKeyString = user?.wallet_saddress;
+      const privateKeyObject = JSON.parse(privateKeyString);
+      const privateKeyArray = Object.values(privateKeyObject).map(Number);
+      const privateKeyUint8Array = Uint8Array.from(privateKeyArray);
+      const myKeypair = Keypair.fromSecretKey(privateKeyUint8Array);
+      setMySKey(myKeypair);
+      const fetchcall = async () => {
+        try {
+          // setMyKey(data.wallet_paddress);
+          await fetchBalance(user.wallet_paddress);
+          setIsLoading(false);
+          // Set interval AFTER you have the wallet address
+          interval = setInterval(() => {
+            fetchBalance(user.wallet_paddress);
+          }, 5000);
+        } catch (error) {
+          console.error('Error fetching user info', error);
+        }
+      };
+      fetchcall();
+     return () => {
+        if (interval) clearInterval(interval);
+      };
+    }
     // Subscribe to real-time changes in the "calls" table
     const channel = supabase
       .channel("my_calls")
@@ -162,7 +223,7 @@ const MyProfile = (props: {
             <div className="rounded-[20px] bg-black/5 p-4 hidden sm:block">
               <div className="flex gap-6">
                 <div className="space-y-2">
-                  <div className="text-md font-semibold"><span className="text-xl font-bold">{user?.balance}</span> SOL</div>
+                  <div className="text-md font-semibold"><span className="text-xl font-bold">{balance}</span> SOL</div>
                   <p className="text-sm text-black/60">Current Balance</p>
                   <div className="flex gap-2">
                     <button className="btn btn-sm btn-green flex items-center gap-1" onClick={() => setIsDepositModalOpen(true)}><span className=""><ImArrowUp /></span> Deposit</button>
@@ -183,7 +244,7 @@ const MyProfile = (props: {
                   <div className="space-y-0.5">
                     <p className="text-black/60 text-sm">Unallocated</p>
                     <div className="text-black font-semibold flex gap-2">
-                      <span>{Number(user?.balance-user?.allocate_balance) ||0} SOL</span>
+                      <span>{Number(balance-user?.allocate_balance) ||0} SOL</span>
                     </div>
                   </div>
                 </div>
@@ -504,7 +565,9 @@ const MyProfile = (props: {
         )}
       </div>
     </div>
-    {/* <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => setIsWithdrawModalOpen(false)} maxsol={0} /> */}
+   
+    <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => { setIsWithdrawModalOpen(false); }} maxsol={balance} onWithdraw={(amount: number, tooneaddress: string) => { setIsConfirmWithdrawModalOpen(true); setAmount(amount); setToAddress(tooneaddress)}} />
+    <ConfirmwithdrawModalModal isOpen={isConfirmWithdrawModalOpen} onClose={() => { setIsConfirmWithdrawModalOpen(false); setIsWithdrawModalOpen(false); }} maxsol={balance} withdraw={amount} privateKey={mySKey} to={toaddress} />
     <DepositModal isOpen={isDepositModalOpen} onClose={() => setIsDepositModalOpen(false)} />
     <AllTradesModal isOpen={isAllTradesModalOpen} onClose={() => setIsAllTradesModalOpen(false)} />
   </>)
