@@ -48,43 +48,44 @@ const CopyTradingProfile = (props: {
 };
   
   useEffect(() => {
-  if (!user) return; // If there's no user, stop execution
+    if (!user) return; // If there's no user, stop execution
+    if (user?.wallet_paddress) {
+      let interval: NodeJS.Timeout;
 
-  let interval: NodeJS.Timeout;
-
-  const fetchBalance = async (publicKeyStr: string) => {
-    const balance = await getBalance(publicKeyStr);
-    setBalance(balance);
-    };
+      const fetchBalance = async (publicKeyStr: string) => {
+        const balance = await getBalance(publicKeyStr);
+        setBalance(balance);
+      };
     
-    const privateKeyString = user?.wallet_saddress;
-    const privateKeyObject = JSON.parse(privateKeyString);
-    const privateKeyArray = Object.values(privateKeyObject).map(Number);
-    const privateKeyUint8Array = Uint8Array.from(privateKeyArray);
-    const myKeypair = Keypair.fromSecretKey(privateKeyUint8Array);
-    console.log(myKeypair);
-     setMySKey(myKeypair);
-  const fetchcall = async () => {
-    try {
-        // setMyKey(data.wallet_paddress);
-        await fetchBalance(user.wallet_paddress);
-        setIsLoading(false);
+      const privateKeyString = user?.wallet_saddress;
+      const privateKeyObject = JSON.parse(privateKeyString);
+      const privateKeyArray = Object.values(privateKeyObject).map(Number);
+      const privateKeyUint8Array = Uint8Array.from(privateKeyArray);
+      const myKeypair = Keypair.fromSecretKey(privateKeyUint8Array);
+      setMySKey(myKeypair);
+      const fetchcall = async () => {
+        try {
+          // setMyKey(data.wallet_paddress);
+          await fetchBalance(user.wallet_paddress);
+          setIsLoading(false);
 
-        // Set interval AFTER you have the wallet address
-        interval = setInterval(() => {
-          fetchBalance(user.wallet_paddress);
-        }, 5000);
-    } catch (error) {
-      console.error('Error fetching user info', error);
+          // Set interval AFTER you have the wallet address
+          interval = setInterval(() => {
+            fetchBalance(user.wallet_paddress);
+          }, 5000);
+        } catch (error) {
+          console.error('Error fetching user info', error);
+        }
+    
+      };
+
+      fetchcall();
+
+      // Cleanup
+      return () => {
+        if (interval) clearInterval(interval);
+      };
     }
-  };
-
-  fetchcall();
-
-  // Cleanup
-  return () => {
-    if (interval) clearInterval(interval);
-  };
 }, [user]);
   return (<>
     <div className="rounded border border-gray-100">
