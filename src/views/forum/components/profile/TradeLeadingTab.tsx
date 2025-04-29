@@ -2,13 +2,32 @@ import IconTwitter from 'assets/img/icons/twitter.svg';
 import IconTelegram from 'assets/img/icons/telegram.svg';
 import IconSolana from 'assets/img/icons/solana.svg';
 import { AiFillCaretDown } from 'react-icons/ai';
-import { useState } from 'react';
+import React, { useEffect,useRef,useState  } from 'react';
 import { IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import CopyingModal from 'components/modal/CopyingModal';
 import AllCopiersModal from 'components/modal/AllCopiersModal';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import {useSearchParams } from 'react-router-dom';
+
+const options = ["7Days", "30Days", "90Days"];
+
+function useOutsideAlerter(ref: any, setX: any): void {
+  React.useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setX(false);
+      }
+    }
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+    // Unbind the event listener on clean up
+    document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, setX]);
+}
 
 type Props = {
   myprofile: {
@@ -30,8 +49,23 @@ type Props = {
 
 const TradeLeadingTab = ({ myprofile }: Props) => {
   const [isCopying, setIsCopying] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isCopyingModalOpen, setIsCopyingModalOpen] = useState(false);
   const [isAllCopiersModalOpen, setIsAllCopiersModalOpen] = useState(false);
+  const [filter, setFilter] = useState("");
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [filters, setFilters] = useState(searchParams.get('day') || "7 days");
+  const wrapperRef = React.useRef(null);
+  const [activeTab,setActiveTab] = useState<'portfolios' | 'traders' | 'favorites'>('portfolios');
+  useOutsideAlerter(wrapperRef, setIsOpen);
+  const toggleDropdown = () => setIsOpen(!isOpen);
+  const handleSelect = (op: string): void =>{
+    setFilters(op);
+    // setSearchParams({ type:activeTab, day: op });
+    setIsOpen(false);
+  };
+  
 
   return (<>
     <div className="overflow-auto h-full">
@@ -60,8 +94,27 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
               <div className='flex justify-between items-center'>
                 <span className='font-semibold text-sm sm:text-base'>Performance</span>
                 <div className='px-2.5 py-1.5 rounded-full bg-gray-100 text-white flex items-center gap-2'>
-                  <span className='text-xs sm:text-sm font-semibold'>7 days</span>
-                  <span className='text-xs sm:text-sm text-gray-500'><AiFillCaretDown /></span>
+                  {/* <span className='text-xs sm:text-sm font-semibold'>7 days</span> */}
+                  <div ref={wrapperRef} className="relative inline-block text-left flex">
+                                  <button
+                                  onClick={toggleDropdown} className='flex'>
+                                  <span className='text-xs sm:text-sm font-semibold'>{filters}</span>
+                                  <span className='text-xs sm:text-sm text-gray-500 center'><AiFillCaretDown /></span></button>
+                                  {isOpen && (
+                                    <div className="absolute left-1/2 transform -translate-x-1/2 mt-6 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg" >
+                                    {options.map((op) => (
+                                      <button
+                                        key={op}
+                                        className={`block w-full px-4 py-2.5 text-left hover:text-black hover:bg-primary/50 ${filters == op ? 'bg-primary/50 text-black' : ''}`}
+                                        onClick={() => handleSelect(op)}
+                                      >
+                                        {op}
+                                      </button>
+                                        ))}
+                                    </div>
+                                  )}
+                    </div>
+                  {/* <span className='text-xs sm:text-sm text-gray-500'><AiFillCaretDown /></span> */}
                 </div>
               </div>
               <div className='flex flex-wrap gap-4'>

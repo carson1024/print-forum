@@ -55,6 +55,16 @@ const CopyTradingProfile = (props: {
       const fetchBalance = async (publicKeyStr: string) => {
         const balance = await getBalance(publicKeyStr);
         setBalance(balance);
+        if (user.balance !== balance) {
+          user.balance = balance;
+          const { error: balanceError } = await supabase
+                .from('users')
+                .update({ balance:balance })
+                .eq('id', user.id);
+                if (balanceError) {
+                console.error('Error updating balance error', balanceError);
+              }
+        }
       };
     
       const privateKeyString = user?.wallet_saddress;
@@ -117,11 +127,11 @@ const CopyTradingProfile = (props: {
             <div className="space-y-0.5">
               <p className="text-black/60 text-sm">Copying</p>
               <div className="text-black font-semibold flex gap-1 sm:gap-2">
-                <span className="font-semibold"><span className="text-md font-bold">0.2</span> SOL</span>
-                <div className="bg-green-600 px-1 sm:px-2 py-1 text-xxs sm:text-xs flex items-center rounded-full text-black">
+                <span className="font-semibold"><span className="text-md font-bold">{user?.allocate_balance || 0}</span> SOL</span>
+                {/* <div className="bg-green-600 px-1 sm:px-2 py-1 text-xxs sm:text-xs flex items-center rounded-full text-black">
                   <span className="text-sm"><AiFillCaretUp /></span>
                   <span>12%</span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -129,7 +139,7 @@ const CopyTradingProfile = (props: {
             <div className="space-y-0.5">
               <p className="text-black/60 text-sm">Unallocated</p>
               <div className="text-black font-semibold flex gap-2">
-                <span className="font-semibold"><span className="text-md font-bold">2</span> SOL</span>
+                <span className="font-semibold"><span className="text-md font-bold">{Number(user?.balance-user?.allocate_balance) ||0}</span> SOL</span>
               </div>
             </div>
           </div>
