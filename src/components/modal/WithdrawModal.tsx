@@ -42,7 +42,7 @@ const WithdrawModal = ({
     };
   const handleChangeamount = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(Number(e.target.value)); // Update address state on input change
-    if (Number(e.target.value) >= Number(maxsol)) { setWarntext("text-red-300") }
+    if (Number(e.target.value) >= Number(maxsol) || Number(e.target.value)<0.001) { setWarntext("text-red-300") }
     else { setWarntext("text-grey-600") }
     if (0.001 <= Number(e.target.value) && Number(e.target.value) < maxsol) { setAmountWarn("") }
     else {setAmountWarn("Confirm SOL ") }
@@ -109,6 +109,7 @@ const WithdrawModal = ({
         <input 
           id="funds"
           type="number"
+          defaultValue={amount}
           className={`bg-transparent outline-none ${warntext} text-xs sm:text-base flex-grow max-w-[50%] sm:max-w-auto mx-2`}
           placeholder="0.00"
           onChange={handleChangeamount}
@@ -122,7 +123,7 @@ const WithdrawModal = ({
       </div>
 
       {/* Withdraw Button */}
-      <button className="w-full btn text-sm sm:text-base py-3" onClick={() => { if (warn == ""&& address!=="" && amountwarn=="" && amount!== 0) { onWithdraw(amount,toaddress) } }}>Withdraw</button>
+      <button className="w-full btn text-sm sm:text-base py-3" onClick={() => { if (warn == ""&& address!=="" && amountwarn=="" && amount>= 0.001) { onWithdraw(amount,toaddress) } }}>Withdraw</button>
     </div>
   </Modal>
 }

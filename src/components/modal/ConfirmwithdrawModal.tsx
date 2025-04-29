@@ -29,23 +29,26 @@ const ConfirmwithdrawModal = ({
     to:string,
     onClose: () => void
   }>) => {
+    const [isLoading, setIsLoading] = useState(false);
   // Setup connection to the network
   const connection = new Connection('https://api.devnet.solana.com'); // or use  for testing  'https://api.mainnet-beta.solana.com'
 
   // Load sender's private key (make sure you load it securely!)
   const sender = privateKey;
   const handlewithdraw = async () => {
+    setIsLoading(true);
     const receiverPublicKey = new PublicKey(to);
     const transaction = new Transaction().add(
     SystemProgram.transfer({
       fromPubkey: sender.publicKey,
       toPubkey: receiverPublicKey,
-      lamports: withdraw * LAMPORTS_PER_SOL, // for example, send SOL
+      lamports: withdraw * LAMPORTS_PER_SOL, // for example, send 0.01 SOL
       })
      );
 
     const signature = await sendAndConfirmTransaction(connection, transaction, [sender]);
     console.log('Transaction signature', signature);
+    setIsLoading(false);
     onClose();
     showToastr("Withdraw Successfully!", "success");
   }
@@ -68,7 +71,11 @@ const ConfirmwithdrawModal = ({
       
       {/* Withdraw Button */}
       <button className="w-full btn text-sm sm:text-base py-3" onClick={handlewithdraw}>Withdraw</button>
-      
+      {isLoading ? (
+          <div className="spinner-container">
+            <div className="spinner"></div>
+          </div>
+        ) : null}
     </div>
   </Modal>
 }

@@ -16,7 +16,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
 import { Connection, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { showToastr } from "components/toastr";
 import { Keypair } from '@solana/web3.js';
 
 const CopyTradingProfile = (props: {
@@ -58,7 +57,7 @@ const CopyTradingProfile = (props: {
     setBalance(balance);
     };
     
-    const privateKeyString = user.wallet_saddress;
+    const privateKeyString = user?.wallet_saddress;
     const privateKeyObject = JSON.parse(privateKeyString);
     const privateKeyArray = Object.values(privateKeyObject).map(Number);
     const privateKeyUint8Array = Uint8Array.from(privateKeyArray);
@@ -93,7 +92,7 @@ const CopyTradingProfile = (props: {
         <div className="flex gap-3 items-center">
           <div className="relative w-[65px] h-[65px] bg-black circle flex items-center justify-center">
             { 
-              isLogin && user?.avatar ? <img src={user.avatar} className="w-12 h-12" /> :
+              isLogin && user?.avatar ? <img src={user.avatar} className="w-[65px] h-[65px] circle" /> :
               <img src={IconUser} className="w-4 h-4" />
             }
             
