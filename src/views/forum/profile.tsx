@@ -39,6 +39,9 @@ const ProfileDetail = () => {
     setIsLoading(true);
    const params = new URLSearchParams(window.location.search);
    const id = params.get("id");
+    const tag = params.get("tag");
+    if (tag == "1") { setActiveTab('profile') }
+    else if (tag == "2") {setActiveTab('trade')}
     setMainid(id);
    const scan = async () => {
     const { data, error } = await supabase
@@ -125,7 +128,7 @@ const ProfileDetail = () => {
                <button className={`btn btn-sm ${activeTab == 'trade' ? 'active' : ''}`} onClick={() => setActiveTab('trade')}>Trade leading</button>
              </div>
         </div>
-        <div className="flex flex-col gap-5 flex-grow hidden md:block flex-grow relative ">
+        <div className="flex flex-col gap-5 flex-grow hidden md:block flex-grow relative overflow-auto ">
           {
             isLoading || !profile.length ? <div className="p-4 sm:p-6 overflow-hidden loading"><SkeletonList /></div>:<>
               {

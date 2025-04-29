@@ -315,7 +315,7 @@ export const CallRow = ({
             <div className="hidden md:flex items-center gap-3 justify-between">
               {
               call.users && 
-              <Link to={`/profile?id=${call.users.id}`} key={call.id}>
+              <Link to={`/profile?id=${call.users.id}&tag=1`} key={call.id}>
                   <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs" >
                     <span className={`badge-rank-${call.users.rank}`}></span>
                     <div>

@@ -8,7 +8,7 @@ const TradersTab = ({
   users: any[]
 }) => {
   return (<>
-    {users.map((user, index) => (<Link to="" key={index}>
+    {users.map((user, index) => ( <Link to={`/profile?id=${user.id}&tag=2`} key={index}>
       <div className="bg-gray-50 p-1.5 rounded-[22px] flex items-center justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">

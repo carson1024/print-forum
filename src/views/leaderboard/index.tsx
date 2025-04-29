@@ -36,7 +36,7 @@ const Leaderboard = () => {
         { 
           isLoading || !users.length ? (<><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={70} /><SkeletonRow opacity={50} /><SkeletonRow opacity={30} /></>)
             : (
-          <>{users.map((item, index) => (<Link to={`/profile?id=${item.id}`} key={index}>
+          <>{users.map((item, index) => (<Link to={`/profile?id=${item.id}&tag=1`} key={index}>
           <div className="bg-gray-50 p-1.5 rounded sm:rounded-[40px] flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-3">
               <span className={`leader-rank${index+1}`}>{index+1}</span>

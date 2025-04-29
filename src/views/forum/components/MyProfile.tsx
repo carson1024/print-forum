@@ -157,6 +157,38 @@ const MyProfile = (props: {
                 </div>
               </div>
             </div>
+
+             <div className="border border-black/15"></div>
+            <div className="rounded-[20px] bg-black/5 p-4 hidden sm:block">
+              <div className="flex gap-6">
+                <div className="space-y-2">
+                  <div className="text-md font-semibold"><span className="text-xl font-bold">2.1</span> SOL</div>
+                  <p className="text-sm text-black/60">Current Balance</p>
+                  <div className="flex gap-2">
+                    <button className="btn btn-sm btn-green flex items-center gap-1" onClick={() => setIsDepositModalOpen(true)}><span className=""><ImArrowUp /></span> Deposit</button>
+                    <button className="btn btn-sm btn-red flex items-center gap-1" onClick={() => setIsWithdrawModalOpen(true)}><span className=""><ImArrowDown /></span> Withdraw</button>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="space-y-0.5">
+                    <p className="text-black/60 text-sm">Copying</p>
+                    <div className="text-black font-semibold flex gap-2">
+                      <span>0.2 SOL</span>
+                      <div className="bg-green-600 px-2 py-1 text-xs flex items-center rounded-full text-black">
+                        <span className="text-sm"><AiFillCaretUp /></span>
+                        <span>12%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-black/60 text-sm">Unallocated</p>
+                    <div className="text-black font-semibold flex gap-2">
+                      <span>2 SOL</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             
             <div className="space-y-2 text-black">
               <div className="flex justify-between items-center pt-5">
