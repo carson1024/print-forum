@@ -223,7 +223,7 @@ const MyProfile = (props: {
             <div className="rounded-[20px] bg-black/5 p-4 hidden sm:block">
               <div className="flex gap-6">
                 <div className="space-y-2">
-                  <div className="text-md font-semibold"><span className="text-xl font-bold">{balance}</span> SOL</div>
+                  <div className="text-md font-semibold"><span className="text-xl font-bold">{balance ||0}</span> SOL</div>
                   <p className="text-sm text-black/60">Current Balance</p>
                   <div className="flex gap-2">
                     <button className="btn btn-sm btn-green flex items-center gap-1" onClick={() => setIsDepositModalOpen(true)}><span className=""><ImArrowUp /></span> Deposit</button>

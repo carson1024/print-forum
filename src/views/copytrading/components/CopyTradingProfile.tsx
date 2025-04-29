@@ -111,7 +111,7 @@ const CopyTradingProfile = (props: {
           <div className="space-y-2 flex justify-between grow items-center">
             <div>
               {isLoading ? <div className="text-md font-semibold"><span className="text-xl font-bold">...</span> SOL</div> :
-              <div className="text-md font-semibold"><span className="text-xl font-bold">{balance}</span> SOL</div>}
+              <div className="text-md font-semibold"><span className="text-xl font-bold">{balance || 0}</span> SOL</div>}
               <p className="text-black/60">Current Balance</p>
             </div>
             <div className="flex">
