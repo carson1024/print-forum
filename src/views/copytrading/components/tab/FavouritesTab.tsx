@@ -1,12 +1,26 @@
 import { FaChevronRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { MdStar } from "react-icons/md";
+import React, { useEffect, useRef } from 'react';
+import { useState } from "react";
+import { useAuth } from "contexts/AuthContext";
+import { supabase } from "lib/supabase";
 
 const FavouritesTab = ({
   users
 }: {
   users: any[]
-}) => {
+  }) => {
+  const [favo, setFavo] = useState([]);
+    const { isLogin, session, user } = useAuth();
+    useEffect(() => {
+      if (isLogin && user) {
+        const rawFavos = user.favos;
+        // Safely parse if it's a string
+        const parsedFavos = typeof rawFavos === "string" ? JSON.parse(rawFavos) : rawFavos;
+        setFavo(parsedFavos || []);
+      }
+    }, [user]);
   return (<>
     {users.map((user, index) => (<Link to={`/profile?id=${user.id}&tag=2`} key={index}>
       <div className="bg-gray-50 p-1.5 rounded-[22px] flex items-center justify-between">
@@ -29,9 +43,10 @@ const FavouritesTab = ({
                   <span className="text-sm sm:text-base font-semibold">SOL</span>
                 </div>
               </div>
-              <button className="bg-gray-100 text-primary w-6 h-6 circle-item !flex sm:!hidden">
+            
+              {/* <button className="bg-gray-100 text-primary w-6 h-6 circle-item !flex sm:!hidden">
                 <MdStar className="" />
-              </button>
+              </button> */}
             </div>
             <div className="flex items-center gap-1 flex-wrap">
               <div className="flex items-center gap-1">
@@ -59,9 +74,17 @@ const FavouritesTab = ({
           </div>
         </div>
         <div className="hidden sm:flex gap-2 mr-2.5">
-          <button className="bg-gray-100 text-primary w-8 h-8 circle-item">
+            {
+                          favo.includes(user.id)?<button className="bg-gray-100 text-primary w-8 h-8 circle-item" >
+                          <MdStar size={20} />
+                          </button> :
+                            <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item" id={user.id}>
+                            <MdStar size={20} />
+                            </button>
+                        }
+          {/* <button className="bg-gray-100 text-primary w-8 h-8 circle-item">
             <MdStar size={20} />
-          </button>
+          </button> */}
           <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
             <FaChevronRight />
           </button>

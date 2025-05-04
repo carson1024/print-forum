@@ -260,7 +260,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
            </div>
            </div></div> */}
         <div className="-mx-6 border-b border-gray-100"></div>
-        <div className="px-3 sm:px-[18px] py-3 rounded-[22px] border border-gray-150 bg-gray-50 flex items-center gap-2 flex-wrap">
+        <div className="px-3 sm:px-[18px] py-3 rounded-[22px] bg-gray-50 flex items-center gap-2 flex-wrap">
                 
                 <div className="flex items-center gap-1 sm:gap-2">
                   <div className="text-xs bg-green-600 px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1 rounded-full">
@@ -287,7 +287,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
                 </div>
                 <span className="ml-auto text-xs text-white/60">2025-01-16 15:45:17</span>
         </div>
-        <div className="px-3 sm:px-[18px] py-3 rounded-[22px] border border-gray-150 bg-gray-50 flex items-center gap-2 flex-wrap">
+        <div className="px-3 sm:px-[18px] py-3 rounded-[22px] bg-gray-50 flex items-center gap-2 flex-wrap">
                 
                 <div className="flex items-center gap-1 sm:gap-2">
                   <div className="text-xs bg-red-300 px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1 rounded-full">
@@ -314,7 +314,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
                 </div>
                 <span className="ml-auto text-xs text-white/60">2025-01-16 15:45:17</span>
         </div>
-         <div className="px-3 sm:px-[18px] py-3 rounded-[22px] border border-gray-150 bg-gray-50 flex items-center gap-2 flex-wrap">
+         <div className="px-3 sm:px-[18px] py-3 rounded-[22px] bg-gray-50 flex items-center gap-2 flex-wrap">
                 
                 <div className="flex items-center gap-1 sm:gap-2">
                   <div className="text-xs bg-red-300 px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1 rounded-full">

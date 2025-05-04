@@ -22,6 +22,7 @@ export interface UserType {
   winrate: number;
   callcount: number;
   achievements: string[];
+  favos: string[];
   created_at: string;
 }
 
