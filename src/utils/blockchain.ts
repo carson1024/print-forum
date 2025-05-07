@@ -45,7 +45,7 @@ export const checkCall = async (address: string): Promise<CallReportType | null>
 
 export function formatShortAddress(address: string): string {
   if (!address) return '';
-  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  return `${address.slice(0, 3)}...${address.slice(-3)}`;
 }
 
 export function formatNumber(value: number): string {

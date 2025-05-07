@@ -57,21 +57,21 @@ const WithdrawModal = ({
   };
 
   return <Modal isOpen={isOpen} onClose={onClose}>
-    <div className="space-y-6">
+    <div className="space-y-6 w-[470px]">
       <div className="flex">
-        <div className="btn btn-sm btn-red flex items-center gap-1">
+        <div className="text-red-300 flex items-center gap-1">
           <ImArrowDown size={12} />
-          <span className="">Withdraw funds</span>
+          <span className="">Withdraw Funds</span>
         </div>
       </div>
 
-      <p className="text-white text-xs sm:text-sm !leading-[135%]">
+      <p className="text-gray-600 text-[12px] font-Medium !leading-[135%]">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi cursus, libero non pulvinar porttitor, neque elit volutpat eros, eget faucibus elit augue fringilla magna.
       </p>
 
       {/* Address Input */}
-      <div className="bg-gray-50 px-4 sm:px-6 py-4 rounded-full text-white flex items-center gap-2">
-        <div className="text-xs sm:text-base whitespace-nowrap">Your Address</div>
+      <div className="bg-gray-50 px-4 sm:px-6 py-4 circle text-white flex items-center gap-2">
+        <div className="text-white text-[14px] whitespace-nowrap">Your Address</div>
         <div className="flex items-center gap-2 grow">
      <div className="truncate-wrapper">
       {!isEditing ? (
@@ -88,7 +88,7 @@ const WithdrawModal = ({
           value={address}
           onChange={handleChange}
           onBlur={handleBlur} // Switch off editing when input loses focus
-          className="text-grey-600 text-xs sm:text-sm border-none bg-transparent p-0 focus:outline-none"
+          className="text-gray-600 text-[12px] border-none bg-transparent p-0 focus:outline-none"
           placeholder="Enter your address"
           style={{ width: '180%' }}
          />
@@ -104,8 +104,8 @@ const WithdrawModal = ({
       
 
       {/* Amount Input */}
-      <div className=" flex bg-gray-50 px-4 sm:px-6 py-4 rounded-full text-white flex items-center gap-2">
-        <span className="text-xs sm:text-base whitespace-nowrap">Amount (SOL)</span>
+      <div className=" flex bg-gray-50 px-4 sm:px-6 py-4 circle text-white flex items-center gap-2">
+        <span className="text-white text-[14px] whitespace-nowrap">Amount (SOL)</span>
         <input 
           id="funds"
           type="number"
@@ -118,12 +118,12 @@ const WithdrawModal = ({
         <div className="text-red-400 text-xs whitespace-nowrap">
           {amountwarn}
         </div>
-      )}
-        <span className="text-green-600 text-xs sm:text-sm cursor-pointer whitespace-nowrap">{maxsol} SOL Available</span>
+        )}
+        <span className="text-[#59FFCB] text-xs sm:text-sm cursor-pointer whitespace-nowrap">{maxsol} SOL Available</span>
       </div>
 
       {/* Withdraw Button */}
-      <button className="w-full btn text-sm sm:text-base py-3" onClick={() => { if (warn == ""&& address!=="" && amountwarn=="" && amount>= 0.001) { onWithdraw(amount,toaddress) } }}>Withdraw</button>
+      <button className="w-full bg-primary circle  text-black text-[14px] font-semibold py-3" onClick={() => { if (warn == ""&& address!=="" && amountwarn=="" && amount>= 0.001) { onWithdraw(amount,toaddress) } }}>Withdraw</button>
     </div>
   </Modal>
 }

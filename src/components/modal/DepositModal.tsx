@@ -31,31 +31,31 @@ const DepositModal = ({
   }
 
     return <Modal isOpen={isOpen} onClose={onClose}>
-    <div className="space-y-6">
+    <div className="space-y-6 w-[470px]">
       <div className="flex">
-        <div className="btn btn-sm btn-green flex items-center gap-1" onClick={openWallet}>
+        <div className=" flex items-center gap-1 text-[14px] font-semibold text-[#59FFCB]" onClick={openWallet}>
           <ImArrowUp size={12} />
-          <span className="">Deposit funds</span>
+          <span className="">Deposit Funds</span>
         </div>
       </div>
 
-      <p className="text-white text-xs sm:text-sm !leading-[135%]">
+      <p className="text-gray-600 text-[13px] font-Medium !leading-[135%]">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi cursus, libero non pulvinar porttitor, neque elit volutpat eros, eget faucibus elit augue fringilla magna.
       </p>
 
       {/* Address Input */}
-      <div className="bg-gray-50 px-4 sm:px-6 py-4 rounded-full text-white flex items-center gap-2" onClick={handleCopy}>
-        <div className="text-xs sm:text-base whitespace-nowrap">Your Address</div>
+      <div className="bg-gray-50 sm:px-6 py-3 circle text-white flex items-center gap-2" onClick={handleCopy}>
+        <div className="text-[14px] font-Medium   whitespace-nowrap">Address</div>
         <div className="flex items-center gap-2 grow">
           <div className="truncate-wrapper">
-              <span className="text-gray-600 text-xs sm:text-sm truncate">{user?.wallet_paddress}</span>
-                
+              <span className="text-gray-600 text-[12px] truncate">{user?.wallet_paddress}</span>
           </div>
         </div>
         <button className="text-gray-400">{
                       !isCopied ? <img src={IconCopy} className="w-4 h-4 sm:w-6 sm:h-6 opacity-40" />
                       : <span className='text-[#06cf9c]'><MdCheck size={16} /></span>
-                    } </button>
+          }
+        </button>
       </div>
     </div>
   </Modal>

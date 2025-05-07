@@ -1,8 +1,7 @@
+import Pause from 'assets/img/pause.png';
 import React, { useState, useEffect,useRef  } from 'react';
 import {useSearchParams } from 'react-router-dom';
 import ForumLayout from "./layout"
-import { FaAngleLeft, FaAnglesLeft, FaAngleRight, FaAnglesRight } from "react-icons/fa6";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import { supabase } from "lib/supabase";
 import { SkeletonList } from "components/skeleton/forum";
 import { CallRow } from "./components/CallRow";
@@ -27,9 +26,11 @@ function useOutsideAlerter(ref: any, setX: any): void {
 
 const ForumList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<"featured" | "latest">(searchParams.get('type') as "featured" | "latest" || 'latest');
+  // const [activeTab, setActiveTab] = useState<'featured' | 'latest'>(searchParams.get('type') as 'featured' | 'latest' || 'featured');
   const [isLoading, setIsLoading] = useState(true);
-  const [callList, setCallList] = useState([]);
+  const [callListFeatured, setCallListFeatured] = useState([]);
+  const [callListLatest, setCallListLastest] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(searchParams.get('level') || "All Ranks");
   const wrapperRef = React.useRef(null);
@@ -39,111 +40,68 @@ const ForumList = () => {
   const itemsPerPage = 6;
   const [isPaginationVisible, setPaginationVisible] = useState(true);
   const hideTimer = useRef(null);
- const [inputValue, setInputValue] = useState<string>(String(page));
+  const [inputValue, setInputValue] = useState<string>(String(page));
 
   useOutsideAlerter(wrapperRef, setIsOpen);
   useEffect(() => {
     setInputValue(String(page));
     setIsLoading(true);
-    const fetchCalls = async() => {
-    const from = (page - 1) * itemsPerPage;
-    const to = from + itemsPerPage;
-    const { data, error } = await supabase
+    const fetchCalls = async () => {
+      const { data, error } = await supabase
         .from("calls")
         .select("*, users(*)")
         .order("created_at", { ascending: false });
-     if (error) {
+      if (error) {
         console.error("Error fetching calls:", error.message);
         return;
-     }
-     if (activeTab==null || activeTab == "latest") {
-       if (filters == "All Ranks" || filters == null) {
-         setCallList(data.filter(call => call.is_featured === false).slice(from, to));
-         setTotalPages(Math.ceil(data.filter(call => call.is_featured === false).length / 6));
-         }
-       else {
-         setCallList((data.filter(call => call.is_featured === false)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)).slice(from, to));
-         setTotalPages(Math.ceil((data.filter(call => call.is_featured === false)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)).length / 6));
-       }
-     }
-     else if (activeTab == "featured") {
-       if (filters == "All Ranks" || filters ==null) {
-         setCallList(data.filter(call => call.is_featured === true).slice(from, to));
-         setTotalPages(Math.ceil(data.filter(call => call.is_featured === true).length / 6));
-       }
-       else {
-         setCallList((data.filter(call => call.is_featured === true)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)).slice(from, to));
-         setTotalPages(Math.ceil((data.filter(call => call.is_featured === true)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)).length / 6));
-       }
-     }
-       setIsLoading(false);
+      }
+      if (data) {
+         if (filters == "All Ranks" || filters == null) {
+           setCallListFeatured(data.filter(call => call.is_featured === true));
+           setCallListLastest(data.filter(call => call.is_featured === false))
+        }
+         else {
+          setCallListFeatured((data.filter(call => call.is_featured === true)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)));
+          setCallListLastest((data.filter(call => call.is_featured === false)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)));
+        }
+      }
+      setIsLoading(false);
     }
-    fetchCalls();   
- 
-  const channel = supabase
-        .channel("calls")
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
-        .subscribe();
+    fetchCalls();
+
+    const channel = supabase
+      .channel("calls")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
+      .subscribe();
      
-  window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
     
-  return () => {
-    supabase.removeChannel(channel);
-    window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener("mousemove", handleMouseMove);
     }
 
-  }, [filters, activeTab, page]);
+  }, [filters, page]);
   
   const handleMouseMove = () => {
-    // setPaginationVisible(true);
-    // // Reset timer
-    // if (hideTimer.current) clearTimeout(hideTimer.current);
-    // // Hide after 2 seconds
-    // hideTimer.current = setTimeout(() => {
-    //   setPaginationVisible(false);
-    // }, 8000);
   };
-
-  const featuredlist = () => {
-    setActiveTab("featured");
-    setSearchParams({ type: "featured", level: filters });
-    setPage(1);
-  }
-  
-  const lastestlist = () => {
-    setActiveTab("latest");
-    setSearchParams({ type: "latest", level: filters });
-    setPage(1);
-  }
-  
   const toggleDropdown = () => setIsOpen(!isOpen);
-  const handleSelect = (op: string): void =>{
+  const handleSelect = (op: string): void => {
     setFilters(op);
-    setSearchParams({ type:activeTab, level: op });
+    setSearchParams({ level: op });
     setIsOpen(false);
   };
 
   return <ForumLayout>
-    <div 
-      className="relative card flex-grow p-0 flex flex-col overflow-hidden"
-      onMouseEnter={() => setPaginationVisible(true)}
-      onMouseLeave={() => setPaginationVisible(false)}
-    >
-      <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
-        <div className="flex gap-5 items-center">
-          <h2 className="hidden md:block text-lg font-semibold">Forum Listing</h2>
-          <div className="btn-group">
-            <button className={`btn btn-sm md:btn-lg ${activeTab == 'featured' ? 'active' : ''}`} onClick={() => featuredlist()}>Featured</button>
-            <button className={`btn btn-sm md:btn-lg ${activeTab == 'latest' ? 'active' : ''}`} onClick={() => lastestlist()}>Latest</button>
-          </div>
-        </div>
-      <div ref={wrapperRef} className="relative inline-block text-left">
-        <button
-        className="flex rounded-full items-center bg-primary/20 text-primary px-3 py-2 hover:bg-primary/30 text-xs md:text-base"
-        onClick={toggleDropdown}>
-        <span className="text-primary/30 mr-2">Show</span> <span>{filters}</span>
-        <AiFillCaretDown className="text-primary/30 ml-1" /></button>
-        {isOpen && (
+    <div className="border-r border-gray-800">
+      <div className="grid grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
+        
+        <div className="flex border-b border-gray-800 flex items-center justify-between px-[18px]">
+          <div className="flex show_filter items-center text-[14px] font-semibold text-gray-500">
+            <div ref={wrapperRef} className="relative inline-block text-left">
+            <span>Showing</span>
+            <button className="text-white whitespace-nowrap text-[14px] font-semibold ml-[8px]" onClick={toggleDropdown}>{filters}</button>
+            {isOpen && (
           <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-36 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg">
           {options.map((op) => (
             <button
@@ -154,102 +112,60 @@ const ForumList = () => {
             </button>
               ))}
           </div>
-        )}
+        )}</div>
+          </div>
+          
+          <div className=" flex text-[14px] font-semibold text-gray-500">
+            <div className="flex items-center justify-center">
+              <span>Feed is <span className="text-white whitespace-nowrap">Live</span></span>
+            </div>
+            <button className="ml-[20px] pause_btn flex items-center justify-center mainhover">
+              <img src={Pause} className="w-[24px] h-[24px]" />
+              <button>Pause</button>
+            </button>
+          </div>
+        </div>
+        <div className="grid h-screen" style={{ gridTemplateColumns: 'calc((100vw - 501px) / 2) 1fr' }}>
+          <div className="border-r border-gray-800 flex flex-col h-screen">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800 ">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white items-center flex">Feature</div>
+              </div>
+              <div className="flex-1 overflow-y-auto h-[calc(100vh-202px)]">
+                <div
+                  className={`flex-1 overflow-auto flex flex-col ${isLoading ? "overflow-hidden loading" : "overflow-auto"}`}
+                  onClick={() => setIsOpen(false)}>
+                  {isLoading || !callListFeatured.length ? (
+                    <div className=' p-2 sm:p-4 pb-24'><SkeletonList /></div>
+                  ) : (
+                    callListFeatured.map((item) => <CallRow call={item} key={item.id} />)
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="border-gray-800 h-screen flex flex-col">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white items-center flex">Latest</div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto h-[calc(100vh-202px)]">
+                <div
+                  className={`flex-1 overflow-auto flex flex-col ${isLoading ? "overflow-hidden loading" : "overflow-auto"}`}
+                  onClick={() => setIsOpen(false)}>
+                  {isLoading || !callListLatest.length ? (
+                    <div className=' p-2 sm:p-4 pb-24'><SkeletonList /></div>
+                  ) : (
+                    callListLatest.map((item) => <CallRow call={item} key={item.id} />)
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-  <div 
-    className="h-full flex flex-col"
-    >
-  {/* Scrollable content */}
-  <div
-    className={`flex-1 overflow-auto p-2 sm:p-4 pb-24 flex flex-col gap-4 sm:gap-5 ${isLoading? "overflow-hidden loading" : "overflow-auto"  }`}
-    onClick={() => setIsOpen(false)}
-  >
-    {isLoading || !callList.length ? (
-      <SkeletonList />
-    ) : (
-      callList.map((item) => <CallRow call={item} key={item.id} />)
-    )}
-  </div>
-
-</div>
-  {/* Fixed pagination bar inside the map div */}
- {showPagination && (
-  <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2 z-50'
-    style={{ 
-      transition: 'bottom 0.15s ease-in-out',
-      bottom: isPaginationVisible ? '0.5rem' : '-3rem',
-    }}
-  >
-    <div className="flex items-center gap-1.5 bg-darker/80 text-white px-3 py-2 rounded-full shadow-lg text-base">
-
-      {/* First */}
-      <button
-        onClick={() => { setSearchParams({ type: activeTab, level: filters, page: "1" }); setPage(1); }}
-        disabled={page === 1}
-        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
-      >
-        <span className=""><FaAnglesLeft /></span>
-      </button>
-
-      {/* Prev */}
-      <button
-                onClick={() => { setPage((p) => Math.max(p - 1, 1));setSearchParams({ type: activeTab, level: filters, page: String(Number(page-1)) }); }}
-        disabled={page === 1}
-        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
-      >
-        <span className=""><FaAngleLeft /></span>
-      </button>
-
-      {/* Page Input */}
-      <div className="flex items-center gap-2 px-1">
-        <input
-        type="text"
-        inputMode="numeric"
-        value={inputValue}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setInputValue(e.target.value);
-        }}
-        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-          if (e.key === 'Enter') {
-            const val = Number(inputValue);
-            if (!isNaN(val) && val >= 1 && val <= totalPages) {
-              setPage(val);
-            } else {
-              setInputValue(String(page));
-            }
-          }
-        }}
-        className="w-8 h-7 bg-dark/50 text-white text-base text-center rounded-md focus:outline-none border-[1px] border-gray-300"
-        placeholder="1"
-      />
-        <span>/</span>
-        <span className="">{totalPages}</span>
-      </div>
-
-      {/* Next */}
-      <button
-                onClick={() => { setPage((p) => Math.min(p + 1, totalPages));setSearchParams({ type: activeTab, level: filters, page: String(Number(page+1)) });  }}
-        disabled={page === totalPages}
-        className="w-7 h-7 leading-none  flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
-      >
-        <span className=""><FaAngleRight /></span>
-      </button>
-
-      {/* Last */}
-      <button
-        onClick={() => { setPage(totalPages); setSearchParams({ type: activeTab, level: filters, page: String(totalPages) }); }}
-        disabled={page === totalPages}
-        className="w-7 h-7 leading-none flex items-center justify-center rounded-full hover:bg-primary hover:text-black transition disabled:text-gray-500 disabled:bg-transparent"
-      >
-        <span className=""><FaAnglesRight /></span>
-      </button>
     </div>
-  </div>
-)}
-      
-    </div>
-  </ForumLayout>
+  </ ForumLayout>
 }
-
 export default ForumList;

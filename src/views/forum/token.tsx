@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ForumLayout from "./layout"
-import { FaChevronDown, FaChevronLeft, FaChevronRight, FaChevronUp } from "react-icons/fa";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
-import { IoMdCopy } from "react-icons/io";
-import Token from 'assets/img/sample/token.png';
+import { AiFillCaretDown, AiFillCaretUp, AiFillCaretRight} from "react-icons/ai";
 import IconCopy from 'assets/img/icons/copy.svg';
 import IconSend from 'assets/img/icons/send.svg';
-import IconDiscussion from 'assets/img/icons/discussion.svg';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Dexscreener from 'assets/img/sample/dexscreener.png';
 import Photon from 'assets/img/sample/photon.png';
-import { FaExternalLinkAlt } from "react-icons/fa";
-import IconUser from 'assets/img/icons/user.svg';
 import { TopHolderType } from "components/modal/CallModal";
 import { checkCall, formatNumber, formatShortAddress, formatTimestamp } from "utils/blockchain";
 import { SkeletonList, SkeletonRow } from "components/skeleton/forum";
@@ -21,9 +15,8 @@ import { SkeletonDiscussionList } from "components/skeleton/discussion";
 import { showToastr } from "components/toastr";
 import { supabase } from "lib/supabase";
 import { useAuth } from "contexts/AuthContext";
+import Prev from 'assets/img/prev.png';
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
-import { getRankChar } from "../../utils/style";
-import { useSearchParams } from "react-router-dom";
 
 const TokenDetail = () => {
   const { isLogin,session,user } = useAuth();
@@ -237,8 +230,8 @@ const TokenDetail = () => {
                 setRatioVote(100)
                 console.log("Insert successful");
               }
-    }
-    };
+           }
+     };
     insertUser();  
     }
     
@@ -310,316 +303,241 @@ const TokenDetail = () => {
   }
 
   return <ForumLayout>
-    <div className={`card flex-grow p-0 flex flex-col overflow-hidden ${isLoading ? 'loading' : ''}`}>
-      <div className="px-4 flex py-4 sm:px-6 sm:py-2.5 border-b-[1px] border-gray-100 f0lex 2xl:justify-between items-center gap-3">
-        <div className="flex gap-3 items-center">
-          <button onClick={() => navigate(-1)} className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
-            <FaChevronLeft />
-          </button>
+    <div className={`border-r border-gray-800 overflow-hidden ${isTopLoading || isLoading ? 'loading' : ''}`}>
+      <div className="grid grid-rows-[90px_76px_1fr] flex-col h-screen border-gray-800">
+        <div className="flex border-b border-gray-800 flex items-center ">
+          <button onClick={() => navigate(-1)} ><img src={Prev} className="w-[24px] h-[24px] mr-[12px] ml-[12px]" /></button>
           {
-            isLoading ? <div className="w-8 h-8 sm:w-[59px] sm:h-[59px] circle skeleton"/> :
-            <img src={callReport?.info.imageUrl} className="w-8 h-8 sm:w-[59px] sm:h-[59px] circle"/>
+            isLoading ? <div className="w-8 h-8 sm:w-[52px] sm:h-[52px] circle skeleton mr-[12px]"/> :
+            <img src={callReport?.info.imageUrl} className="w-8 h-8 sm:w-[52px] sm:h-[52px] circle mr-[12px]"/>
           }
-          {
-            isLoading ? <div className="skeleton w-24 h-4 sm:w-60 sm:h-6 rounded"></div> :
-            <div className="flex gap-3">
-              <span className="font-bold text-base sm:text-lg">${callReport?.baseToken.symbol}</span>
-                <div className="hidden md:flex gap-3 flex-wrap">
-                  {sitem?.is_featured ? <>
-                    <span className={`badge-multiplier-${sitem?.featured}X`}></span> </> :
+          <div className="space-y-[5px]">
+            {
+              isLoading ? <div className="skeleton w-24 h-4 sm:w-[300px] sm:h-[20px] rounded"></div> :
+                <div className="flex space-x-[12px] items-center">
+                  <span className="text-sm text-[14px] font-semibold items-center text-white">${callReport?.baseToken.symbol}</span>
+                  <div className="text-gray-600 text-[12px] font-Medium flex">
+                    MCAP {formatNumber(sitem?.init_market_cap)}<span className="text-sm items-center flex"><AiFillCaretRight /></span> {formatNumber(sitem?.changedCap)}&nbsp;<span className="text-sm items-center flex font-Regular text-white">
+                      {
+                        sitem?.percentage == 100 ? <></> : sitem?.percentage > 100 ?
+                          <div className="flex text-green-600">
+                            <AiFillCaretUp className="text-green-600" />
+                            <span>{Number(sitem?.percentage) - 100}%</span>
+                          </div> :
+                          <div className="flex text-red-400">
+                            <AiFillCaretDown className="text-red-400" />
+                            <span>{100 - Number(sitem?.percentage)}%</span>
+                          </div>
+                      }
+                      {/* <AiFillCaretUp /> 121% */}
+                    </span>
+                  </div>
+                  {
+                    sitem?.is_featured ? <div>
+                      <span className={`badge-multiplier-${sitem?.featured}X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex`}></span>
+                    </div> :
                     <></>
-                  }       
-                <div className="bg-gray-100 px-2 py-1.5 rounded-full flex text-xs gap-1">
-                  Marketcap {formatNumber(sitem?.init_market_cap)} to {formatNumber(sitem?.changedCap)}
-                </div>
-                  {sitem?.percentage == 100 ?<></>:sitem?.percentage > 100 ? <>
-                    <div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
-                    <AiFillCaretUp />
-                    <span>{Number(sitem?.percentage-100)}%</span>
-                  </div>
-                  </> :
-                    <><div className="bg-red-400 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
-                    <AiFillCaretDown />
-                      <span>{Number(100-sitem?.percentage)}%</span>
-                    </div>
-                  </>}
-              </div>
-            </div>
-          }
-        </div>
-        <div className={`flex gap-1 justify-end ${isLoading ? 'hidden' : ''}`}>
-          <div className="flex gap-1 items-center">
-             {  confirmVote ==0?
-                          <div className="flex gap-1 items-center">
-                            <button className="circle-item w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" ><AiFillCaretUp onClick={handleVotelike} />
-                            </button>
-                            <button className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" onClick={handleVotedislike} ><AiFillCaretDown />
-                            </button>
-                            <span className="text-xs text-gray-600">{ratioVote}%</span>
-                          </div> : <>
-                            { 
-                              confirmVote == 1 ?
-                               <div className="flex gap-1 items-center">
-                               <button className="circle-item w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" ><FaThumbsUp className="text-green-500 cursor-pointer hover:scale-110 transition-transform" />
-                               </button>
-                                <button className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><AiFillCaretDown />
-                               </button>
-                                <span className="text-xs text-gray-600">{ratioVote}%</span>
-                                </div> :
-                                
-                                <div className="flex gap-1 items-center">
-                               <button className="circle-item w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" ><AiFillCaretUp />
-                               </button>
-                                <button className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><FaThumbsDown className="text-red-500 cursor-pointer hover:scale-110 transition-transform" />
-                               </button>
-                                <span className="text-xs text-gray-600">{ratioVote}%</span>
-                             </div>
-                            }
-                          
-                          </>
-                        }
-          </div>
-        </div>
-        <button className="w-8 h-8 bg-gray-100 hover:bg-gray-200 circle-item !flex 2xl:!hidden ml-auto" onClick={() => setDiscussionOpen(!isDiscussionOpen)}>
-          <img src={IconDiscussion} className="w-4 h-4"/>
-        </button>
-      </div>
-      
-      <div className="flex-grow relative overflow-hidden">
-        <div className={`${isDiscussionOpen ? 'hidden 2xl:block' : ''} p-4 sm:p-6 h-full ${isLoading || !topCallers.length ? 'overflow-hidden' : 'overflow-auto'}`}>
-          <div className="2xl:grid grid-cols-10 gap-6">
-            <div className="col-span-6 flex flex-col gap-5">
-              {/* Price Information */}
-              <div className="space-y-3 block md:hidden">
-                <p className="text-white text-sm font-bold">Price information</p>
-                {
-                  isLoading ? <div className="skeleton w-3/4 h-5 rounded"></div> :
-                  <div className="flex gap-3 flex-wrap">
-                    {/* <span className={`badge-multiplier-200X`}></span> */}
-                    <div className="bg-gray-100 px-2 py-1.5 rounded-full flex text-xs gap-1">
-                      Marketcap {formatNumber(sitem?.init_market_cap)} to {formatNumber(sitem?.changedCap)}
-                    </div>
-                    {sitem?.percentage == 100 ?<></>: sitem?.percentage > 100 ? <><div className="bg-green-600 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
-                    <AiFillCaretUp />
-                    <span>{Number(sitem?.percentage-100)}%</span>
-                     </div></> :
-                    <><div className="bg-red-300 px-2 py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
-                    <AiFillCaretDown />
-                      <span>{Number(100-sitem?.percentage)}%</span>
-                     </div></>}
-                  </div>
-                }
-
-              </div>
-              <div className="border-b-[1px] border-gray-100 md:hidden"></div>
-              {/* Holders & Callers */}
-              <div className="flex flex-col gap-3">
-                <p className="block sm:hidden text-sm font-bold">Holders</p>
-                <div className="hidden sm:flex gap-2">
-                  <span>Callers</span> 
-                  {
-                    isLoading ? <div className="w-10 h-5 rounded skeleton"></div> :
-                    <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{callersCount}</span>
                   }
-                </div>
-                <div className={`flex items-center gap-2 ${isTopLoading ? 'loading' : ''}`}>
-                  <span className="text-xs sm:text-base">Top 10 holders</span> 
-                  {
-                    isTopLoading ? <div className="w-20 h-5 rounded skeleton"></div> :
-                    <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{top10HolderInfo.pct.toFixed(2)}% (${formatNumber(top10HolderInfo.uiAmount*sitem?.changedPrice)})</span>
-                  }
-                </div>
-                <div className={`flex items-center gap-2 flex-wrap ${isTopLoading ? 'loading' : ''}`}>
-                  <span className="text-xs sm:text-base">Top 3 holders</span>
-                  <div className="flex gap-2">
-                    {
-                      isTopLoading ? <>
-                        <div className="w-20 h-5 rounded skeleton"></div>
-                        <div className="w-20 h-5 rounded skeleton"></div>
-                        <div className="w-20 h-5 rounded skeleton"></div>
-                      </> :
-                      top3Holders.map((holder, index) => (
-                      <span key={index} className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">{holder.pct.toFixed(2)}% (${formatNumber(holder.uiAmount*sitem?.changedPrice)})</span>
+                </div>}
+            {
+              isTopLoading ? <div className="skeleton w-24 h-4 sm:w-[600px] sm:h-[20px] rounded"></div> :
+                <div className="flex space-x-[6px] items-center">
+                  <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Callers<span className="token_border text-white">{callersCount}</span></span>
+                  <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Top&nbsp;10&nbsp;holders<span className="token_border text-white space-x-[5px]">{top10HolderInfo.pct.toFixed(2)}%<span className="text-gray-600">${formatNumber(top10HolderInfo.uiAmount*sitem?.changedPrice)}</span></span></span>
+                  <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Top&nbsp;3&nbsp;holders
+                    {top3Holders.map((holder, index) => (
+                      <span className="token_border text-white space-x-[5px]">{holder.pct.toFixed(2)}%<span className="text-gray-600">${formatNumber(holder.uiAmount*sitem?.changedPrice)}</span></span>
                     ))}
-                  </div>
-                </div>
-              </div>
-              <div className="border-b-[1px] border-gray-100 sm:hidden"></div>
-              <div className="space-y-3 sm:max-w-[300px]">
-                <p className="block sm:hidden text-sm font-bold">Links</p>
-                <div onClick={handleCopy} className="cursor-pointer bg-black px-5 py-2.5 rounded-full text-sm text-gray-600 flex items-center justify-between gap-20">
-                  <span>
-                    <span className="font-semibold text-white text-base">CA</span> {formatShortAddress(callReport?.pairAddress)}
                   </span>
-                  <button>{
-                      !isCopied ? <img src={IconCopy} className="text-white w-6 h-6 brightness-100"/>
-                      : <span className='text-[#06cf9c]'><MdCheck size={24} /></span>
+                </div> }
+          </div>
+        </div>
+
+        <div className="flex border-b border-gray-800 flex items-center ">
+         <a href={`https://dexscreener.com/solana/${callReport?.pairAddress.toLocaleLowerCase()}`} target="_blank" className="ml-[18px] items-center flex token_outsite "><img src={Dexscreener} alt="DEX Screener" className="w-[17px] h-[20px]" /><span className="text-[14px] font-semibold items-center text-white">Dex Screener</span></a>
+         <a href={`https://photon-sol.tinyastro.io/en/lp/${callReport?.pairAddress.toLowerCase()}`} target="_blank" className="ml-[12px] items-center flex token_outsite "><img src={Photon} alt="Photon-SOL" className="w-[17px] h-[20px]" /><span className="text-[14px] font-semibold items-center text-white">Photon-SOL</span></a>
+          <div onClick={handleCopy} className="ml-[12px] items-center flex token_outsite "><span className="text-[14px] flex font-semibold items-center text-white">CA</span><span className="text-gray-600 text-[12px] font-Medium">{formatShortAddress(callReport?.pairAddress)}
+            <button>{
+                      !isCopied ? <img src={IconCopy} className="ml-[6px] text-white w-[12px] h-[12px] brightness-50"/>
+                      : <span className='ml-[6px] text-[#06cf9c] items-center flex'><MdCheck size={16} /></span>
                     }
-                  </button>
-                </div>
-                <a href={`https://dexscreener.com/solana/${callReport?.pairAddress.toLocaleLowerCase()}`} target="_blank" className="flex items-center justify-between w-full bg-black px-5 py-2.5 rounded-full">
-                  <span className="flex items-center gap-2">
-                    <img src={Dexscreener} alt="DEX Screener" className="w-6 h-6" /> <span className="text-sm">DEX Screener</span>
-                  </span>
-                  <FaExternalLinkAlt className="text-white" />
-                </a>
-                <a href={`https://photon-sol.tinyastro.io/en/lp/${callReport?.pairAddress.toLowerCase()}`} target="_blank" className="flex items-center justify-between w-full bg-black px-5 py-2.5 rounded-full">
-                  <span className="flex items-center gap-2">
-                    <img src={Photon} alt="Photon-SOL" className="w-6 h-6" /> <span className="text-sm">Photon-SOL</span>
-                  </span>
-                  <FaExternalLinkAlt className="text-white" />
-                </a>
+            </button></span></div>
+         <div className={`flex gap-1 ml-auto mr-[18px] justify-end ${isLoading ? 'hidden' : ''}`}>
+                   <div className="flex gap-1 items-center">
+                      {  confirmVote ==0?
+                                   <div className="flex gap-1 items-center">
+                                     <button className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" ><AiFillCaretUp onClick={handleVotelike} />
+                                     </button>
+                                     <button className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" onClick={handleVotedislike} ><AiFillCaretDown />
+                                     </button>
+                                     <span className="text-xs text-gray-600">{ratioVote}%</span>
+                                   </div> : <>
+                                     { 
+                                       confirmVote == 1 ?
+                                        <div className="flex gap-1 items-center">
+                                        <button className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" ><FaThumbsUp className="text-green-500 cursor-pointer hover:scale-110 transition-transform" />
+                                        </button>
+                                         <button className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><AiFillCaretDown />
+                                        </button>
+                                         <span className="text-xs text-gray-600">{ratioVote}%</span>
+                                         </div> :
+                                         
+                                         <div className="flex gap-1 items-center">
+                                        <button className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" ><AiFillCaretUp />
+                                        </button>
+                                         <button className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><FaThumbsDown className="text-red-500 cursor-pointer hover:scale-110 transition-transform" />
+                                        </button>
+                                         <span className="text-xs text-gray-600">{ratioVote}%</span>
+                                      </div>
+                                     }
+                                   
+                                   </>
+                        }
+                   </div>
+          </div>
+        </div>
+        <div className="grid h-screen" style={{ gridTemplateColumns: 'calc((100vw - 501px) / 2) 1fr' }}>
+          <div className="border-r border-gray-800 flex flex-col h-screen">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800 ">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white items-center flex">Top Callers</div>
               </div>
-              <div className="flex gap-2 sm:hidden">
-                <span>Callers</span> 
-                <span className="bg-gray-100 px-2 py-1.5 rounded-full text-white text-xs">72</span>
-              </div>
-              <h3 className="text-md hidden sm:block">Top Callers</h3>
-              <div className="flex">
-                <div className={`flex flex-col gap-3 w-full`}>
-                  {isLoading ? <SkeletonList /> : 
-                    !topCallers.length ? <>
-                      <SkeletonRow opacity={60} /> 
-                      <SkeletonRow opacity={30} />
-                    </> :
-                      topCallers.map((caller, index) => (<Link to={`/profile?id=${caller.users.id}&tag=1`} key={index}>
-                      <div className="bg-gray-50 px-2 md:px-4 py-2 rounded sm:rounded-[40px] flex items-center gap-2 xl:gap-3 flex-wrap">
-                        <span className="leader-rank1 2xl:leader-rank-none font-semibold w-[36px]">#{index+1}</span>
-                        <div className="p-3 rounded-full border border-gray-150 flex items-center gap-2.5">
-                          <div className="circle-item w-7 h-7 bg-red-300 text-black text-sm font-bold">V</div>
-                          <div className="space-y-0.5">
-                            <div className="flex gap-1 items-center">
-                              <span className="font-bold text-sm">{caller.users.name}</span>
-                              <span className="text-xs text-gray-600">{ caller.users.winrate}%</span>
-                            </div>
-                            <div className="text-xs text-gray-600">{formatTimestamp(caller.created_at)} ago</div>
+              <div className="flex-1 overflow-y-auto h-[calc(100vh-292px)]">
+                <div className="m-[18px] items-center flex">
+                  <div
+                    className={`flex-1 overflow-auto flex flex-col ${isLoading ? "overflow-hidden loading" : "overflow-auto"}`}>
+                    {isLoading || !topCallers.length ? (
+                      <div className=''><SkeletonList /></div>
+                    ) : (
+                        topCallers.map((caller, index) => (<Link to={`/profile?id=${caller.users.id}&tag=1`} key={index}>
+                          <div className="mb-[18px]">
+                          <div className="topcaller_border items-center flex flex-1 grid flex-col">
+                    <div className="number_border text-[12px] font-Medium text-white">#{index+1}</div>
+                    <div className="items-center">
+                      <div className="flex items-center space-x-[6px]">
+                        <span className={`badge-rank-${caller.users.rank} w-[20px] h-[20px]`}></span>
+                        <span className="text-[12px] font-Medium text-white">{caller.users.name}</span>
+                        <span className="text-[12px] font-Medium text-[#76767E]">{ caller.users.winrate}%</span>
+                      </div>
+                      <div className="flex items-center space-x-[6px]">
+                        <div className="flex space-x-[12px] items-center">
+                          <div className="text-[#76767E] text-[12px] font-Medium flex">
+                            MCAP&nbsp;{formatNumber(caller.init_market_cap)}<span className="text-sm items-center flex"><AiFillCaretRight /></span>{formatNumber(caller.changedCap)}&nbsp;<span className="text-sm items-center flex font-Regular text-white">
+                              {
+                                caller?.percentage == 100 ? <></> : caller?.percentage > 100 ?
+                                  <div className="flex text-[#76767E] text-[12px]">
+                                    <AiFillCaretUp className="text-[#76767E]" />
+                                    <span>{Number(caller?.percentage) - 100}%</span>
+                                  </div> :
+                                  <div className="flex text-red-400 text-[12px]">
+                                    <AiFillCaretDown className="text-red-400" />
+                                    <span>{100 - Number(caller?.percentage)}%</span>
+                                  </div>
+                              }
+                            </span>
                           </div>
-                        </div>
-                        <div className="px-2 py-2 2xl:px-5 2xl:py-3 rounded-full bg-gray-100 flex 2xl:flex-col gap-1 mr-auto">
-                          <div className="flex gap-1">
-                            <span className="text-xs">Marketcap</span>
-                            { 
-                             caller.featured > 1?<><span className="text-xs text-primary font-semibold">{caller.featured}X</span></>:<></>
-                            }
-                          </div>
-                          <span className="text-xs text-white"><b>{formatNumber(caller.init_market_cap)}</b> to <b>{formatNumber(caller.changedCap)}</b></span>
-                        </div>
-                        <div className="">
-                            {caller.addXP > 5 ? <> <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">+{caller.addXP}XP</span></> :
-                              caller.addXP ==0 ?<></>:
-                              <> <span className="rounded-full bg-red-500 px-2 py-1.5 text-xs text-black font-semibold">{caller.addXP}XP</span></>}   
+                          {
+                            caller.users?.is_featured ? <div>
+                              <span className={`badge-multiplier-${caller.users?.featured}X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex`}></span>
+                            </div> :
+                              <></>
+                          }
                         </div>
                       </div>
-                    </Link>
-                  ))}
+                      </div>
+                      <div className="ml-auto flex">
+                      {caller.addXP > 5 ? <> <div className="caller_rise flex items-center mr-[18px]"><span className="text-[12px] font-semibold text-primary">+{caller.addXP}XP</span></div></> :
+                      caller.addXP ==0 ?<></>:
+                      <> <div className="caller_rise flex items-center mr-[18px]"><span className="text-[12px] font-semibold text-red-300">{caller.addXP}XP</span></div></>}
+                              <span className="text-[#76767E] text-[12px] font-semibold items-center flex ">{formatTimestamp(caller.created_at)}</span>
+                      </div>
+                      </div>
+                      </div>
+                  </Link>)
+                        )
+                    )}
+                  </div>
+                  
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className={`${isDiscussionOpen ? '' : 'hidden '} 2xl:block 2xl:absolute top-0 right-6 h-full w-full 2xl:w-[39%] pl-4 pr-4 2xl:pr-0 py-4 2xl:py-6`}>
-          <div className="rounded bg-gray-100 w-full h-full p-4 sm:p-6 flex flex-col gap-5">
-            <div className="flex-grow overflow-hidden">
-              <div className={`${isLoading ? 'overflow-hidden' : 'overflow-auto'} h-full space-y-3`}>
-                 { 
+          <div className="border-gray-800 h-screen flex flex-col">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800 ">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white items-center flex">Discussion</div>
+              </div>
+              <div className="grid grid-rows-[1fr_50px] h-[calc(100vh-292px)] ">
+                <main className="overflow-y-auto m-[18px]">
+                  { 
               ! isLoading && preshow ? <>
-                <div className="flex gap-4">
-                    <div>
-                        <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item">
-                          { 
-                            user.avatar == null ? <img src={IconUser} className="w-2.5 h-2.5" />:
-                           <img src={user.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" /> 
-                          }      
+                <div className="">
+                      <div className="flex items-center mb-[2px]">
+                          <span className={`badge-rank-${me[0].rank} w-[20px] h-[20px] mr-[6px]`}></span>
+                          <span className="text-[14px] font-Medium text-white mr-[6px]">{me[0].name}</span>
+                        <span className="text-[12px] font-Medium text-[#76767E] mr-[6px]">{me[0].winrate}%</span>
+                        <span className="text-[12px] font-Medium text-[#76767E] ml-auto">{formatTimestamp(me[0].created_at)} ago</span>
                       </div>
-                    </div>
-                    <div className="space-y-1 flex-grow">
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-1 items-center">
-                          <span className="font-bold text-sm text-gray-600">{me[0].name}</span>
-                          <span className="text-xs text-gray-600">{ me[0].winrate}%</span>
-                          <div className="circle-item w-6 h-6 sm:w-7 sm:h-7 bg-red-300 text-black text-sm font-bold">{getRankChar(me[0].rank)}</div>
-                        </div>
-                        <span className="text-sm text-gray-600">{formatTimestamp(me[0].created_at)}</span>
+                      <div className="items-center">
+                        <span className="text-[12px] font-Medium text-gray-600">{commentstore}</span>
                       </div>
-                      <p className="text-sm sm:text-base !leading-[135%]">
-                        { commentstore}  </p>
+                      <div className="border-b border-gray-800 mt-[18px] mb-[18px]"></div>
                     </div>
-                  </div>
-                <div className="border-b-[1px] border-gray-100"></div>
                 </> : <></>
                }
-                  {
+              {
                 isLoading || !discussions.length ? <SkeletonDiscussionList /> :
                     discussions.map((discussion) => <>
-                  <div className="flex gap-4">
-                    <div>
-                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" >
-                       {discussion.users.avatar==null?<img src={IconUser} className="w-2 h-2 sm:w-4 sm:h-4" />:<img src={discussion.users.avatar} className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" />
-                       }
+                     <div className="">
+                      <div className="flex items-center mb-[2px]">
+                          <span className={`badge-rank-${discussion.users.rank} w-[20px] h-[20px] mr-[6px]`}></span>
+                          <span className="text-[14px] font-Medium text-white mr-[6px]">{discussion.users.name}</span>
+                        <span className="text-[12px] font-Medium text-[#76767E] mr-[6px]">{discussion.users.winrate}%</span>
+                        <span className="text-[12px] font-Medium text-[#76767E] ml-auto">{formatTimestamp(discussion.created_at)} ago</span>
                       </div>
+                      <div className="items-center">
+                        <span className="text-[12px] font-Medium text-gray-600">{ discussion.comment}</span>
+                      </div>
+                      <div className="border-b border-gray-800 mt-[18px] mb-[18px]"></div>
                     </div>
-                    <div className="space-y-1 flex-grow">
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-1 items-center">
-                          <span className="font-bold text-sm text-gray-600">{discussion.users.name }</span>
-                          <span className="text-xs text-gray-600">{ discussion.users.winrate}%</span>
-                          <div className="circle-item w-6 h-6 sm:w-7 sm:h-7 bg-red-300 text-black text-sm font-bold">{getRankChar(discussion.users.rank)}</div>
-                        </div>
-                        <span className="text-sm text-gray-600">{formatTimestamp(discussion.created_at)}</span>
-                         </div>
-                         <p className="text-sm sm:text-base !leading-[135%]">
-                        { discussion.comment}  </p>
-                        </div>
-                      </div>
-                     <div className="border-b-[1px] border-gray-100"></div>
                     </>) 
-                  
-                }
-                {isLoading? <></>:
+              }
+                  {isLoading? <></>:
                   admindiscussions?.map((admindiscussion) => <>
-                  <div className="flex gap-4">
-                    <div>
-                      <div className="w-8 h-8 sm:w-[50px] sm:h-[50px] bg-black circle-item" >
-                      <img src={IconUser} className="w-2 h-2 sm:w-4 sm:h-4" />
+                     <div className="">
+                      <div className="flex items-center mb-[2px]">
+                          <span className={`badge-rank-10 w-[20px] h-[20px] mr-[6px]`}></span>
+                          <span className="text-[14px] font-Medium text-white mr-[6px]">Administrator</span>
+                        <span className="text-[12px] font-Medium text-[#76767E] ml-auto">{formatTimestamp(admindiscussion.created_at)} ago</span>
                       </div>
+                      <div className="items-center">
+                        <span className="text-[12px] font-Medium text-gray-600">{ admindiscussion.comment}</span>
+                      </div>
+                      <div className="border-b border-gray-800 mt-[18px] mb-[18px]"></div>
                     </div>
-                    <div className="space-y-1 flex-grow">
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-1 items-center">
-                          <span className="font-bold text-sm text-gray-600">Administrator</span>
-                        </div>
-                        <span className="text-sm text-gray-600">{formatTimestamp(admindiscussion.created_at)}</span>
-                         </div>
-                         <p className="text-sm sm:text-base !leading-[135%]">
-                        { admindiscussion.comment}  </p>
-                        </div>
-                      </div>
-                     <div className="border-b-[1px] border-gray-100"></div>
                     </>) 
-                  
                 }
-              
-              </div>
-            </div>
-            {
-            ! isLoading && isLogin && <div className="relative rounded-full bg-gray-100 px-12 mx-1 sm:mx-3 py-2 flex items-center">
-                <div className="absolute left-1 flex items-center">
-                  <div className="">
-                    {user.avatar==null?<img src={IconUser} className="w-8 h-8 sm:w-[40px] sm:h-[40px] bg-black circle-item" />:<img src={user?.avatar} className="w-8 h-8 sm:w-[40px] sm:h-[40px] bg-black circle-item" />
-                    }
+            </main>
+
+              {/* Fixed bottom input bar */}
+              <div className="mt-auto">
+              {
+              ! isLoading && isLogin && <div className="relative rounded-full bg-gray-100 px-[12px]  circle py-2 flex items-center">
+                  
+                  <input type="text" className="w-full bg-transparent outline-none text-white" id="com"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Add a comment..." disabled={added} />
+                  <div className="absolute right-3 flex items-center">
+                    <button disabled={added} onClick={saveComment} >
+                      <img src={IconSend} className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <input type="text" className="w-full bg-transparent outline-none text-white" id="com"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Add a comment..." disabled={added} />
-                <div className="absolute right-3 flex items-center">
-                  <button disabled={added} onClick={saveComment} >
-                    <img src={IconSend} className="w-4 h-4" />
-                  </button>
+              }
                 </div>
               </div>
-            }
+            </div>
           </div>
         </div>
       </div>

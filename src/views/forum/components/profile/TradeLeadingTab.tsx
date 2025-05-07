@@ -1,7 +1,3 @@
-import IconTwitter from 'assets/img/icons/twitter.svg';
-import IconTelegram from 'assets/img/icons/telegram.svg';
-import IconSolana from 'assets/img/icons/solana.svg';
-import { AiFillCaretDown } from 'react-icons/ai';
 import React, { useEffect,useRef,useState  } from 'react';
 import { IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
@@ -9,7 +5,9 @@ import CopyingModal from 'components/modal/CopyingModal';
 import AllCopiersModal from 'components/modal/AllCopiersModal';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import {useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import Nick from 'assets/img/nick.png';
+import Cancel from 'assets/img/cancel.png';
 
 const options = ["7Days", "30Days", "90Days"];
 
@@ -65,286 +63,138 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
     // setSearchParams({ type:activeTab, day: op });
     setIsOpen(false);
   };
-  
 
   return (<>
-    <div className="overflow-auto h-full">
-      <div className="space-y-6 p-4 sm:p-6">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <div className="md:col-span-8 lg:col-span-7  flex-grow space-y-6">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
-                <span className="text-xs text-gray-600">Days Trading</span>
-                <span className="text-xs text-white">57</span>
+    <div className="h-screen bg-black text-white">
+      <div className="grid grid-rows-[76px_1fr] h-full border-gray-800">
+        <div className='border-b border-gray-800 flex items-center'>
+          {
+            !isCopying ?<><button className='btn_copy ml-[18px] items-center mainhover' onClick={() => setIsCopyingModalOpen(true)}><span className='flex text-black text-[14px] font-semibold items-center'>Copy Trader</span></button></>
+              :
+              <>
+                <button className='btn_copy_after ml-[18px] items-center mr-[8px] mainhover'><span className='flex text-primary text-[14px] font-semibold items-center'><img src={Nick} />&nbsp;&nbsp;Copy Trader</span></button>
+                <span className="btn_roundborder text-gray-600 text-[14px] font-Medium mr-[8px] space-x-[5px]">Your&nbsp;PnL<span className="token_border text-white">0.1&nbsp;SOL</span></span>
+                <span className="btn_roundborder text-gray-600  text-[14px] font-Medium mr-[8px] space-x-[5px]">Amount&nbsp;placed<span className="token_border text-white">1&nbsp;SOL</span></span>
+                <button className='pause_btn items-center mainhover' onClick={() => setIsCopying(false)}><span className='flex text-gray-400 text-[14px] font-semibold items-center'><img src={Cancel} />&nbsp;&nbsp;Stop&nbsp;Copying</span></button>
+              </>
+          }
+        </div>
+      <div className="grid h-screen" style={{ gridTemplateColumns: 'calc((100vw - 501px) / 2) 1fr' }}>
+          <div className="border-r border-gray-800 flex flex-col h-screen">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800 ">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white items-center flex">Trading overview</div>
               </div>
-              <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
-                <span className="text-xs text-gray-600">Copiers</span>
-                <span className="text-xs text-white">95</span>
-              </div>
-              <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
-                <span className="text-xs text-gray-600">Total Copiers</span>
-                <span className="text-xs text-white">658</span>
-              </div>
-              <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
-                <span className="text-xs text-gray-600">Closed Portfolios</span>
-                <span className="text-xs text-white">1</span>
-              </div>
-            </div>
-            <div className='p-4 sm:p-5 bg-gray-50 rounded-[22px] space-y-4'>
-              <div className='flex justify-between items-center'>
-                <span className='font-semibold text-sm sm:text-base'>Performance</span>
-                <div className='px-2.5 py-1.5 rounded-full bg-gray-100 text-white flex items-center gap-2'>
-                  {/* <span className='text-xs sm:text-sm font-semibold'>7 days</span> */}
-                  <div ref={wrapperRef} className="relative inline-block text-left flex">
-                                  <button
-                                  onClick={toggleDropdown} className='flex'>
-                                  <span className='text-xs sm:text-sm font-semibold'>{filters}</span>
-                                  <span className='text-xs sm:text-sm text-gray-500 center'><AiFillCaretDown /></span></button>
-                                  {isOpen && (
-                                    <div className="absolute left-1/2 transform -translate-x-1/2 mt-6 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg" >
-                                    {options.map((op) => (
-                                      <button
-                                        key={op}
-                                        className={`block w-full px-4 py-2.5 text-left hover:text-black hover:bg-primary/50 ${filters == op ? 'bg-primary/50 text-black' : ''}`}
-                                        onClick={() => handleSelect(op)}
-                                      >
-                                        {op}
-                                      </button>
-                                        ))}
-                                    </div>
-                                  )}
+              <div className="flex-1 overflow-y-auto h-[calc(100vh-202px)]">
+                <div className='m-[18px] items-center'>
+                  <div className='flex mb-[8px] space-x-[8px]'>
+                    <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Days Trading<span className="token_border text-white space-x-[5px]">57</span></span>
+                    <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Copiers<span className="token_border text-white space-x-[5px]">95</span></span>
+                    <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Total Copiers<span className="token_border text-white space-x-[5px]">658</span></span>
+                  </div>
+                  <div className='flex space-x-[8px] mb-[16px]'>
+                    <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Closed Portfolios<span className="token_border text-white space-x-[5px]">1</span></span>
+                    <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">TFA<span className="token_border text-white space-x-[5px]">12 SOL</span></span>
+                  </div>
+                  <div className="border-b border-gray-800 mb-[16px]"></div>
+                  <div className='text-[14px] font-Medium text-white items-center mb-[16px]'>Performance</div>
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className=" flex text-gray-600 text-[12px] font-Medium mr-[5px]">ROL&nbsp;&nbsp;<span className=" text-[#4BC586] space-x-[5px]">+13</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">PNL&nbsp;&nbsp;<span className=" text-[#4BC586] space-x-[5px]">+20&nbsp;SOL</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">Sharpe Ratio&nbsp;&nbsp;<span className=" text-white space-x-[5px]">3.98</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">MDD&nbsp;&nbsp;<span className=" text-white space-x-[5px]">4.60%</span></span>
+                  </div>
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className=" flex text-gray-600 text-[12px] font-Medium mr-[5px]">Win Rate&nbsp;&nbsp;<span className=" text-white space-x-[5px]">100.00%</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">Win Days&nbsp;&nbsp;<span className=" text-white space-x-[5px]">58</span></span>
+                  </div>
+                  <div className="border-b border-gray-800 mb-[16px]"></div>
+                  <div className='text-[14px] font-Medium text-white items-center mb-[16px]'>Lead Trader Overview</div>
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className=" flex text-gray-600 text-[12px] font-Medium mr-[5px]">Copier PnL&nbsp;&nbsp;<span className=" text-red-300 space-x-[5px]">-17 SOL</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">Leading Balance&nbsp;&nbsp;<span className=" text-[#4BC586] space-x-[5px]">5&nbsp;SOL</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">AUM&nbsp;&nbsp;<span className=" text-white space-x-[5px]">4 SOL</span></span>
+                  </div>
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">Profit Sharing&nbsp;&nbsp;<span className=" text-[#4BC586] space-x-[5px]">10%</span></span>
+                    <span className=" flex text-gray-600 text-[12px] font-Medium mr-[5px]">Minimum Copy Amount&nbsp;&nbsp;<span className=" text-[#4BC586] space-x-[5px]">0.5 SOL</span></span>
+                  </div>
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className=" flex text-gray-600 text-[12px] font-Medium mr-[5px]">Last Trade&nbsp;&nbsp;<span className=" text-white space-x-[5px]">2025-01-16 09:05</span></span>
+                  </div>
+                  <div className="border-b border-gray-800 mb-[16px]"></div>
+                  <div className='flex items-center'>
+                    <div className=''>
+                      <div className='text-[14px] font-Medium text-white items-center'>Top Copiers</div>
+                      <div className='text-[14px] font-Medium text-gray-600 items-center mb-[16px]'>(Amount locked / Profit) </div>
                     </div>
-                  {/* <span className='text-xs sm:text-sm text-gray-500'><AiFillCaretDown /></span> */}
-                </div>
-              </div>
-              <div className='flex flex-wrap gap-4'>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">ROI</span>
-                  <span className="text-xs text-green-600">+ 13.00</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">PNL</span>
-                  <span className="text-xs text-green-600">+20 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Sharpe Ratio</span>
-                  <span className="text-xs text-white">3.98</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">MDD</span>
-                  <span className="text-xs text-white">4.60%</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Win Rate</span>
-                  <span className="text-xs text-white">100.00%</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Win Days</span>
-                  <span className="text-xs text-white">58</span>
-                </div>
-              </div>
-              <div className='border border-gray-100'></div>
-              <div className='flex'>
-                <span className='font-semibold text-sm sm:text-base'>Lead Trader Overview</span>
-              </div>
-              <div className='flex flex-wrap gap-4'>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Copier PnL</span>
-                  <span className="text-xs text-red-400">-17 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Leading Balance</span>
-                  <span className="text-xs text-green-600">5 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">AUM</span>
-                  <span className="text-xs text-green-600">4 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Profit Sharing</span>
-                  <span className="text-xs text-green-600">10%</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Minimum Copy Amount</span>
-                  <span className="text-xs text-green-600">0.5 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">Last Trade</span>
-                  <span className="text-xs text-green-600">2025-01-16 09:05</span>
-                </div>
-              </div>
-              <div className='border border-gray-100'></div>
+                    <div className='ml-auto'>
+                      <div className='text-[14px] font-Medium text-primary items-center mb-[16px]'>View ALL</div>
+                    </div>
 
-              <div className='flex justify-between items-center'>
-                <span className='font-semibold text-sm sm:text-base'>Finances</span>
-                <div className='px-2.5 py-1.5 rounded-full bg-gray-100 text-white flex items-center gap-2'>
-                  <span className='text-xs sm:text-sm font-semibold'>Trader profit</span>
-                  <span className='text-xs sm:text-sm font-semibold text-green-600'>2 SOL</span>
-                </div>
-              </div>
-              <div className='flex justify-between items-center'>
-                <div className='flex gap-2 items-center'>
-                  <span className='text-sm font-semibold text-sm sm:text-base'>Top Copiers</span>
-                  <span className='text-xs text-gray-600'>{'(Amount locked / Profit)'}</span>
-                </div>
-                <button className='text-primary text-xs font-normal hover:text-primary/80' onClick={() => setIsAllCopiersModalOpen(true)}>View All</button>
-              </div>
-              <div className='flex flex-wrap gap-4'>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">UsernameLong</span>
-                  <span className="text-xs text-green-600">9/0.3 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">cv9r69ww</span>
-                  <span className="text-xs text-green-600">9/0.3 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">UsernameLong</span>
-                  <span className="text-xs text-green-600">9/0.3 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">cv9r69ww</span>
-                  <span className="text-xs text-green-600">9/0.3 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">UsernameLong</span>
-                  <span className="text-xs text-green-600">9/0.3 SOL</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">cv9r69ww</span>
-                  <span className="text-xs text-green-600">9/0.3 SOL</span>
+                  </div>
+                  
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className=" flex text-gray-600 text-[12px] font-Medium mr-[5px]">UsernameLong&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">cv9r69ww&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">cv9r69ww&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
+                  </div>
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">cv9r69ww&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">cv9r69ww&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
+                  </div>
+                  <div className='flex mb-[16px] space-x-[16px]'>
+                    <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">cv9r69ww&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
+                  </div>
+                  <div className="border-b border-gray-800 mb-[16px]"></div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="md:col-span-4 lg:col-span-5">
-            <div className="flex">
-              <div className='flex flex-col md:ml-auto gap-2'>
-                {
-                  !isCopying ?
-                    <button className='btn btn-md' onClick={() => setIsCopyingModalOpen(true)}>Copy Trader</button> :
-                    <div className='rounded-full bg-primary/20 text-primary px-4 py-1.5 font-semibold flex items-center justify-center'><IoCheckmark className='mr-1 font-bold' size={20} /> Copying this trader</div>
-                }
-                <div className='flex gap-1 justify-between'>
-                  <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
-                    <span className="text-xs text-gray-600">Followers</span>
-                    <span className="text-xs text-white">12</span>
+          <div className="border-gray-800 h-screen flex flex-col">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white items-center flex">Latest Trades</div>
+              </div>
+              <div className="overflow-y-auto h-[calc(100vh-202px)]">
+                 <div className='m-[18px]'>
+                  {[...Array(20)].map((_, index) => (<>
+                   <div className="flex items-center gap-2 flex-wrap text-[12px] font-Medium">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <div className="text-xs btn_buy px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1">
+                        <button className="text-[#59FFCB]">Buy</button>
+                      </div>
+                      <div className="flex gap-8 px-[12px]">
+                      <div className="">
+                        <p className="text-xs mb-[2px] text-white/60">Pair</p>
+                        <p className="text-xs text-white">UNIUSDT</p>
+                      </div>
+                      <div className="">
+                        <p className="text-xs mb-[2px] text-white/60">Executed</p>
+                        <p className="text-xs text-white">7.87 UNI</p>
+                      </div>
+                      <div className="">
+                        <p className="text-xs mb-[2px] text-white/60">Total</p>
+                        <p className="text-xs text-white">0.01 SOL</p>
+                      </div>
+                      <div className="">
+                        <p className="text-xs mb-[2px] text-white/60">Role</p>
+                        <p className="text-xs text-white">Taiker</p>
+                      </div>
+                     </div>
+                    </div>
+                    <span className="ml-auto text-xs text-white/60 ">2025-01-16 15:45:17</span>
                   </div>
-                  <div className="bg-gray-50 rounded-full px-3 py-1.5 flex items-center gap-1">
-                    <span className="text-xs text-gray-600">TFA</span>
-                    <span className="text-xs text-white">12 SOL</span>
-                  </div>
+                    <div className="border-b border-gray-800 mb-[19px] mt-[19px]"></div>
+                    </>
+                  ))}
                 </div>
-
-                { isCopying && <>
-                  <div className='rounded-[20px] bg-gray-100 text-white px-4 py-3 flex justify-between'>
-                    <div className='flex flex-col'>
-                      <span className='text-white font-semibold'>0.1 SOL</span>
-                      <span className='text-xs text-gray-600'>Your PnL</span>
-                    </div>
-                    <div className='flex flex-col'>
-                      <span className='text-white font-semibold'>1 SOL</span>
-                      <span className='text-xs text-gray-600'>Amount placed</span>
-                    </div>
-                  </div>
-                  <button className='btn btn-gray btn-md' onClick={() => setIsCopying(false)}><MdClose className='mr-1 font-bold' size={20} /> Stop Copying</button>
-                </> }
+                </div>
               </div>
             </div>
           </div>
         </div>
-        {/* <div className="overflow-auto md:overflow-hidden flex-grow space-y-4">
-          <div className="card md:h-full p-0 flex flex-col md:overflow-hidden">
-            <div className="p-4 sm:p-6 border-b-[1px] border-gray-100 flex justify-between items-center">
-              <div className="flex gap-2 sm:gap-3 items-center grow loading"></div>
-           </div>
-           </div></div> */}
-        <div className="-mx-6 border-b border-gray-100"></div>
-        <div className="px-3 sm:px-[18px] py-3 rounded-[22px] bg-gray-50 flex items-center gap-2 flex-wrap">
-                
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="text-xs bg-green-600 px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1 rounded-full">
-                    <button className="text-black">Buy</button>
-                  </div>
-                  <div className="flex gap-8 px-1 pl-4">
-                  <div className="">
-                    <p className="text-xs text-white/60">Pair</p>
-                    <p className="text-xs text-white">UNIUSDT</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Executed</p>
-                    <p className="text-xs text-white">7.87 UNI</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Total</p>
-                    <p className="text-xs text-white">0.01 SOL</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Role</p>
-                    <p className="text-xs text-white">Taiker</p>
-                  </div>
-                </div>
-                </div>
-                <span className="ml-auto text-xs text-white/60">2025-01-16 15:45:17</span>
-        </div>
-        <div className="px-3 sm:px-[18px] py-3 rounded-[22px] bg-gray-50 flex items-center gap-2 flex-wrap">
-                
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="text-xs bg-red-300 px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1 rounded-full">
-                    <button className="text-white">Sell</button>
-                  </div>
-                  <div className="flex gap-8 px-1 pl-4">
-                  <div className="">
-                    <p className="text-xs text-white/60">Pair</p>
-                    <p className="text-xs text-white">UNIUSDT</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Executed</p>
-                    <p className="text-xs text-white">7.87 UNI</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Total</p>
-                    <p className="text-xs text-white">0.01 SOL</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Role</p>
-                    <p className="text-xs text-white">Taiker</p>
-                  </div>
-                </div>
-                </div>
-                <span className="ml-auto text-xs text-white/60">2025-01-16 15:45:17</span>
-        </div>
-         <div className="px-3 sm:px-[18px] py-3 rounded-[22px] bg-gray-50 flex items-center gap-2 flex-wrap">
-                
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="text-xs bg-red-300 px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1 rounded-full">
-                    <button className="text-white">Sell</button>
-                  </div>
-                  <div className="flex gap-8 px-1 pl-4">
-                  <div className="">
-                    <p className="text-xs text-white/60">Pair</p>
-                    <p className="text-xs text-white">UNIUSDT</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Executed</p>
-                    <p className="text-xs text-white">7.87 UNI</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Total</p>
-                    <p className="text-xs text-white">0.01 SOL</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-white/60">Role</p>
-                    <p className="text-xs text-white">Taiker</p>
-                  </div>
-                </div>
-                </div>
-                <span className="ml-auto text-xs text-white/60">2025-01-16 15:45:17</span>
-        </div>
-
-
       </div>
-     </div>
     <CopyingModal isOpen={isCopyingModalOpen} onOk={() => {
       setIsCopyingModalOpen(false);
       setIsCopying(true)

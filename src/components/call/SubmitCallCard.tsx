@@ -99,17 +99,17 @@ const SubmitCallCard = () => {
 
   return (<>
     {/* Search and Submit Button */}
-    <div className="flex items-center gap-4 mb-4">
-      <div className="flex items-center card p-2 rounded-full grow">
+    <div className="flex items-center ">
+      <div className="flex items-center card-1 grow mr-[11px]">
         <input 
           value={callToken}
           onChange={(e) => setCallToken(e.target.value)}
           type="text" 
           placeholder="Paste in CA" 
-          className="outline-none text-sm px-2 grow sm:px-4 sm:py-3 sm:text-base bg-transparent" />
-        <button className="sm:hidden flex btn btn-sm" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button>
+          className="outline-none text-sm px-2 grow sm:text-base bg-transparent " />
+        {/* <button className="sm:hidden flex btn btn-sm" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button> */}
       </div>
-      <button className="btn !hidden sm:!flex" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button>
+      <button className="btn_call text-[14px] font-semibold !hidden sm:!flex text-black w-[80px] h-[40px]" onClick={handleSubmitCall} disabled={isSubmitting}>Submit</button>
     </div>
     <CallModal 
       isOpen={isCallModalOpen} 

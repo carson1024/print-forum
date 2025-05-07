@@ -48,7 +48,13 @@ export default function MainLayout(props: { [x: string]: any }) {
   };
 
   return (
-    <div className="flex flex-col h-screen p-4 pt-6 sm:p-6 max-w-[1440px] m-auto gap-4">
+    <div className="flex flex-col h-screen w-screen m-auto gap-4 overflow">
+      <div className="grid grid-cols-[170px_1fr] h-screen bg-black text-white ">
+      <Navbar
+        currentRoute={currentRoute}
+        secondary={getActiveNavbar(routes)}
+        {...rest}
+      />
       <main
         className="transition-all grow overflow-hidden"
       >
@@ -58,11 +64,7 @@ export default function MainLayout(props: { [x: string]: any }) {
           </Routes>
         </div>
       </main>
-      <Navbar
-        currentRoute={currentRoute}
-        secondary={getActiveNavbar(routes)}
-        {...rest}
-      />
+      </div>
     </div>
   );
 }

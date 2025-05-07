@@ -5,7 +5,8 @@ import React, { useEffect, useRef } from 'react';
 import { useState } from "react";
 import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
-
+import { formatNumber, formatShortAddress, formatTimestamp } from "utils/blockchain"
+import Trader from 'assets/img/trader.png';
 const TradersTab = ({
   users
 }: {
@@ -21,76 +22,69 @@ const TradersTab = ({
         setFavo(parsedFavos || []);
       }
     }, [user]);
+  const handleFavorite = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isLogin || !user) return;
+      const userId = e.currentTarget.id;
+  
+      // Clone and add
+      let updatedFavos = Array.isArray(favo) ? [...favo] : [];
+      if (!updatedFavos.includes(userId)) {
+        updatedFavos.push(userId);
+      }
+  
+      setFavo(updatedFavos);
+  
+      // Optional: update local user
+      user.favos = updatedFavos;
+      const { error: favoerror } = await supabase
+        .from("users")
+        .update({ favos: updatedFavos }) // ❗ Do NOT stringify
+        .eq("id", user.id);
+  
+      if (favoerror) {
+        console.error("Error updating favorites:", favoerror.message);
+      }
+  };
   return (<>
-    {users.map((user, index) => ( <Link to={`/profile?id=${user.id}&tag=2`} key={index}>
-      <div className="bg-gray-50 p-1.5 rounded-[22px] flex items-center justify-between">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full border border-gray-150 flex items-center gap-2.5">
-                <span className={`badge-rank-${user.rank}`}></span>
-                <div className="space-y-0.5">
-                  <div className="text-xs text-gray-600">Rank {user.rank}</div>
-                  <div className="flex gap-1 items-center">
-                    <span className="font-bold text-sm">{user.name}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-0.5 sm:space-y-1">
-                <div className="text-xs text-gray-600">7 day PNL</div>
-                <div className="text-green-600 space-x-1.5">
-                  <span className="text-[18px] sm:text-md font-bold">2.1</span>
-                  <span className="text-sm sm:text-base font-semibold">SOL</span>
-                </div>
-              </div>
-          
-              {/* <button className="bg-gray-100 text-gray-400 w-6 h-6 circle-item !flex sm:!hidden">
-                <MdStar className="" />
-              </button> */}
+    {users.map((user, index) => (<Link to={`/profile?id=${user.id}&tag=2`} key={index}>
+          <div className="trading_border  flex items-center justify-between">
+            <div className="flex items-center ">
+              <span className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center mr-[6px]`}></span>
+              <span className="text-[12px] font-semibold text-white mr-[6px]">{user.name}</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">{user.winrate}%</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">{formatTimestamp(user.created_at)}</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">PnL</span>
+              <span className="text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">2.01 SOL</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">ROI</span>
+              <span className="text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">+64.31%</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">Win Ratio</span>
+              <span className="text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">{user.winrate}%</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">TFA</span>
+              <span className="text-[12px] border_num_white font-Medium text-white mr-[10px]">0 SOL</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">Followers</span>
+              <span className="text-[12px] border_num_white font-Medium text-[#59FFCB] mr-[10px]">3</span>
+              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">my PnL</span>
+              <span className="text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">2.01 SOL</span>
             </div>
-            <div className="flex items-center gap-1 flex-wrap">
-              <div className="text-xs bg-gray-100 px-2 py-1.5 flex items-center gap-1 rounded-full">
-                <span className="text-gray-600">ROI</span>
-                <span className="text-primary">+64.31%</span>
-              </div>
-              <div className="text-xs bg-gray-100 px-2 py-1.5 flex items-center gap-1 rounded-full">
-                <span className="text-gray-600">Win Ratio</span>
-                <span className="text-primary">{user.winrate}%</span>
-              </div>
-              <div className="text-xs bg-gray-100 px-2 py-1.5 flex items-center gap-1 rounded-full">
-                <span className="text-gray-600">TFA</span>
-                <span className="text-white">0 SOL</span>
-              </div>
-              <div className="text-xs bg-gray-100 px-2 py-1.5 flex items-center gap-1 rounded-full">
-                <span className="text-gray-600">Followers</span>
-                <span className="text-white">2</span>
-              </div>
-              <div className="text-xs bg-gray-100 px-2 py-1.5 flex items-center gap-1 rounded-full">
-                <span className="text-gray-600">My PnL</span>
-                <span className="text-primary">0.1 SOL</span>
-              </div>
+        <div className="hidden sm:flex gap-2">
+              <button className="bg-gray-100 text-gray-400  circle-item">
+                <img src={Trader} className="w-8 h-8" />
+              </button>
+              {
+                favo.includes(user.id)?<button className="bg-gray-100 text-primary w-8 h-8 circle-item" >
+                <MdStar size={20} />
+                </button> :
+                  <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item" id={user.id} onClick={handleFavorite}>
+                  <MdStar size={20} />
+                  </button>
+              }
+              <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
+                <FaChevronRight />
+              </button>
             </div>
           </div>
-        </div>
-        <div className="hidden sm:flex gap-2 mr-2.5">
-          {/* <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
-            <MdStar size={20} />
-          </button> */}
-              {
-                          favo.includes(user.id)?<button className="bg-gray-100 text-primary w-8 h-8 circle-item" >
-                          <MdStar size={20} />
-                          </button> :
-                            <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item" id={user.id}>
-                            <MdStar size={20} />
-                            </button>
-                        }
-          <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
-            <FaChevronRight />
-          </button>
-        </div>
-      </div>
-    </Link>
-    ))}
+        </Link>
+        ))}
   </>);
 }
 

@@ -1,4 +1,4 @@
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai"
+import { AiFillCaretDown, AiFillCaretUp, AiFillCaretRight } from "react-icons/ai"
 import { Link } from "react-router-dom"
 import { formatNumber, formatShortAddress, formatTimestamp } from "utils/blockchain"
 import IconCopy from 'assets/img/icons/copy.svg';
@@ -28,7 +28,6 @@ export const CallRow = ({
       if (call.is_featured == true) {
         setFeatured(call.featured)
       }
-    
   const voteratio = async () => {
     const { data, error } = await supabase
         .from("vote")
@@ -45,7 +44,6 @@ export const CallRow = ({
     }};
     voteratio(); 
     }, []);
-
   const handleCopy = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -268,133 +266,77 @@ export const CallRow = ({
     insertdislikeUser();
   }
   
-
   return <Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`}>
-    <div className="bg-gray-50 p-1.5 pr-3 rounded sm:rounded-[40px] flex flex-col gap-2 sm:gap-3 cursor-pointer" >
-        <div className="flex items-center gap-2.5">
-          <div className="flex flex-wrap grow">
-            <div className="flex grow gap-2 sm:gap-3 items-center">
-              <img src={call.image} className="w-[44px] h-[44px] sm:w-16 sm:h-16 circle"/>
-              <div className="grow space-y-1 sm:space-y-1.5">
-                <div className="flex gap-1.5 sm:gap-2.5 items-center">
-                <span className="text-sm sm:text-base font-bold">${call.symbol} </span>
+         <div className="bg-black text-white">
+           <div className="mt-[18px] ml-[18px] mr-[18px] grid items-center bg-black raw_border" style={{ gridTemplateColumns: '320px 1fr 37px' }}>
+            <div className="flex mr-[32px] items-center bg-black">
+            <img src={call.image} className="w-[69px] h-[69px] circle-item" />
+            <div className="flex flex-col items-start token_data mr-[8px] ml-[12px]">
+              <div className="data1 text-sm text-[14px] font-semibold items-center flex">${call.symbol}
                 { 
-                  featured > 1 ? <div>
-                  <span className={`badge-multiplier-${featured}X`}></span> 
-                  </div> :
-                  <></>
-                }
-                  <div onClick={handleCopy} className="bg-gray-100 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full flex text-xs gap-1 items-center">
-                  <span>CA</span>
-                    <span className="truncate text-gray-400">{formatShortAddress(call.address)}</span>
-                    <button className="text-gray-400">{
-                      !isCopied ? <img src={IconCopy} className="opacity-40"/>
-                      : <span className='text-[#06cf9c]'><MdCheck size={16} /></span>
-                    }</button>
-                  </div>
-                  <span className="text-sm text-gray-600">{formatTimestamp(call.updated_at)}</span>
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2.5">
-                  <div className="bg-gray-100 px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-full flex text-xs gap-1">
-                    Marketcap {formatNumber(call.init_market_cap)} to {formatNumber(call.changedCap)}
-                </div>
-                  {
-                    call.percentage==100?<></>:call.percentage>100?
-                    <div className="bg-green-600 px-1.5 py-1 sm:px-2 sm:py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
-                      <AiFillCaretUp />
-                    <span>{Number(call.percentage) - 100}%</span>
+                    featured > 1 ? <div>
+                    <span className={`badge-multiplier-${featured}X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex`}></span> 
                     </div> :
-                    <div className="bg-red-400 px-1.5 py-1 sm:px-2 sm:py-1.5 text-xs flex gap-0.5 items-center rounded-full text-black">
-                      <AiFillCaretDown />
-                    <span>{100-Number(call.percentage)}%</span>
-                    </div>
-                  }
-                </div>
+                    <></>
+                }
+                {/* <span className="badge-multiplier-10X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex"></span>  */}
+                <span onClick={handleCopy} className="token_address text-[12px] font-Medium text-gray-500">
+                  <span className="truncate text-gray-400">{formatShortAddress(call.address)}</span>
+                  <button className="text-gray-400">{
+                    !isCopied ? <img src={IconCopy} className="opacity-40"/>
+                    : <span className='text-[#06cf9c]'><MdCheck size={16} /></span>
+                  }</button>
+                </span>
+                <span className="font-Regular text-gray-600">{formatTimestamp(call.updated_at)}</span>
               </div>
-          </div>
-            <div className="hidden md:flex items-center gap-3 justify-between">
+              <div className="text-gray-600 text-[12px] font-Medium flex">
+      MCAP&nbsp;{formatNumber(call.init_market_cap)}<span className="text-sm items-center flex"><AiFillCaretRight /></span>{formatNumber(call.changedCap)}&nbsp;<span className="text-sm items-center flex font-Regular text-white">
               {
-              call.users && 
-              <Link to={`/profile?id=${call.users.id}&tag=1`} key={call.id}>
-                  <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs" >
-                    <span className={`badge-rank-${call.users.rank}`}></span>
-                    <div>
-                      <div className="text-gray-600">Caller</div>
-                      <div className="font-bold text-sm">{call.users.name} <span className="text-xs text-gray-600">{call.users.winrate}%</span></div>
-                    </div>
-                 </div>
-               </Link>
-              }
-            
-            {  confirmVote ==0?
-              <div className="flex gap-1 items-center">
-                <button className="circle-item w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" onClick={handleVotelike}><AiFillCaretUp  />
-                </button>
-                <button className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" onClick={handleVotedislike} ><AiFillCaretDown />
-                </button>
-                <span className="text-xs text-gray-600">{ratioVote}%</span>
-              </div> : <>
-                { 
-                  confirmVote == 1 ?
-                   <div className="flex gap-1 items-center" onClick={handlekeep} >
-                   <button className="circle-item w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]" ><FaThumbsUp className="w-3 h-3 text-green-500  cursor-pointer hover:scale-110 transition-transform" />
-                   </button>
-                    <button className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]"><AiFillCaretDown />
-                   </button>
-                    <span className="text-xs text-gray-600">{ratioVote}%</span>
-                    </div> :
-                    
-                    <div className="flex gap-1 items-center" onClick={handlekeep} >
-                   <button className="circle-item w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]"><AiFillCaretUp />
-                   </button>
-                    <button className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]"><FaThumbsDown className="w-3 h-3 text-red-500 cursor-pointer hover:scale-110 transition-transform" />
-                   </button>
-                    <span className="text-xs text-gray-600">{ratioVote}%</span>
-                 </div>
+                  call.percentage==100?<></>:call.percentage>100?
+                  <div className="flex text-green-600">
+                    <AiFillCaretUp className="text-green-600" />
+                  <span>{Number(call.percentage) - 100}%</span>
+                  </div> :
+                  <div className="flex text-red-400">
+                    <AiFillCaretDown className="text-red-400"/>
+                  <span>{100-Number(call.percentage)}%</span>
+                  </div>
                 }
-              </>
-            }
-          </div>
-        </div>
-        <Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`} key={call.id}>
-          <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item !hidden lg:!flex">
-            <FaChevronRight />
-          </button>
-      </Link>
-        </div>
-        <div className="flex md:hidden items-center gap-1 sm:gap-3 justify-between">
+        {/* <AiFillCaretUp /> 121% */}
+               </span>
+              </div>
+              <div className="items-center flex text-sm space-x-[8px]">
+                <span className={`badge-rank-${call.users.rank} w-[20px] h-[20px]`}></span>
+                <Link to={`/profile?id=${call.users.id}&tag=1`} key={call.id}>
+                  <div className=" text-sm text-[12px] font-semibold items-center">{call.users.name}</div>
+                </Link>
+                <div className="text-gray-600 text-[12px] font-Medium flex">{call.users.winrate}%</div>
+              </div>
+             </div>
+            </div>
+          <div className="bg-black"></div>
+          <div className="flex items-center bg-black ml-auto">
           {
-          call.users && 
-          <Link to={`/profile?id=${call.users.id}`} key={call.id}>
-            <div className="border border-gray-100 rounded-full p-2.5 flex items-center gap-1.5 text-xs">
-              <span className={`badge-rank-${call.users.rank}`}></span>
-              <div className="">
-                <div className="text-gray-600">Caller</div>
-                <div className="font-bold text-sm">{call.users.name} <span className="text-xs text-gray-600">{call.users.winrate}%</span></div>
-              </div>
-              </div>
-          </Link>
-        }
-        {  confirmVote ==0?<><div className="border border-gray-100 rounded-full px-2.5 py-3.5 flex gap-1 items-center">
-            <div className="circle-item w-6 h-6 bg-gray-100 text-green-600 text-sm pb-[2px]" onClick={handleVotelikemobile}><AiFillCaretUp  /></div>
-            <div className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" onClick={handleVotedislikemobile}><AiFillCaretDown /></div>
-            <span className="text-xs text-gray-600">{ratioVote}%</span>
-        </div></> : <>
-            { 
-             confirmVote ==1?<><div className="border border-gray-100 rounded-full px-2.5 py-3.5 flex gap-1 items-center" onClick={handlekeep}>
-            <div className="circle-item w-6 h-6 bg-gray-100 text-green-600 text-sm pb-[2px]"  ><FaThumbsUp className="w-3 h-3 text-green-500  cursor-pointer hover:scale-110 transition-transform" /></div>
-            <div className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><AiFillCaretDown /></div>
-            <span className="text-xs text-gray-600">{ratioVote}%</span>
-        </div></>:<><div className="border border-gray-100 rounded-full px-2.5 py-3.5 flex gap-1 items-center" onClick={handlekeep} >
-            <div className="circle-item w-6 h-6 bg-gray-100 text-green-600 text-sm pb-[2px]" ><AiFillCaretUp  /></div>
-            <div className="circle-item w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><FaThumbsDown className="w-3 h-3 text-red-500 cursor-pointer hover:scale-110 transition-transform" /></div>
-            <span className="text-xs text-gray-600">{ratioVote}%</span>
-        </div></>
-            }
-          </> 
-        }
+          confirmVote ==0?<><div className="space-y-[3px]">
+            <div className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px] " onClick={handleVotelikemobile}><AiFillCaretUp /> </div>
+            <div className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" onClick={handleVotedislikemobile}><AiFillCaretDown /></div>
+            <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">{ratioVote}%</span>
+            </div></> :<>
+              {
+                confirmVote ==1?<><div className="space-y-[3px]" onClick={handlekeep}>
+            <button className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]"><FaThumbsUp className="w-3 h-3 text-green-500  cursor-pointer hover:scale-110 transition-transform" /> </button>
+            <button className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]"><AiFillCaretDown /></button>
+            <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">{ratioVote}%</span>
+                  </div></> :
+                    <div className="space-y-[3px]" onClick={handlekeep}>
+            <div className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]"  ><AiFillCaretUp /> </div>
+            <div className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><FaThumbsDown className="w-3 h-3 text-red-500 cursor-pointer hover:scale-110 transition-transform" /></div>
+            <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">{ratioVote}%</span>
+            </div>
+              }</>
+          }
+        </div>
       </div>
-     </div>
+    </div>
    </Link>
-
 }

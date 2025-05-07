@@ -70,7 +70,7 @@ const LoginModal = ({
       {/* Email Login */}
       <p className="font-semibold mb-2">Use a one time code</p>
       <div className="flex items-center gap-4 w-full">
-        <div className="relative flex items-center input-field !px-2 sm:!px-4 rounded-full grow">
+        <div className="relative flex items-center input-field !px-2 sm:!px-4 circle grow">
           <MdEmail className="text-gray-600 ml-1" size={24} />
           <input
             type="email" 
@@ -83,9 +83,10 @@ const LoginModal = ({
             placeholder="example@email.com" 
             className="bg-transparent outline-none text-white placeholder-gray-500 text-sm sm:text-base pr-4 grow"
           />
-          <button className="absolute top-2 right-2 sm:hidden flex btn btn-sm" onClick={() => handleLogin('email', email)} disabled={isSending}>Send code</button>
+          <button className="absolute top-2 right-2 sm:hidden flex bg-primary font-semibold p-[6px] circle btn-sm" onClick={() => handleLogin('email', email)} disabled={isSending}>Send code</button>
+        <button className="bg-primary circle font-semibold p-[6px] text-black  text-base !hidden sm:!flex !py-3" onClick={() => handleLogin('email', email)} disabled={isSending}>Send code</button>
         </div>
-        <button className="btn btn-sm text-base !hidden sm:!flex !py-3" onClick={() => handleLogin('email', email)} disabled={isSending}>Send code</button>
+       
       </div>
       {emailError && <p className="text-red-400 text-xs mt-2 ml-2">{emailError}</p>}
       
@@ -93,7 +94,7 @@ const LoginModal = ({
       <div className="text-center text-gray-500 my-3 sm:my-4 text-xs sm:text-base">OR</div>
       
       {/* Log in using X */}
-      <button className="input-field w-full text-gray-600 !px-2 sm:!px-4 text-sm sm:text-base" onClick={() => handleLogin('twitter')}>
+      <button className="input-field circle w-full text-gray-600 !px-2 sm:!px-4 text-sm sm:text-base" onClick={() => handleLogin('twitter')}>
         <FaXTwitter className="ml-1.5" size={20} />Log in using X
       </button>
     </Modal>
