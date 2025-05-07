@@ -34,10 +34,18 @@ const Navbar = (props: {
   const route = useLocation();
   const navigate = useNavigate();
   const { isLogin, session } = useAuth();
-  const [activeTab, setActiveTab] = useState<'forum' | 'alpha' | 'copy' | 'rankings'>('forum');
+  const [activeTab, setActiveTab] = useState<'forum' | 'alpha' | 'copy' | 'rankings' | ''>('forum');
+
+
 
   useEffect(() => {
     console.log(route.pathname);
+      if (route.pathname == "/") { setActiveTab('forum') }
+      else if (route.pathname == "/login") { setActiveTab('') }
+      else if (route.pathname == "/token") { setActiveTab('forum') }
+      else if (route.pathname == "/profile") { setActiveTab('forum') }
+      else if (route.pathname == "/leaderboard") { setActiveTab('rankings') }
+      else if (route.pathname == "/copytrading") { setActiveTab('copy') }
   }, [route]);
   
   return (<>

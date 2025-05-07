@@ -3,6 +3,7 @@ import { AiFillCaretUp } from "react-icons/ai";
 import WithdrawModal from "components/modal/WithdrawModal";
 import DepositModal from "components/modal/DepositModal";
 import AllTradesModal from "components/modal/AllTradesModal";
+import AlertModal from "components/modal/AlertModal";
 import { Link } from "react-router-dom";
 import { useAuth } from "contexts/AuthContext";
 import { supabase } from "lib/supabase";
@@ -40,6 +41,7 @@ const MyProfile = (props: {
   const [amount, setAmount] = useState(0);
   const [toaddress, setToAddress] = useState("");
   const [isConfirmWithdrawModalOpen, setIsConfirmWithdrawModalOpen] = useState(false);
+  const [isRingModalOpen, setIsRingModalOpen] = useState(false);
   const [mySKey, setMySKey] = useState({});
   const [balance, setBalance] = useState<number | null>(null);
   const getBalance = async (publicKeyStr: string) => {
@@ -170,8 +172,8 @@ function formatSinceDate(timestamp?: string): string {
 }
   
   return (<>
-  <div className="h-screen bg-black text-white">
-        <div className="grid grid-rows-[100px_170px_98px_197px_270px_1fr_50px] h-full border-gray-800">
+  <div className="h-screen bg-black text-white ">
+        <div className="grid grid-rows-[100px_170px_98px_197px_270px_1fr_50px] h-screen border-gray-800">
           <div className=" border-b border-gray-800 items-center justify-center">
             <div className="m-[18px]">
             <div className="flex items-center">
@@ -182,7 +184,7 @@ function formatSinceDate(timestamp?: string): string {
                 <span className="text-[14px] flex items-center font-semibold text-white">{user?.name}</span>
                 <button><img src={Next} className="w-[24px] h-[24px] mr-[8px]" /></button>
                 <div className="bg-black"></div>
-                <button><img src={Ring} className="w-[24px] h-[24px] mr-[8px] ml-auto" /></button>
+                <button onClick={() => setIsRingModalOpen(true)} ><img src={Ring} className="w-[24px] h-[24px] mr-[8px] ml-auto" /></button>
                 <button><img src={Setting} className="w-[24px] h-[24px]" /></button>
               </div>
               <div className="flex items-center mt-[20px]">
@@ -190,7 +192,7 @@ function formatSinceDate(timestamp?: string): string {
               </div>
             </div>
           </div>
-        <div className=" border-b border-gray-800 items-center justify-center">
+          <div className=" border-b border-gray-800 items-center justify-center">
           {
             !user?<div className="m-[18px]">
               <div className="flex items-center profileXP mb-[20px]">
@@ -444,12 +446,13 @@ function formatSinceDate(timestamp?: string): string {
             </div>
           </div>
           <div className=" border-b border-gray-800 items-center justify-center">
-            <div className="m-[18px]">
+            <div className="m-[18px] h-full">
               <div className="flex mb-[20px]">
-              <button className={`btn_profile text-[12px] font-semibold ${activeTag == "mtrade" ? "text-primary ":"text-[#76767E]"}  items-center justify-center flex mr-[8px] mainhover`} onClick={() => setActiveTag('mtrade')}>My Trades</button>
+              <button className={`btn_profile text-[12px] font-semibold ${activeTag == "mtrade" ? "text-primary " : "text-[#76767E]"}  items-center justify-center flex mr-[8px] mainhover`} onClick={() => { setActiveTag('mtrade'); setIsAllTradesModalOpen(true); }}>My Trades</button>
                 <button className={`btn_profile text-[12px] font-semibold ${activeTag == "mcall" ? "text-primary ":"text-[#76767E]"} items-center justify-center flex mainhover`} onClick={() => setActiveTag('mcall')}>My Calls</button>
                 <button className={`btn_outline text-[11px] font-semibold ${activeTag == "alltrade" ? "text-primary ":"text-[#76767E]"} items-center justify-center flex ml-auto mainhover`} onClick={() => setActiveTag('alltrade')}>All Trades</button>
-            </div>
+              </div>
+            <div className="flex-1 overflow-y-auto h-[200px]">
             { 
               !user ?
                 <div className="">
@@ -457,7 +460,7 @@ function formatSinceDate(timestamp?: string): string {
                     Array(3).fill(0).map(() => <div className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
                       <div className="flex items-center">
                         <div className="gray space-x-[4px] text-[12px]">
-                          <button className="circle bg-[#76767E] text-white px-1.5 py-1 text-xs">Buy</button>
+                          <button className="circle btn_buy_small text-white px-1.5 py-1 text-xs">Buy</button>
                           <button className="rounded-full bg-black/10 text-white/60 text-xs">UsernameLong</button>
                         </div>
                         <span className="text-xs text-white/60 ml-auto">2025-01-16 15:45:17</span>
@@ -490,7 +493,7 @@ function formatSinceDate(timestamp?: string): string {
                         Array(3).fill(0).map(() => <div className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
                           <div className="flex items-center">
                             <div className="gray space-x-[4px] text-[12px]">
-                              <button className="circle bg-[#76767E] text-white px-1.5 py-1 text-xs">Buy</button>
+                              <button className="circle btn_buy_small text-white px-1.5 py-1 text-xs">Buy</button>
                               <button className="rounded-full bg-black/10 text-white/60 text-xs">UsernameLong</button>
                             </div>
                             <span className="text-xs text-white/60 ml-auto">2025-01-16 15:45:17</span>
@@ -538,7 +541,7 @@ function formatSinceDate(timestamp?: string): string {
                             Array(3).fill(0).map(() => <div className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
                               <div className="flex items-center">
                                 <div className="gray space-x-[4px] text-[12px]">
-                                  <button className="circle bg-[#76767E] text-white px-1.5 py-1 text-xs">Buy</button>
+                                  <button className="circle btn_buy_small text-white px-1.5 py-1 text-xs">Buy</button>
                                   <button className="rounded-full bg-black/10 text-white/60 text-xs">UsernameLong</button>
                                 </div>
                                 <span className="text-xs text-white/60 ml-auto">2025-01-16 15:45:17</span>
@@ -568,6 +571,7 @@ function formatSinceDate(timestamp?: string): string {
                 </>
              }          
             </div>
+            </div>
           </div> 
           <div className="bg-black"></div>
           <div className=" flex items-center border-gray-800 bg-black">
@@ -581,6 +585,8 @@ function formatSinceDate(timestamp?: string): string {
     <ConfirmwithdrawModalModal isOpen={isConfirmWithdrawModalOpen} onClose={() => { setIsConfirmWithdrawModalOpen(false); setIsWithdrawModalOpen(false); }} maxsol={balance} withdraw={amount} privateKey={mySKey} to={toaddress} />
     <DepositModal isOpen={isDepositModalOpen} onClose={() => setIsDepositModalOpen(false)} />
     <AllTradesModal isOpen={isAllTradesModalOpen} onClose={() => setIsAllTradesModalOpen(false)} />
+    <AlertModal isOpen={isRingModalOpen} onClose={() => setIsRingModalOpen(false)} />
+    
   </>
 )}
 

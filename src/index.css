@@ -697,23 +697,35 @@ margin-right: 0;
   border-radius: 3px;
 }
 .btn_logincard{
-display: flex;
-flex-direction: row;
-align-items: center;
-padding: 0px 8px;
-gap: 10px;
-height: 24px;
-background: #CAF244;
-border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px 8px;
+  gap: 10px;
+  height: 24px;
+  background: #CAF244;
+  border-radius: 3px;
 }
 .btn_callcard {
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-align-items: center;
-padding: 0px 16px;
-gap: 10px;
-height: 40px;
-background: #323137;
-border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 16px;
+  gap: 10px;
+  height: 40px;
+  background: #323137;
+  border-radius: 6px;
+}
+.btn_buy_small {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 6px;
+  gap: 4px;
+  width: 35px;
+  height: 21px;
+  background: rgba(89, 255, 203, 0.2);
+  border-radius: 6px;
 }
