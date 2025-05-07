@@ -696,3 +696,24 @@ margin-right: 0;
   background: #1C1B1F;
   border-radius: 3px;
 }
+.btn_logincard{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px 8px;
+gap: 10px;
+height: 24px;
+background: #CAF244;
+border-radius: 3px;
+}
+.btn_callcard {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 0px 16px;
+gap: 10px;
+height: 40px;
+background: #323137;
+border-radius: 6px;
+}

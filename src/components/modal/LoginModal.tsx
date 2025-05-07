@@ -71,7 +71,7 @@ const LoginModal = ({
       <p className="font-semibold mb-2">Use a one time code</p>
       <div className="flex items-center gap-4 w-full">
         <div className="relative flex items-center input-field !px-2 sm:!px-4 circle grow">
-          <MdEmail className="text-gray-600 ml-1" size={24} />
+          <MdEmail className="text-gray-600" size={24} />
           <input
             type="email" 
             value={email}
@@ -84,7 +84,7 @@ const LoginModal = ({
             className="bg-transparent outline-none text-white placeholder-gray-500 text-sm sm:text-base pr-4 grow"
           />
           <button className="absolute top-2 right-2 sm:hidden flex bg-primary font-semibold p-[6px] circle btn-sm" onClick={() => handleLogin('email', email)} disabled={isSending}>Send code</button>
-        <button className="bg-primary circle font-semibold p-[6px] text-black  text-base !hidden sm:!flex !py-3" onClick={() => handleLogin('email', email)} disabled={isSending}>Send code</button>
+        <button className="btn_logincard text-[10px] font-semibold text-black  text-base !hidden sm:!flex !py-3" onClick={() => handleLogin('email', email)} disabled={isSending}>Send code</button>
         </div>
        
       </div>
@@ -95,7 +95,7 @@ const LoginModal = ({
       
       {/* Log in using X */}
       <button className="input-field circle w-full text-gray-600 !px-2 sm:!px-4 text-sm sm:text-base" onClick={() => handleLogin('twitter')}>
-        <FaXTwitter className="ml-1.5" size={20} />Log in using X
+        <FaXTwitter className="" size={20} />Log in using X
       </button>
     </Modal>
 }
