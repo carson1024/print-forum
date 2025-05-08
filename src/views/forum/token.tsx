@@ -17,10 +17,13 @@ import { supabase } from "lib/supabase";
 import { useAuth } from "contexts/AuthContext";
 import Prev from 'assets/img/prev.png';
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
+import LoginFromVoteModal from "components/modal/LoginFromVoteModal";
+import { login, logout } from "utils/auth";
 
 const TokenDetail = () => {
   const { isLogin,session,user } = useAuth();
   const navigate = useNavigate();
+  const [isLoginFromVoteModalOpen, setIsLoginFromVoteModalOpen] = useState(false);
   const [userid, setUserid] = useState("");
   const [isDiscussionOpen, setDiscussionOpen] = useState(false);
   const [top3Holders, setTop3Holders] = useState<TopHolderType[]>([]);
@@ -185,103 +188,110 @@ const TokenDetail = () => {
   fetchData();
 }, [session]);
 
-   const handleVotelike = () => {
+  const handleVotelike = () => {
+    if (!isLogin) { setIsLoginFromVoteModalOpen(true) }
+    else {
       localStorage.setItem(paddress + sitem?.user_id, "yes")
-     setConfirmVote(1)
-    let v2 = [];
-    const insertUser = async () => {
-     const { data, error } = await supabase
-        .from("vote")
-        .select("*")
-        .match({ "call_name": paddress, user_id: sitem?.user_id });
-    if (error) {
-        console.error("Fetch failed:", error);
-        return; // Stop execution if there's an error
+      setConfirmVote(1)
+      let v2 = [];
+      const insertUser = async () => {
+        const { data, error } = await supabase
+          .from("vote")
+          .select("*")
+          .match({ "call_name": paddress, user_id: sitem?.user_id });
+        if (error) {
+          console.error("Fetch failed:", error);
+          return; // Stop execution if there's an error
         }
-      if (data.length > 0) {
-        v2 = data;
-        setRatioVote(Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))));
-        const { error: updateError } = await supabase
-           .from('vote')
-           .delete()
-           .match({ "call_name": paddress, user_id: sitem?.user_id });
-            if (updateError) {
+        if (data.length > 0) {
+          v2 = data;
+          setRatioVote(Math.ceil((v2[0].like_number + 1) * 100 / ((v2[0].like_number + 1 + v2[0].dislike_number))));
+          const { error: updateError } = await supabase
+            .from('vote')
+            .delete()
+            .match({ "call_name": paddress, user_id: sitem?.user_id });
+          if (updateError) {
             console.error("Update failed:", updateError);
-            } else {
+          } else {
             console.log("delete vote successful");
            
-            }
-              const { error: insertError } = await supabase
-              .from("vote")
-              .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: v2[0].like_number+1, dislike_number: v2[0].dislike_number, ratio:Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))) }]);
-              if (insertError) {
-               console.error("Insert failed:", insertError);
-              } else {
-                console.log("Insert successful");
-              }  
-      }
-      else {
-            const { error: insertError } = await supabase
-              .from("vote")
-              .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: 1, dislike_number: 0, ratio:100 }]);
-              if (insertError) {
-               console.error("Insert failed:", insertError);
-              } else {
-                setRatioVote(100)
-                console.log("Insert successful");
-              }
-           }
-     };
-    insertUser();  
+          }
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: paddress, user_id: sitem?.user_id, like_number: v2[0].like_number + 1, dislike_number: v2[0].dislike_number, ratio: Math.ceil((v2[0].like_number + 1) * 100 / ((v2[0].like_number + 1 + v2[0].dislike_number))) }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            console.log("Insert successful");
+          }
+        }
+        else {
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: paddress, user_id: sitem?.user_id, like_number: 1, dislike_number: 0, ratio: 100 }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            setRatioVote(100)
+            console.log("Insert successful");
+          }
+        }
+      };
+      insertUser();
     }
+  }
     
-    const handleVotedislike = () => {
+  const handleVotedislike = () => {
+    if (!isLogin) { setIsLoginFromVoteModalOpen(true) }
+    else {
       localStorage.setItem(paddress + sitem?.user_id, "no")
-       setConfirmVote(2)
-     let v1 = [];
-     const insertdislikeUser = async () => {
-     const { data, error } = await supabase
-         .from("vote")
-         .select("*")
-         .match({ "call_name": paddress, user_id: sitem?.user_id });
-     if (error) {
-         console.error("Fetch failed:", error);
-         return; }
-       if (data.length > 0) {
-         v1 = data;
-        setRatioVote(Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))));
-       const { error: updateError } = await supabase
-           .from('vote')
-           .delete()
+      setConfirmVote(2)
+      let v1 = [];
+      const insertdislikeUser = async () => {
+        const { data, error } = await supabase
+          .from("vote")
+          .select("*")
+          .match({ "call_name": paddress, user_id: sitem?.user_id });
+        if (error) {
+          console.error("Fetch failed:", error);
+          return;
+        }
+        if (data.length > 0) {
+          v1 = data;
+          setRatioVote(Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))));
+          const { error: updateError } = await supabase
+            .from('vote')
+            .delete()
             .match({ "call_name": paddress, user_id: sitem?.user_id });
-        if (updateError) {
-             console.error("Update failed:", updateError);
-         } else {
-           console.log("delete successful");
-        }
-       const { error: insertError } = await supabase
-               .from("vote")
-               .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number+1, ratio:Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
-               if (insertError) {
-                console.error("Insert failed:", insertError);
-               } else {
-                 console.log("Insert successful");
-               }
-         } else {
+          if (updateError) {
+            console.error("Update failed:", updateError);
+          } else {
+            console.log("delete successful");
+          }
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: paddress, user_id: sitem?.user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number + 1, ratio: Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            console.log("Insert successful");
+          }
+        } else {
         
-         const { error: insertError } = await supabase
-             .from("vote")
-             .insert([{ call_name: paddress,user_id: sitem?.user_id, like_number: 0, dislike_number: 1, ratio:0 }]);
-         if (insertError) {
-             console.error("Insert failed:", insertError);
-         } else { 
-           console.log("Insert successful");
-           setRatioVote(0);
-       }
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: paddress, user_id: sitem?.user_id, like_number: 0, dislike_number: 1, ratio: 0 }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            console.log("Insert successful");
+            setRatioVote(0);
+          }
         }
-    };
-     insertdislikeUser();
+      };
+      insertdislikeUser();
     }
+  }
     
   const saveComment = async () => {  
     setAdded(true);
@@ -542,6 +552,11 @@ const TokenDetail = () => {
         </div>
       </div>
     </div>
+     <LoginFromVoteModal 
+      isOpen={isLoginFromVoteModalOpen} 
+      onClose={() => setIsLoginFromVoteModalOpen(false)}
+      login={login}
+      />
   </ForumLayout>
 }
 

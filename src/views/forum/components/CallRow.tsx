@@ -9,7 +9,9 @@ import { showToastr } from "components/toastr";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa";
 import React, { act, useEffect } from "react";
 import { supabase } from "lib/supabase";
-
+import LoginFromVoteModal from "components/modal/LoginFromVoteModal";
+import { login, logout } from "utils/auth";
+import { useAuth } from "contexts/AuthContext";
 export const CallRow = ({
   call
 }: {
@@ -21,6 +23,8 @@ export const CallRow = ({
   const [timelimit, setTimeLimit] = useState(false);
   const [featured, setFeatured] = useState(0);
   const [counter, setCounter] = useState(0);
+  const [isLoginFromVoteModalOpen, setIsLoginFromVoteModalOpen] = useState(false);
+  const { isLogin, session,user } = useAuth();
   useEffect(() => {
     if (localStorage.getItem(call.address + call.user_id) == "yes") { setConfirmVote(1) }
     if (localStorage.getItem(call.address + call.user_id) == "no") { setConfirmVote(2) }
@@ -163,110 +167,118 @@ export const CallRow = ({
     setCounter(counter + 1)
   }
 
-  const handleVotelikemobile =async (e: React.MouseEvent<HTMLDivElement>) => {
-     e.preventDefault();
-     e.stopPropagation();
-    localStorage.setItem(call.address + call.user_id, "yes")
-    setConfirmVote(1)
-    let v2 = [];
-    const insertUser = async () => {
-     const { data, error } = await supabase
-        .from("vote")
-        .select("*")
-        .match({ "call_name": call.address, user_id: call.user_id });
-    if (error) {
-        console.error("Fetch failed:", error);
-        return; // Stop execution if there's an error
+  const handleVotelikemobile = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isLogin) { setIsLoginFromVoteModalOpen(true) }
+    else {
+      localStorage.setItem(call.address + call.user_id, "yes")
+      setConfirmVote(1)
+      let v2 = [];
+      const insertUser = async () => {
+        const { data, error } = await supabase
+          .from("vote")
+          .select("*")
+          .match({ "call_name": call.address, user_id: call.user_id });
+        if (error) {
+          console.error("Fetch failed:", error);
+          return; // Stop execution if there's an error
         }
-      if (data.length > 0) {
-        v2 = data;
-        setRatioVote(Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))));
-        const { error: updateError } = await supabase
-           .from('vote')
-           .delete()
-           .match({ "call_name": call.address, user_id: call.user_id });
-            if (updateError) {
+        if (data.length > 0) {
+          v2 = data;
+          setRatioVote(Math.ceil((v2[0].like_number + 1) * 100 / ((v2[0].like_number + 1 + v2[0].dislike_number))));
+          const { error: updateError } = await supabase
+            .from('vote')
+            .delete()
+            .match({ "call_name": call.address, user_id: call.user_id });
+          if (updateError) {
             console.error("Update failed:", updateError);
-            } else {
+          } else {
             console.log("delete vote successful");
-            }
-            const { error: insertError } = await supabase
-              .from("vote")
-              .insert([{ call_name: call.address,user_id: call.user_id, like_number: v2[0].like_number+1, dislike_number: v2[0].dislike_number, ratio:Math.ceil((v2[0].like_number+1)*100/((v2[0].like_number+1+v2[0].dislike_number))) }]);
-              if (insertError) {
-               console.error("Insert failed:", insertError);
-              } else {
-                console.log("Insert successful");
-                  setCounter(counter + 1);
-              }  
-      }
-      else {
-            const { error: insertError } = await supabase
-              .from("vote")
-              .insert([{ call_name: call.address,user_id: call.user_id, like_number: 1, dislike_number: 0, ratio:100 }]);
-              if (insertError) {
-               console.error("Insert failed:", insertError);
-              } else {
-                setRatioVote(100)
-                console.log("Insert successful");
-                  setCounter(counter + 1);
-              }
-       }
-    };
-    insertUser();  
+          }
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: call.address, user_id: call.user_id, like_number: v2[0].like_number + 1, dislike_number: v2[0].dislike_number, ratio: Math.ceil((v2[0].like_number + 1) * 100 / ((v2[0].like_number + 1 + v2[0].dislike_number))) }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            console.log("Insert successful");
+            setCounter(counter + 1);
+          }
+        }
+        else {
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: call.address, user_id: call.user_id, like_number: 1, dislike_number: 0, ratio: 100 }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            setRatioVote(100)
+            console.log("Insert successful");
+            setCounter(counter + 1);
+          }
+        }
+      };
+      insertUser();
+    }
   }
   
   const handleVotedislikemobile =async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-     e.stopPropagation();
-    localStorage.setItem(call.address + call.user_id, "no")
-    setConfirmVote(2)
-    let v1 = [];
-    const insertdislikeUser = async () => {
-    const { data, error } = await supabase
-        .from("vote")
-        .select("*")
-        .match({ "call_name": call.address, user_id: call.user_id });
-    if (error) {
-        console.error("Fetch failed:", error);
-        return; }
-    if (data.length > 0) {
-        v1 = data;
-       setRatioVote(Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))));
-    const { error: updateError } = await supabase
-          .from('vote')
-          .delete()
-          .match({ "call_name": call.address, user_id: call.user_id });
-    if (updateError) {
-            console.error("Update failed:", updateError);
-        } else {
-          console.log("delete successful");
-       }
-    const { error: insertError } = await supabase
+    e.stopPropagation();
+    if (!isLogin) { setIsLoginFromVoteModalOpen(true) }
+    else {
+      localStorage.setItem(call.address + call.user_id, "no")
+      setConfirmVote(2)
+      let v1 = [];
+      const insertdislikeUser = async () => {
+        const { data, error } = await supabase
           .from("vote")
-          .insert([{ call_name: call.address,user_id: call.user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number+1, ratio:Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
-          if (insertError) {
-             console.error("Insert failed:", insertError);
-            } else {
-             console.log("Insert successful");
-             setCounter(counter + 1);
-            }
-        } else {
-        const { error: insertError } = await supabase
-            .from("vote")
-            .insert([{ call_name: call.address,user_id: call.user_id, like_number: 0, dislike_number: 1, ratio:0 }]);
-        if (insertError) {
-            console.error("Insert failed:", insertError);
-        } else {  setCounter(counter + 1);
-          console.log("Insert successful");
-          setRatioVote(0);
+          .select("*")
+          .match({ "call_name": call.address, user_id: call.user_id });
+        if (error) {
+          console.error("Fetch failed:", error);
+          return;
         }
-       }
-   };
-    insertdislikeUser();
+        if (data.length > 0) {
+          v1 = data;
+          setRatioVote(Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))));
+          const { error: updateError } = await supabase
+            .from('vote')
+            .delete()
+            .match({ "call_name": call.address, user_id: call.user_id });
+          if (updateError) {
+            console.error("Update failed:", updateError);
+          } else {
+            console.log("delete successful");
+          }
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: call.address, user_id: call.user_id, like_number: v1[0].like_number, dislike_number: v1[0].dislike_number + 1, ratio: Math.ceil(((v1[0].like_number) * 100 / ((v1[0].dislike_number + 1 + v1[0].like_number)))) }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            console.log("Insert successful");
+            setCounter(counter + 1);
+          }
+        } else {
+          const { error: insertError } = await supabase
+            .from("vote")
+            .insert([{ call_name: call.address, user_id: call.user_id, like_number: 0, dislike_number: 1, ratio: 0 }]);
+          if (insertError) {
+            console.error("Insert failed:", insertError);
+          } else {
+            setCounter(counter + 1);
+            console.log("Insert successful");
+            setRatioVote(0);
+          }
+        }
+      };
+      insertdislikeUser();
+    }
   }
   
-  return <Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`}>
+  return <><Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`}>
          <div className="bg-black text-white">
            <div className="mt-[18px] ml-[18px] mr-[18px] grid items-center bg-black raw_border" style={{ gridTemplateColumns: '320px 1fr 37px' }}>
             <div className="flex mr-[32px] items-center bg-black">
@@ -338,5 +350,11 @@ export const CallRow = ({
         </div>
       </div>
     </div>
-   </Link>
+  </Link>
+    <LoginFromVoteModal 
+      isOpen={isLoginFromVoteModalOpen} 
+      onClose={() => setIsLoginFromVoteModalOpen(false)}
+      login={login}
+      />
+   </>
 }
