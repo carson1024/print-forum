@@ -49,7 +49,7 @@ export default function MainLayout(props: { [x: string]: any }) {
 
   return (
     <div className="flex flex-col h-screen w-screen m-auto gap-4 overflow">
-      <div className="grid grid-cols-[170px_1fr] h-screen bg-black text-white ">
+      <div className="grid md:grid-cols-[170px_1fr] h-screen bg-black text-white ">
       <Navbar
         currentRoute={currentRoute}
         secondary={getActiveNavbar(routes)}

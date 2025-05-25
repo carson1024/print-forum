@@ -24,7 +24,7 @@ import RanksR from 'assets/img/RanksR.png';
 import Telegram from 'assets/img/telegram.png';
 import Twitter from 'assets/img/twitter.png';
 import Solana from 'assets/img/solana.png';
-import {useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const Navbar = (props: {
   currentRoute: string;
@@ -35,89 +35,149 @@ const Navbar = (props: {
   const navigate = useNavigate();
   const { isLogin, session } = useAuth();
   const [activeTab, setActiveTab] = useState<'forum' | 'alpha' | 'copy' | 'rankings' | ''>('forum');
+  const [activeTab2, setActiveTab2] = useState<'forum' | 'alpha' | 'copy' | 'rankings' | 'accounts'>('forum');
 
 
 
   useEffect(() => {
     console.log(route.pathname);
-      if (route.pathname == "/") { setActiveTab('forum') }
-      else if (route.pathname == "/login") { setActiveTab('') }
-      else if (route.pathname == "/token") { setActiveTab('forum') }
-      else if (route.pathname == "/profile") { setActiveTab('forum') }
-      else if (route.pathname == "/leaderboard") { setActiveTab('rankings') }
-      else if (route.pathname == "/copytrading") { setActiveTab('copy') }
+    if (route.pathname == "/") { setActiveTab('forum') }
+    else if (route.pathname == "/login") { setActiveTab('') }
+    else if (route.pathname == "/token") { setActiveTab('forum') }
+    else if (route.pathname == "/profile") { setActiveTab('forum') }
+    else if (route.pathname == "/leaderboard") { setActiveTab('rankings') }
+    else if (route.pathname == "/copytrading") { setActiveTab('copy') }
   }, [route]);
-  
+
   return (<>
-    <div className="grid grid-rows-[76px_220px_1fr_152px_64px] h-screen border-r border-gray-800">
+    <div className=" hidden lg:grid grid-rows-[76px_220px_1fr_152px_64px] h-screen border-r border-gray-800">
       <div className=" border-b border-gray-800 flex items-center justify-center">
-           <img src={Logo} className="w-[36px] h-[36px]" />
+        <img src={Logo} className="w-[36px] h-[36px]" />
       </div>
       <div className=" border-gray-800  items-center justify-center ">
         <div className="text-gray-400 m-[20px]">
-            {
-              activeTab == 'forum' ?
-                <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
+          {
+            activeTab == 'forum' ?
+              <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={VectorR} className="w-[24px] h-[24px] mr-[6px]" />
                 Forum
-                </button> :
-                <Link to="/"><button className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('forum')}>
+              </button> :
+              <Link to="/"><button className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('forum')}>
                 <img src={Vector} className="w-[24px] h-[24px] mr-[6px]" />
-                 Forum
-                </button></Link>
-            }
-            {
-              activeTab == 'alpha' ?
-                <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
+                Forum
+              </button></Link>
+          }
+          {
+            activeTab == 'alpha' ?
+              <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={FrameR} className="w-[24px] h-[24px] mr-[6px]" />
                 Alpha
-                </button> :
-                <button className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() =>{setActiveTab('alpha'); setIsModalOpen(true)}}>
+              </button> :
+              <button className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => { setActiveTab('alpha'); setIsModalOpen(true) }}>
                 <img src={Frame} className="w-[24px] h-[24px] mr-[6px]" />
-                 Alpha
-                </button>
-            }
-            {
-              activeTab == 'copy' ?
-                <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
+                Alpha
+              </button>
+          }
+          {
+            activeTab == 'copy' ?
+              <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={AdjustR} className="w-[24px] h-[24px] mr-[6px]" />
                 Copy trading
-                </button> :
-                <Link to="/copytrading"><button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('copy')}>
+              </button> :
+              <Link to="/copytrading"><button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('copy')}>
                 <img src={Adjust} className="w-[24px] h-[24px] mr-[6px]" />
-                 Copy trading
-                </button></Link>
-            }
-            {
-              activeTab == 'rankings' ?
-                <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
+                Copy trading
+              </button></Link>
+          }
+          {
+            activeTab == 'rankings' ?
+              <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={RanksR} className="w-[24px] h-[24px] mr-[6px]" />
                 Rankings
-                </button> :
-                <Link to="/leaderboard"><button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('rankings')}>
+              </button> :
+              <Link to="/leaderboard"><button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('rankings')}>
                 <img src={Ranks} className="w-[24px] h-[24px] mr-[6px]" />
                 Rankings
-                </button></Link>
-            }
+              </button></Link>
+          }
         </div>
       </div>
       <div className="bg-black"></div>
       <div className=" flex items-center bg-black">
         <div className="text-sm  text-[13px] font-semibold  text-gray-500 space-y-[20px] m-[20px]">
-            <button>Rank system</button>
-            <button>Terms of Service</button>
-            <button>Privacy Policy</button>
-            <button>Support</button>
+          <button>Rank system</button>
+          <button>Terms of Service</button>
+          <button>Privacy Policy</button>
+          <button>Support</button>
         </div>
       </div>
       <div className=" flex items-center justify-center border-t border-gray-800 bg-black">
-          <img src={Twitter} className="w-[18px] h-[18px] mr-[16px] " />
-          <img src={Telegram} className="w-[24px] h-[24px] mr-[16px] " />
-          <img src={Solana} className="w-[20px] h-[20px] " />
+        <img src={Twitter} className="w-[18px] h-[18px] mr-[16px] " />
+        <img src={Telegram} className="w-[24px] h-[24px] mr-[16px] " />
+        <img src={Solana} className="w-[20px] h-[20px] " />
+      </div>
+    </div>
+    <div className="lg:hidden bg-[#100F13] z-[10] py-2.5 w-full fixed bottom-0">
+      <div className="text-gray-400 grid grid-cols-5">
+        {
+          activeTab2 == 'forum' ?
+            <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold  justify-center flex-col   ">
+              <img src={VectorR} className="w-[24px] h-[24px] mr-[6px]" />
+              Forum
+            </button> :
+            <Link to="/"><button className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover flex-col " onClick={() => setActiveTab2('forum')}>
+              <img src={Vector} className="w-[24px] h-[24px] mr-[6px]" />
+              Forum
+            </button></Link>
+        }
+        {
+          activeTab2 == 'alpha' ?
+            <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold  justify-center flex-col   ">
+              <img src={FrameR} className="w-[24px] h-[24px] mr-[6px]" />
+              Alpha
+            </button> :
+            <button className="flex flex-col items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover  " onClick={() => { setActiveTab2('alpha'); setIsModalOpen(true) }}>
+              <img src={Frame} className="w-[24px] h-[24px] mr-[6px]" />
+              Alpha
+            </button>
+        }
+        {
+          activeTab2 == 'copy' ?
+            <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold  justify-center flex-col   ">
+              <img src={AdjustR} className="w-[24px] h-[24px] mr-[6px]" />
+              Copy trading
+            </button> :
+            <Link to="/copytrading"><button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover  " onClick={() => setActiveTab2('copy')}>
+              <img src={Adjust} className="w-[24px] h-[24px] mr-[6px]" />
+              Copy trading
+            </button></Link>
+        }
+        {
+          activeTab2 == 'rankings' ?
+            <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold  justify-center flex-col   ">
+              <img src={RanksR} className="w-[24px] h-[24px] mr-[6px]" />
+              Rankings
+            </button> :
+            <Link to="/leaderboard"><button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover  " onClick={() => setActiveTab2('rankings')}>
+              <img src={Ranks} className="w-[24px] h-[24px] mr-[6px]" />
+              Rankings
+            </button></Link>
+        }
+        {
+          activeTab2 == 'accounts' ?
+            <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold  justify-center flex-col   ">
+              <img src={RanksR} className="w-[24px] h-[24px] mr-[6px]" />
+              Rankings
+            </button> :
+            <Link to="#"><button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover  " onClick={() => setActiveTab2('accounts')}>
+              <img src={'/assets/accounts.svg'} className="w-[24px] h-[24px] mr-[6px]" />
+              Accounts
+            </button></Link>
+        }
       </div>
     </div>
     <RestrictedModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </>
+  </>
   )
 }
 
