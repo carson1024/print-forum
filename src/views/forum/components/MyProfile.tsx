@@ -413,7 +413,7 @@ function formatSinceDate(timestamp?: string): string {
             </div>
           </div>
           <div className=" border-b border-gray-800 items-center justify-center">
-            <div className="m-[18px]">
+            <div className=" m-4 lg:m-[18px]">
               <div className=" items-center wallet h-full grid-rows-[66px_1fr]"> 
                 <div className="items-center flex">
                     <div className="">

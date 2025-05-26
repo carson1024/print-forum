@@ -50,14 +50,14 @@ const PortfoliosTab = ({
     {users.map((user, index) => (<Link to={`/profile?id=${user.id}&tag=2`} key={index}>
       <div className="trading_border  flex items-center justify-between">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center ">
-          <div className="flex gap-[6px] items-center ">
+          <div className="flex gap-[2px] items-center ">
 
             <div className="trade_number_border items-center text-gray-600 text-bold text-[10px] mr-[6px]">{index + 1}</div>
             <span className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center mr-[6px]`}></span>
             <span className="text-[10px] lg:text-[12px] font-semibold text-white mr-[6px]">{user.name}</span>
             <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">{user.winrate}%</span>
           </div>
-          <div className="flex gap-[6px] items-center">
+          <div className="flex gap-[2px] items-center">
 
             <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">{formatTimestamp(user.created_at)}</span>
             <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">PnL</span>
@@ -65,7 +65,7 @@ const PortfoliosTab = ({
             <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">ROI</span>
             <span className="text-[10px] lg:text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">+64.31%</span>
           </div>
-          <div className="flex gap-[6px] items-center">
+          <div className="flex gap-[2px] items-center">
 
             <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">Win Ratio</span>
             <span className="text-[10px] lg:text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">{user.winrate}%</span>

@@ -25,6 +25,8 @@ import Telegram from 'assets/img/telegram.png';
 import Twitter from 'assets/img/twitter.png';
 import Solana from 'assets/img/solana.png';
 import { useSearchParams } from 'react-router-dom';
+import LoginModal from 'components/modal/LoginModal';
+import { login } from 'utils/auth';
 
 const Navbar = (props: {
   currentRoute: string;
@@ -36,7 +38,7 @@ const Navbar = (props: {
   const { isLogin, session } = useAuth();
   const [activeTab, setActiveTab] = useState<'forum' | 'alpha' | 'copy' | 'rankings' | ''>('forum');
   const [activeTab2, setActiveTab2] = useState<'forum' | 'alpha' | 'copy' | 'rankings' | 'accounts'>('forum');
-
+  const [isLoginModal, setIsLoginMoal] = useState(false)
 
 
   useEffect(() => {
@@ -165,18 +167,38 @@ const Navbar = (props: {
         }
         {
           activeTab2 == 'accounts' ?
-            <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[11px] font-semibold  justify-center flex-col   ">
-              <img src={RanksR} className="w-[24px] h-[24px] " />
-              Rankings
-            </button> :
-            <Link to="#"><button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[11px] font-semibold mainhover  " onClick={() => setActiveTab2('accounts')}>
-              <img src={'/assets/accounts.svg'} className="w-[24px] h-[24px] " />
+            <button onClick={() => {
+              setIsLoginMoal(true)
+            }} className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[11px] font-semibold  justify-center flex-col   ">
+              <img src={RanksR} alt='' className="w-[24px] h-[24px] " />
               Accounts
-            </button></Link>
+            </button> :
+        <Link
+        to={isLogin ? "/account" : "#"}
+        onClick={(e) => {
+          if (!isLogin) {
+            e.preventDefault(); // Prevent navigation
+            setIsLoginMoal(true); // Call login modal
+          } else {
+            setActiveTab2("accounts");
+          }
+        }}
+      >
+        <button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[11px] font-semibold mainhover">
+          <img src="/assets/accounts.svg" alt='' className="w-[24px] h-[24px]" />
+          Accounts
+        </button>
+      </Link>
+      
         }
       </div>
     </div>
     <RestrictedModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    <LoginModal
+      isOpen={isLoginModal}
+      onClose={() => setIsLoginMoal(false)}
+      login={login}
+    />
   </>
   )
 }

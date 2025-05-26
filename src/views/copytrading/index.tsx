@@ -21,7 +21,9 @@ import Star from 'assets/img/star.png';
 import Star_R from 'assets/img/star_r.png';
 import User_face from 'assets/img/user_face.png';
 import User_face_R from 'assets/img/user_faceR.png';
-import { IoMdArrowDropdown } from "react-icons/io";
+import { IoMdArrowDropdown, IoMdPerson } from "react-icons/io";
+import AddNew from "components/modal/AddNewModal";
+import BecomeTraderModal from "components/modal/BecomeTraderModal";
 
 interface SubTabType {
   portfolios: string;
@@ -54,10 +56,12 @@ const CopyTrading = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isAddNewModalOpen, setIsAddNewModalOpen] = useState(false);
+  const [isTraderModalOpen, setIsTraderModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(searchParams.get('day') || "7 days");
   const wrapperRef = React.useRef(null);
-  const [activeTab, setActiveTab] = useState<'public' | 'trader' | 'favo'>('public');
+  const [activeTab, setActiveTab] = useState<'public' | 'trader' | 'favo' | 'myTrade'>('public');
   const [activeTag, setActiveTag] = useState<'pnl' | 'rol' | 'total'>('pnl');
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState<SubTabType>({
@@ -113,9 +117,9 @@ const CopyTrading = () => {
   }
 
   return <CopyTradingLayout>
-    <div className="border-r border-gray-800 grow loading flex-col h-screen">
-      <div className="grid lg:grid-rows-[76px_64px_1fr] flex-col h-screen border-gray-800">
-        <div className="flex border-b border-gray-800 flex items-center">
+    <div className="border-r border-gray-800  loading flex-col h-screen">
+      <div className="lg:grid lg:grid-rows-[76px_64px_1fr] flex flex-col h-screen border-gray-800">
+        <div className="flex border-b justify-between border-gray-800 flex items-center px-4 py-2.5">
           <div className=" hidden lg:flex text-[14px] font-semibold text-gray-500">
             {
               activeTab == 'public' ? <button className="ml-[18px] repause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('public')}>
@@ -147,8 +151,19 @@ const CopyTrading = () => {
                   <span>My Favorites</span>
                 </button>
             }
+
+{
+              activeTab == 'myTrade' ? <button className="ml-[20px] repause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('myTrade')}>
+                <IoMdPerson />
+                <span className="text-primary">My Traders </span>
+              </button> :
+                <button className="ml-[20px] pause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('myTrade')}>
+                 <IoMdPerson />
+                  <span>My Traders</span>
+                </button>
+            }
           </div>
-          <div className="relative lg:hidden px-4  ">
+          <div className="relative lg:hidden   ">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
               className="w-full   text-white text-sm font-semibold p-4 rounded-[6px] border border-[#28272B] flex items-center justify-between"
@@ -157,17 +172,19 @@ const CopyTrading = () => {
                 {activeTab === 'public' && <img src={Bag} className="w-4 h-4" />}
                 {activeTab === 'trader' && <img src={User_face} className="w-4 h-4" />}
                 {activeTab === 'favo' && <img src={Star} className="w-4 h-4" />}
+                {activeTab === 'myTrade' && <IoMdPerson />}
                 <span>
                   {activeTab === 'public' && 'Public Portfolios'}
                   {activeTab === 'trader' && 'My Traders'}
                   {activeTab === 'favo' && 'My Favorites'}
+                  {activeTab === 'myTrade' && 'My Traders'}
                 </span>
               </div>
               <IoMdArrowDropdown />
             </button>
 
             {showDropdown && (
-              <div className="absolute z-50 mt-2 w-full bg-[#1a1a1a] border border-gray-700 rounded shadow-lg">
+              <div className="absolute z-50 mt-2 w-full bg-[#1a1a1a] border border-gray-700 rounded-[6px] shadow-lg">
                 <button
                   onClick={() => {
                     setActiveTab('public');
@@ -198,17 +215,36 @@ const CopyTrading = () => {
                   <img src={Star} className="w-4 h-4 mr-2" />
                   My Favorites
                 </button>
+                <button
+                  onClick={() => {
+                    setActiveTab('myTrade');
+                    setShowDropdown(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800"
+                >
+                  <IoMdPerson />
+                  My Traders
+                </button>
               </div>
             )}
           </div>
-          <div className="ml-auto mr-[18px]">
-            <button className=" btn_newtrade font-semibold text-black text-[14px] flex items-center justify-center flex" >
+          <div className="lg:ml-auto lg:mr-[18px]">
+            {/* <button onClick={()=>{
+              setIsAddNewModalOpen(true)
+            }} className=" btn_newtrade font-semibold text-black text-[14px] flex items-center justify-center flex" >
               <FaPlus className="text-xs lg:text-base" />New Trade
+            </button> */}
+            <button onClick={() => {
+              setIsTraderModalOpen(true)
+            }} className="bg-[#57DBFF] px-3 h-[32px] text-[10px] font-semibold rounded-[6px] flex items-center gap-1.5 text-black ">
+              <img src="/assets/star.svg" alt="" />
+              Become a trader
+
             </button>
           </div>
         </div>
-        <div className="flex border-b border-gray-800 flex items-center">
-          <div className=" flex px-[18px]">
+        <div className="flex border-b justify-between py-2.5 px-4 border-gray-800 flex items-center">
+          <div className=" flex gap-1">
             {
               activeTag == 'pnl' ? <button className="mr-[8px] btn_filter font-semibold text-white text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('pnl')} >
                 PnL
@@ -226,21 +262,21 @@ const CopyTrading = () => {
                 </button>
             }
             {
-              activeTag == 'total' ? <button className="mr-[8px] btn_filter font-semibold text-white text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
+              activeTag == 'total' ? <button className="mr-[8px] btn_filter font-semibold text-white truncate text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
                 Total Copiers
               </button> :
-                <button className="mr-[8px] btn_filter_before font-semibold text-gray-600 text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
+                <button className="mr-[8px] btn_filter_before font-semibold text-gray-600 truncate text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
                   Total Copiers
                 </button>
             }
           </div>
-          <div className="ml-auto">
+          <div className="lg:ml-auto">
             <div className="flex gap-2 sm:gap-3">
-              <div className="px-3 py-1 md:py-2 round_filter text-white flex items-center gap-2">
+              <div className="px-3 py-1 md:py-2 round_filter text-white flex items-center gap-2 max-[450px]:w-[100px]">
                 <IoSearchSharp className="text-gray-600 text-md md:text-base" />
                 <input
                   type="text"
-                  className="bg-transparent outline-none text-white flex-grow text-xs md:text-sm max-w-[100px] md:max-w-[140px]"
+                  className="bg-transparent outline-none text-white flex-grow text-[10px] md:text-sm  w-full md:max-w-[140px]"
                   placeholder="Search user"
                   onChange={(e) => setFilter(e.target.value)}
                   onKeyDown={(e) => {
@@ -255,11 +291,11 @@ const CopyTrading = () => {
                   <MdFilterListAlt />
                 </button>
               </div>
-              <div ref={wrapperRef} className="relative inline-block text-left mr-[18px]">
+              <div ref={wrapperRef} className="relative inline-block text-left lg:mr-[18px]">
                 <button
                   className="flex round_filter items-center text-white  px-3 py-2 hover:bg-primary/30 text-xs md:text-base"
                   onClick={toggleDropdown}>
-                 <span>{formatFilter(filters)}</span>
+                  <span>{formatFilter(filters)}</span>
                   <AiFillCaretDown className="text-primary/30 ml-1" /></button>
                 {isOpen && (
                   <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-36 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg w-full" >
@@ -297,6 +333,8 @@ const CopyTrading = () => {
       </div>
     </div>
     <CopyFilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
+    <AddNew isOpen={isAddNewModalOpen} onClose={() => setIsAddNewModalOpen(false)} />
+    <BecomeTraderModal isOpen={isTraderModalOpen} onClose={() => setIsTraderModalOpen(false)} />
   </CopyTradingLayout>
 }
 

@@ -30,7 +30,7 @@ export const MobileDrawer = () => {
 
       {/* Fullscreen Menu */}
       {isOpen && (
-        <div className="fixed inset-0 bg-[#100F13] text-white z-40">
+        <div className="fixed inset-0 bg-[#100F13] text-white z-30">
           {/* Header: Logo + Close Button */}
           <div className="flex items-center justify-between px-4 py-4 border-b border-[#28272B]">
             <img src={Logo} alt="Logo" className="w-[36px] h-[36px]" />

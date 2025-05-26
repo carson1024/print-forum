@@ -16,7 +16,7 @@ const LeaderboardLayout = ({
   const { isLogin } = useAuth();
 
   return (<>
-    <div className="grid lg:grid-cols-[1fr_331px] h-screen bg-black text-white ">
+    <div className="lg:grid lg:grid-cols-[1fr_331px] h-screen bg-black text-white ">
       {/* Left Side - Main Content */}
       <div className="grid lg:grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
         <div className="border-b border-r border-[#28272B] flex items-center justify-between">
