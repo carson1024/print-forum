@@ -166,7 +166,7 @@ const CopyTrading = () => {
           <div className="relative lg:hidden   ">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="w-full   text-white text-sm font-semibold p-4 rounded-[6px] border border-[#28272B] flex items-center justify-between"
+              className="w-full  gap-1.5 text-white text-sm font-semibold p-4 rounded-[6px] border border-[#28272B] flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
                 {activeTab === 'public' && <img src={Bag} className="w-4 h-4" />}
@@ -186,11 +186,11 @@ const CopyTrading = () => {
             {showDropdown && (
               <div className="absolute z-50 mt-2 w-full bg-[#1a1a1a] border border-gray-700 rounded-[6px] shadow-lg">
                 <button
-                  onClick={() => {
+                   onClick={() => {
                     setActiveTab('public');
                     setShowDropdown(false);
                   }}
-                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800"
+                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800 text-[10px]"
                 >
                   <img src={Bag} className="w-4 h-4 mr-2" />
                   Public Portfolios
@@ -200,7 +200,7 @@ const CopyTrading = () => {
                     setActiveTab('trader');
                     setShowDropdown(false);
                   }}
-                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800"
+                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800 text-[10px]"
                 >
                   <img src={User_face} className="w-4 h-4 mr-2" />
                   My Traders
@@ -210,7 +210,7 @@ const CopyTrading = () => {
                     setActiveTab('favo');
                     setShowDropdown(false);
                   }}
-                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800"
+                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800 text-[10px]"
                 >
                   <img src={Star} className="w-4 h-4 mr-2" />
                   My Favorites
@@ -220,9 +220,9 @@ const CopyTrading = () => {
                     setActiveTab('myTrade');
                     setShowDropdown(false);
                   }}
-                  className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800"
+                  className="flex gap-1.5 items-center w-full px-4 py-2 text-white hover:bg-gray-800 text-[10px]"
                 >
-                  <IoMdPerson />
+                  <IoMdPerson size={18} />
                   My Traders
                 </button>
               </div>
