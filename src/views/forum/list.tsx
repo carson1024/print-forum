@@ -96,7 +96,7 @@ const ForumList = () => {
     <div className="border-r border-gray-800">
       <div className="grid grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
 
-        <div className="flex border-b border-gray-800 flex items-center justify-between px-[18px]">
+        <div className="flex border-b border-gray-800 flex items-center justify-between py-4 px-4 lg:px-[18px]">
           <div className=" hidden lg:flex show_filter items-center text-[14px] font-semibold text-gray-500">
             <div ref={wrapperRef} className="relative inline-block text-left">
               <span className='hidden lg:block'>Showing</span>
@@ -114,29 +114,27 @@ const ForumList = () => {
                 </div>
               )}</div>
           </div>
-          <div className="flex lg:hidden gap-2 mb-4">
-        <button
-          className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${
-            activeTab === 'featured'
-              ? 'bg-[#CAF24433] text-[#CAF244]'
-              : 'bg-[#1C1B1F] text-[#76767E]'
-          }`}
-          onClick={() => setActiveTab('featured')}
-        >
-          Featured
-        </button>
+          <div className="flex lg:hidden gap-2">
+            <button
+              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab === 'featured'
+                  ? 'bg-[#CAF24433] text-[#CAF244]'
+                  : 'bg-[#1C1B1F] text-[#76767E]'
+                }`}
+              onClick={() => setActiveTab('featured')}
+            >
+              Featured
+            </button>
 
-        <button
-          className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${
-            activeTab === 'latest'
-              ? 'bg-[#CAF24433] text-[#CAF244]'
-              : 'bg-[#1C1B1F] text-[#76767E]'
-          }`}
-          onClick={() => setActiveTab('latest')}
-        >
-          Latest
-        </button>
-      </div>
+            <button
+              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab === 'latest'
+                  ? 'bg-[#CAF24433] text-[#CAF244]'
+                  : 'bg-[#1C1B1F] text-[#76767E]'
+                }`}
+              onClick={() => setActiveTab('latest')}
+            >
+              Latest
+            </button>
+          </div>
 
           <div className="flex  gap-2 items-center">
             <div className="flex lg:hidden show_filter items-center text-[14px] font-semibold text-gray-500">
@@ -170,20 +168,57 @@ const ForumList = () => {
 
         </div>
         <div
-        className="hidden lg:grid h-screen"
-        style={{ gridTemplateColumns: 'calc((100vw - 501px) / 2) 1fr' }}
-      >
-        {/* Featured column */}
-        <div className="border-r border-gray-800 flex flex-col h-screen">
-          <div className="grid grid-rows-[50px_1fr] border-gray-800">
-            <div className="border-b items-center flex">
-              <div className="m-[18px] text-[14px] font-semibold text-white">Feature</div>
+          className="hidden lg:grid h-screen"
+          style={{ gridTemplateColumns: 'calc((100vw - 501px) / 2) 1fr' }}
+        >
+          {/* Featured column */}
+          <div className="border-r border-gray-800 flex flex-col h-screen">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white">Feature</div>
+              </div>
+              <div className="flex-1 overflow-y-auto h-[calc(100vh-202px)]">
+                <div
+                  className={`flex-1 overflow-auto flex flex-col ${isLoading ? "overflow-hidden loading" : "overflow-auto"}`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {isLoading || !callListFeatured.length ? (
+                    <div className='p-2 sm:p-4 pb-24'><SkeletonList /></div>
+                  ) : (
+                    callListFeatured.map((item) => <CallRow call={item} key={item.id} />)
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="flex-1 overflow-y-auto h-[calc(100vh-202px)]">
-              <div
-                className={`flex-1 overflow-auto flex flex-col ${isLoading ? "overflow-hidden loading" : "overflow-auto"}`}
-                onClick={() => setIsOpen(false)}
-              >
+          </div>
+
+          {/* Latest column */}
+          <div className="border-gray-800 h-screen flex flex-col">
+            <div className="grid grid-rows-[50px_1fr] border-gray-800">
+              <div className="border-b items-center flex">
+                <div className="m-[18px] text-[14px] font-semibold text-white">Latest</div>
+              </div>
+              <div className="flex-1 overflow-y-auto h-[calc(100vh-202px)]">
+                <div
+                  className={`flex-1 overflow-auto flex flex-col ${isLoading ? "overflow-hidden loading" : "overflow-auto"}`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {isLoading || !callListLatest.length ? (
+                    <div className='p-2 sm:p-4 pb-24'><SkeletonList /></div>
+                  ) : (
+                    callListLatest.map((item) => <CallRow call={item} key={item.id} />)
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile: show only active tab */}
+        <div className="lg:hidden">
+          {activeTab === 'featured' && (
+            <div className="flex flex-col">
+              <div className="overflow-y-auto h-[calc(100vh-150px)]">
                 {isLoading || !callListFeatured.length ? (
                   <div className='p-2 sm:p-4 pb-24'><SkeletonList /></div>
                 ) : (
@@ -191,20 +226,12 @@ const ForumList = () => {
                 )}
               </div>
             </div>
-          </div>
-        </div>
+          )}
 
-        {/* Latest column */}
-        <div className="border-gray-800 h-screen flex flex-col">
-          <div className="grid grid-rows-[50px_1fr] border-gray-800">
-            <div className="border-b items-center flex">
+          {activeTab === 'latest' && (
+            <div className="flex flex-col">
               <div className="m-[18px] text-[14px] font-semibold text-white">Latest</div>
-            </div>
-            <div className="flex-1 overflow-y-auto h-[calc(100vh-202px)]">
-              <div
-                className={`flex-1 overflow-auto flex flex-col ${isLoading ? "overflow-hidden loading" : "overflow-auto"}`}
-                onClick={() => setIsOpen(false)}
-              >
+              <div className="overflow-y-auto h-[calc(100vh-150px)]">
                 {isLoading || !callListLatest.length ? (
                   <div className='p-2 sm:p-4 pb-24'><SkeletonList /></div>
                 ) : (
@@ -212,38 +239,8 @@ const ForumList = () => {
                 )}
               </div>
             </div>
-          </div>
+          )}
         </div>
-      </div>
-
-      {/* Mobile: show only active tab */}
-      <div className="lg:hidden">
-        {activeTab === 'featured' && (
-          <div className="flex flex-col">
-            <div className="m-[18px] text-[14px] font-semibold text-white">Feature</div>
-            <div className="overflow-y-auto h-[calc(100vh-150px)]">
-              {isLoading || !callListFeatured.length ? (
-                <div className='p-2 sm:p-4 pb-24'><SkeletonList /></div>
-              ) : (
-                callListFeatured.map((item) => <CallRow call={item} key={item.id} />)
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'latest' && (
-          <div className="flex flex-col">
-            <div className="m-[18px] text-[14px] font-semibold text-white">Latest</div>
-            <div className="overflow-y-auto h-[calc(100vh-150px)]">
-              {isLoading || !callListLatest.length ? (
-                <div className='p-2 sm:p-4 pb-24'><SkeletonList /></div>
-              ) : (
-                callListLatest.map((item) => <CallRow call={item} key={item.id} />)
-              )}
-            </div>
-          </div>
-        )}
-      </div>
       </div>
     </div>
   </ ForumLayout>

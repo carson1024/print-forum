@@ -105,7 +105,7 @@ const ProfileDetail = () => {
                   <a><img src={avatar} className="w-[32px] h-[32px] mr-[8px] circle"/></a>
           }
           {
-            isLoading || !profile.length ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> : <><span className="font-bold text-base text-[14px]">{profile[0].name}</span></>
+            isLoading || !profile.length ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> : <><span className="font-bold text-base text-[12px] lg:text-[14px]">{profile[0].name}</span></>
           }
           
           <div className=" flex text-[14px] font-semibold text-gray-500 ml-auto">

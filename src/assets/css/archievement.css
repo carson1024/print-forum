@@ -1,6 +1,7 @@
 .circle {
   border-radius: 6px;
 }
+
 .recircle {
   border-radius: 50%;
 }
@@ -14,55 +15,72 @@
 }
 
 .badge-circle {
-  @apply relative overflow-hidden text-xs font-bold  circle-item;
+  @apply relative overflow-hidden font-bold circle-item;
 }
 
 .multi-circle {
-  @apply relative overflow-hidden text-xs font-bold  circle-item;
+  @apply relative overflow-hidden font-bold circle-item;
 }
+
 /* Multiplier Badge */
 span[class^='badge-multiplier'] {
-  @apply px-2 py-1.5 text-xs font-semibold multi-circle;
+  @apply px-[5px] lg:px-2 py-1.5 font-semibold multi-circle;
 }
-.badge-multiplier-2X,.badge-multiplier-5X,.badge-multiplier-10X {
+
+.badge-multiplier-2X,
+.badge-multiplier-5X,
+.badge-multiplier-10X {
   @apply bg-blue-300/20 text-blue-300
 }
-.badge-multiplier-20X,.badge-multiplier-30X,.badge-multiplier-50X {
+
+.badge-multiplier-20X, .badge-multiplier-30X, .badge-multiplier-50X {
   @apply px-3 bg-green-300/20 text-green-300
 }
-.badge-multiplier-100X,.badge-multiplier-200X,.badge-multiplier-500X {
+
+.badge-multiplier-100X, .badge-multiplier-200X, .badge-multiplier-500X {
   @apply bg-yellow-300/20 text-yellow-300
 }
+
 .badge-multiplier-1000X {
   @apply bg-red-300/20 text-red-300
 }
+
 .badge-multiplier-2X::before {
   content: '2X';
 }
+
 .badge-multiplier-5X::before {
   content: '5X';
 }
+
 .badge-multiplier-10X::before {
   content: '10X';
 }
+
 .badge-multiplier-20X::before {
   content: '20X';
 }
+
 .badge-multiplier-30X::before {
   content: '30X';
 }
+
 .badge-multiplier-50X::before {
   content: '50X';
 }
+
 .badge-multiplier-100X::before {
   content: '100X';
 }
+
 .badge-multiplier-200X::before {
   content: '200X';
 }
+
 .badge-multiplier-500X::before {
   content: '500X';
 }
+
 .badge-multiplier-1000X::before {
   content: '1k X';
 }
@@ -71,6 +89,7 @@ span[class^='badge-multiplier'] {
 span[class^='badge-rank'] {
   @apply badge-circle;
 }
+
 span[class^='badge-rank']::after {
   position: absolute;
   left: 0px;
@@ -81,36 +100,54 @@ span[class^='badge-rank']::after {
   filter: blur(6px);
 }
 
-.badge-rank-1, .badge-rank-2, .badge-rank-3 {
+.badge-rank-1,
+.badge-rank-2,
+.badge-rank-3 {
   @apply text-blue-400 bg-blue-400/20;
 }
-.badge-rank-2::after, .badge-rank-3::after {
+
+.badge-rank-2::after,
+.badge-rank-3::after {
   content: '';
   @apply bg-blue-400/50;
 }
+
 .badge-rank-3 {
   @apply border border-blue-400/20;
 }
-.badge-rank-4, .badge-rank-5, .badge-rank-6 {
+
+.badge-rank-4,
+.badge-rank-5,
+.badge-rank-6 {
   @apply text-yellow-400 bg-yellow-400/20;
 }
-.badge-rank-5::after, .badge-rank-6::after {
+
+.badge-rank-5::after,
+.badge-rank-6::after {
   content: '';
   @apply bg-yellow-400/50;
 }
+
 .badge-rank-6 {
   @apply border border-yellow-400/20;
 }
-.badge-rank-7, .badge-rank-8, .badge-rank-9 {
+
+.badge-rank-7,
+.badge-rank-8,
+.badge-rank-9 {
   @apply text-red-300 bg-red-300/20;
 }
-.badge-rank-8::after, .badge-rank-9::after {
+
+.badge-rank-8::after,
+.badge-rank-9::after {
   content: '';
   @apply bg-red-300/50;
 }
+
 .badge-rank-9 {
   @apply border border-red-300/20;
 }
+
 .badge-rank-10 {
   @apply text-black bg-red-300;
 }
@@ -118,27 +155,35 @@ span[class^='badge-rank']::after {
 .badge-rank-1::before {
   content: 'I';
 }
+
 .badge-rank-2::before {
   content: 'II';
 }
+
 .badge-rank-3::before {
   content: 'III';
 }
+
 .badge-rank-4::before {
   content: 'IV';
 }
+
 .badge-rank-5::before {
   content: 'V';
 }
+
 .badge-rank-6::before {
   content: 'VI';
 }
+
 .badge-rank-7::before {
   content: 'VII';
 }
+
 .badge-rank-8::before {
   content: 'VIII';
 }
+
 .badge-rank-9::before {
   content: 'IX';
 }
@@ -159,15 +204,19 @@ span[class^='badge-rank']::after {
 span[class^='badge-call'] {
   @apply badge-circle bg-yellow-400/20 text-yellow-400;
 }
+
 .badge-call-5X::before {
   content: '5X';
 }
+
 .badge-call-10X::before {
   content: '10X';
 }
+
 .badge-call-50X::before {
   content: '50X';
 }
+
 .badge-call-100X::before {
   content: '100';
 }
@@ -176,15 +225,19 @@ span[class^='badge-call'] {
 span[class^='badge-money'] {
   @apply badge-circle bg-green-500/20 text-green-500;
 }
+
 .badge-money-50k::before {
   content: '50k';
 }
+
 .badge-money-100k::before {
   content: '100k';
 }
+
 .badge-money-500k::before {
   content: '500k';
 }
+
 .badge-money-1m::before {
   content: '1m';
 }
@@ -193,6 +246,7 @@ span[class^='badge-money'] {
 span[class^='badge-user'] {
   @apply badge-circle bg-blue-400/20 text-blue-400;
 }
+
 span[class^='badge-user']::before {
   position: absolute;
   content: '';
@@ -205,6 +259,7 @@ span[class^='badge-user']::before {
   background-position: 50% 25%;
   background-repeat: no-repeat;
 }
+
 span[class^='badge-user']::after {
   position: absolute;
   left: 0px;
@@ -217,12 +272,15 @@ span[class^='badge-user']::after {
   justify-content: center;
   font-size: 10px;
 }
+
 .badge-user-10::after {
   content: '10';
 }
+
 .badge-user-50::after {
   content: '50';
 }
+
 .badge-user-100::after {
   content: '100';
 }
@@ -231,6 +289,7 @@ span[class^='badge-user']::after {
 span[class^='badge-register'] {
   @apply badge-circle bg-purple-300/20 text-purple-300;
 }
+
 span[class^='badge-register']::before {
   position: absolute;
   content: '';
@@ -243,6 +302,7 @@ span[class^='badge-register']::before {
   background-position: 50% 25%;
   background-repeat: no-repeat;
 }
+
 span[class^='badge-register']::after {
   position: absolute;
   left: 0px;
@@ -255,19 +315,24 @@ span[class^='badge-register']::after {
   justify-content: center;
   font-size: 10px;
 }
+
 .badge-register-1m::after {
   content: '1m';
 }
+
 .badge-register-3m::after {
   content: '3m';
 }
+
 .badge-register-1y::after {
   content: '1y';
 }
+
 /* Register Badge */
 span[class^='badge-social'] {
   @apply badge-circle bg-red-300/20 text-red-300;
 }
+
 span[class^='badge-social']::before {
   position: absolute;
   content: '';
@@ -279,21 +344,29 @@ span[class^='badge-social']::before {
   background-position: center;
   background-repeat: no-repeat;
 }
+
 .badge-social-twitter::before {
   background-size: 12px 12px !important;
   background-image: url(../img/badge/twitter_red.svg);
 }
+
 .badge-social-telegram::before {
   background-image: url(../img/badge/telegram_red.svg);
 }
+
 .badge-social-solana::before {
   background-image: url(../img/badge/solana_red.svg);
 }
+
 /* Other Badge */
 span[class^='badge-other'] {
   @apply badge-circle bg-green-400/20 text-green-400;
 }
-.badge-other-influencer::before, .badge-other-neverskip::before, .badge-other-partner::before, .badge-other-bughunter::before {
+
+.badge-other-influencer::before,
+.badge-other-neverskip::before,
+.badge-other-partner::before,
+.badge-other-bughunter::before {
   position: absolute;
   content: '';
   left: 0px;
@@ -303,27 +376,35 @@ span[class^='badge-other'] {
   background-position: center;
   background-repeat: no-repeat;
 }
+
 .badge-other-influencer::before {
   background-image: url(../img/badge/influencer.svg);
 }
+
 .badge-other-neverskip::before {
   background-image: url(../img/badge/neverskip.svg);
 }
+
 .badge-other-partner::before {
   background-image: url(../img/badge/partner.svg);
 }
+
 .badge-other-bughunter::before {
   background-image: url(../img/badge/bughunter.svg);
 }
+
 .badge-other-alpha::before {
   content: 'A';
 }
+
 .badge-other-og::before {
   content: 'OG';
 }
+
 span[class^='leader-rank'] {
   @apply relative font-bold text-sm w-[44px] h-[44px] sm:w-[52px] sm:h-[52px] bg-gray-100 circle-item overflow-hidden;
 }
+
 span[class^='leader-rank']::after {
   position: absolute;
   left: 0px;
@@ -333,26 +414,33 @@ span[class^='leader-rank']::after {
   border-radius: 50%;
   filter: blur(10px);
 }
+
 .leader-rank-none::after {
   display: none;
 }
+
 .leader-rank1 {
   @apply border border-yellow-500 text-yellow-500 !bg-transparent
 }
+
 .leader-rank1::after {
   content: '';
   @apply bg-yellow-500/30
 }
+
 .leader-rank2 {
   @apply border border-white text-white !bg-transparent
 }
+
 .leader-rank2::after {
   content: '';
   @apply bg-white/30
 }
+
 .leader-rank3 {
   @apply border border-red-500 text-red-500 !bg-transparent
 }
+
 .leader-rank3::after {
   content: '';
   @apply bg-red-500/30
