@@ -481,7 +481,7 @@ const TokenDetail = () => {
         <div className="flex py-[10px] border-b border-gray-800 flex items-center justify-between px-[16px]">
           <div className="flex lg:hidden gap-2">
             <button
-              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab === 'top callers'
+              className={`px-3 py-2 rounded-[6px] text-[10px] font-semibold ${activeTab === 'top callers'
                 ? 'bg-[#CAF24433] text-[#CAF244]'
                 : 'bg-[#1C1B1F] text-[#76767E]'
                 }`}
@@ -491,7 +491,7 @@ const TokenDetail = () => {
             </button>
 
             <button
-              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab === 'discussion'
+              className={`px-3 py-2 rounded-[6px] text-[10px] font-semibold ${activeTab === 'discussion'
                 ? 'bg-[#CAF24433] text-[#CAF244]'
                 : 'bg-[#1C1B1F] text-[#76767E]'
                 }`}

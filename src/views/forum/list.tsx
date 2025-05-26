@@ -5,6 +5,7 @@ import ForumLayout from "./layout"
 import { supabase } from "lib/supabase";
 import { SkeletonList } from "components/skeleton/forum";
 import { CallRow } from "./components/CallRow";
+import { IoMdArrowDropdown } from 'react-icons/io';
 
 const options = ["All Ranks", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9", "Level 10"];
 
@@ -96,7 +97,7 @@ const ForumList = () => {
     <div className="border-r border-gray-800">
       <div className="grid grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
 
-        <div className="flex border-b border-gray-800 flex items-center justify-between py-4 px-4 lg:px-[18px]">
+        <div className="flex border-b border-gray-800 flex items-center justify-between py-2.5 lg:py-4 px-4 lg:px-[18px]">
           <div className=" hidden lg:flex show_filter items-center text-[14px] font-semibold text-gray-500">
             <div ref={wrapperRef} className="relative inline-block text-left">
               <span className='hidden lg:block'>Showing</span>
@@ -116,7 +117,7 @@ const ForumList = () => {
           </div>
           <div className="flex lg:hidden gap-2">
             <button
-              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab === 'featured'
+              className={`px-3 py-2 rounded-[6px] text-[10px] font-semibold ${activeTab === 'featured'
                   ? 'bg-[#CAF24433] text-[#CAF244]'
                   : 'bg-[#1C1B1F] text-[#76767E]'
                 }`}
@@ -126,7 +127,7 @@ const ForumList = () => {
             </button>
 
             <button
-              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab === 'latest'
+              className={`px-3 py-2 rounded-[6px] text-[10px] font-semibold ${activeTab === 'latest'
                   ? 'bg-[#CAF24433] text-[#CAF244]'
                   : 'bg-[#1C1B1F] text-[#76767E]'
                 }`}
@@ -140,7 +141,7 @@ const ForumList = () => {
             <div className="flex lg:hidden show_filter items-center text-[14px] font-semibold text-gray-500">
               <div ref={wrapperRef} className="relative inline-block text-left">
                 <span className='hidden lg:block'>Showing</span>
-                <button className="text-white whitespace-nowrap text-[10px] font-semibold ml-[8px]" onClick={toggleDropdown}>{filters}</button>
+                <button className="text-white whitespace-nowrap text-[10px] font-semibold lg:ml-[8px]" onClick={toggleDropdown}>{filters}</button>
                 {isOpen && (
                   <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-36 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg">
                     {options.map((op) => (
@@ -153,13 +154,14 @@ const ForumList = () => {
                     ))}
                   </div>
                 )}</div>
+                  <IoMdArrowDropdown className='lg:hidden' />
             </div>
 
             <div className=" flex text-[10px] lg:text-[14px] font-semibold text-gray-500">
               <div className=" hidden lg:flex items-center justify-center">
                 <span>Feed is <span className="text-white whitespace-nowrap">Live</span></span>
               </div>
-              <button className="ml-[20px] pause_btn flex items-center justify-center mainhover">
+              <button className="lg:ml-[20px] pause_btn flex items-center justify-center mainhover">
                 <img src={Pause} className="w-[24px] h-[24px]" />
                 <button>Pause</button>
               </button>

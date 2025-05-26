@@ -104,7 +104,7 @@ const SubmitCallCard = () => {
     <div className="flex justify-between items-center">
 
       <div className="flex items-center gap-4 lg:gap-0 ">
-      <img src={Logo} className="w-[36px] lg:hidden h-[36px]" />
+      <img src={'/assets/Frame 6.svg'} alt="" className="w-[36px] lg:hidden h-[36px]" />
         <div className="flex w-[160px] lg:w-[333px]  items-center card-1  grow md:mr-[11px]">
           <input
             value={callToken}

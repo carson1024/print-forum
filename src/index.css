@@ -851,4 +851,11 @@ input {
     height: 32px;
     font-size: 12px;
   }
+
+  .show_filter {
+    padding: 0px 12px;
+    height: 32px;
+    background-color: transparent;
+    border: 1px solid #28272B;
+  }
 }

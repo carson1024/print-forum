@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import Logo from 'assets/img/logo-single.png';
 import { IoIosNotifications, IoMdSettings } from "react-icons/io";
 import ProgressBar from './ProgressBar';
-
+import Telegram from 'assets/img/telegram.png';
+import Twitter from 'assets/img/twitter.png';
+import Solana from 'assets/img/solana.png';
 export const MobileDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -14,7 +16,7 @@ export const MobileDrawer = () => {
     <div className='lg:hidden'>
       {/* Toggle Button (only visible when menu is closed) */}
       {!isOpen && (
-        <div className="flex justify-end items-center p-4">
+        <div className="flex justify-end items-center ">
           <img
             src="/Frame.svg"
             width={24}
@@ -168,6 +170,19 @@ export const MobileDrawer = () => {
                     Withdraw
                   </button>
                 </div>
+              </div>
+            </div>
+            <div className=" flex flex-col gap-[20px]">
+              <div className=" flex-col flex text-[13px] font-semibold items-start text-[#76767E] gap-[20px]">
+                  <button>Rank system</button>
+                  <button>Terms of Service</button>
+                  <button>Privacy Policy</button>
+                  <button>Support</button>
+              </div>
+              <div className=" flex gap-4 ">
+                <img alt='' src={Twitter} className="w-[18px] h-[18px] mr-[16px] " />
+                <img alt='' src={Telegram} className="w-[24px] h-[24px] mr-[16px] " />
+                <img alt='' src={Solana} className="w-[20px] h-[20px] " />
               </div>
             </div>
           </div>

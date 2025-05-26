@@ -84,7 +84,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
         <div className="flex lg:hidden py-[10px] border-b border-gray-800 flex items-center justify-between px-[16px]">
           <div className="flex gap-2">
             <button
-              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab2 === 'overview'
+              className={`px-3 py-2 rounded-[6px] text-[10px] font-semibold ${activeTab2 === 'overview'
                 ? 'bg-[#CAF24433] text-[#CAF244]'
                 : 'bg-[#1C1B1F] text-[#76767E]'
                 }`}
@@ -95,7 +95,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
             </button>
 
             <button
-              className={`px-3 py-3 rounded-[6px] text-[10px] font-semibold ${activeTab2 === 'latest'
+              className={`px-3 py-2 rounded-[6px] text-[10px] font-semibold ${activeTab2 === 'latest'
                 ? 'bg-[#CAF24433] text-[#CAF244]'
                 : 'bg-[#1C1B1F] text-[#76767E]'
                 }`}

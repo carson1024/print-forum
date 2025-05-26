@@ -20,7 +20,7 @@ const CopyTradingLayout = ({
       {/* Left Side - Main Content */}
       <div className="grid lg:grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
         <div className="border-b border-r border-[#28272B] flex items-center justify-between">
-          <div className="m-[18px] w-full lg:w-[425px] ">
+          <div className="px-4 py-2.5 lg:m-[18px] w-full lg:w-[425px] ">
             <SubmitCallCard />
           </div>
         </div>
