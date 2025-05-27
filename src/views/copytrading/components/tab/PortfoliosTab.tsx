@@ -50,12 +50,16 @@ const PortfoliosTab = ({
     {users.map((user, index) => (<Link to={`/profile?id=${user.id}&tag=2`} key={index}>
       <div className="trading_border  flex items-center justify-between">
         <div className="flex flex-col md:flex-wrap gap-[5px] lg:gap-3 lg:flex-row lg:items-center ">
-          <div className="flex gap-[2px] items-center ">
+          <div className="flex gap-[6px] items-center ">
 
-            <div className="trade_number_border items-center text-gray-600 text-bold text-[10px] mr-[6px]">{index + 1}</div>
-            <span className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center mr-[6px]`}></span>
-            <span className="text-[10px] lg:text-[12px] font-semibold text-white mr-[6px]">{user.name}</span>
-            <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">{user.winrate}%</span>
+            <div className="trade_number_border items-center text-gray-600 text-bold text-[10px] lg:mr-[6px]">{index + 1}</div>
+            <div className="flex gap-[4px] items-center">
+
+            <span className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center lg:mr-[6px]`}></span>
+            <span className="text-[10px] lg:text-[12px] font-semibold text-white lg:mr-[6px]">{user.name}</span>
+            <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 lg:mr-[6px]">{user.winrate}%</span>
+            </div>
+
           </div>
           <div className="flex gap-[2px] items-center">
 
