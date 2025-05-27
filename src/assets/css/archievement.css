@@ -445,3 +445,9 @@ span[class^='leader-rank']::after {
   content: '';
   @apply bg-red-500/30
 }
+
+@media(max-width:1100px) {
+  .circle {
+    border-radius: 4px;
+  }
+}

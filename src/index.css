@@ -873,4 +873,8 @@ input {
     height: 22px;
 
   }
+
+  .circle-item {
+    border-radius: 4px;
+  }
 }
