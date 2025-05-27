@@ -864,4 +864,13 @@ input {
     background-color: transparent;
     border: 1px solid #28272B;
   }
+
+  .btn_filter_before {
+    height: 22px;
+  }
+
+  .btn_filter {
+    height: 22px;
+
+  }
 }

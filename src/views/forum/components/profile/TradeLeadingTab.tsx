@@ -68,8 +68,8 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
 
   return (<>
     <div className="h-screen bg-black text-white">
-      <div className="grid lg:grid-rows-[76px_1fr] h-full border-gray-800">
-        <div className='border-b border-gray-800 flex items-center py-2.5 px-4 lg:py-0 lg:px-0'>
+      <div className="md:grid lg:grid-rows-[76px_1fr] h-full border-gray-800">
+        <div className='border-b border-gray-800 hidden md:flex items-center py-2.5 px-4 lg:py-0 lg:px-0'>
           {
             !isCopying ? <><button className='btn_copy  lg:ml-[18px] items-center mainhover' onClick={() => setIsCopyingModalOpen(true)}><span className='flex text-black text-[14px] font-semibold items-center'>Copy Trader</span></button></>
               :

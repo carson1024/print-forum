@@ -39,7 +39,7 @@ const BecomeTraderModal = ({
                     <h1 className="text-xs font-semibold">
                         Terms
                     </h1>
-                    <p className="text-xs text-[#76767E] font-medium">
+                    <p className="text-xs text-[#76767E] font-medium leading-[135%]">
                         Sed sed massa eu risus commodo sollicitudin. Maecenas vitae ante nec sem cursus pharetra. Vivamus pellentesque turpis vel nisi euismod, eget efficitur dui efficitur.
                     </p>
                 </div>
@@ -63,7 +63,7 @@ const BecomeTraderModal = ({
                         )}
                     </button>
                     <span className="text-xs font-medium">
-                    View Rank System
+                    I agree pellentesque turpis vel nisi 
                     </span>
                 </div>
                 <button className="bg-[#CAF244] h-[40px] text-black rounded-[6px] text-sm font-semibold ">

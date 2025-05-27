@@ -166,12 +166,12 @@ const CopyTrading = () => {
           <div className="relative lg:hidden   ">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="w-full  gap-1.5 text-white text-sm font-semibold p-4 rounded-[6px] border border-[#28272B] flex items-center justify-between"
+              className="w-full  gap-1.5 text-white text-[10px] font-semibold px-3 py-2 rounded-[6px] border border-[#28272B] flex items-center justify-between"
             >
               <div className="flex items-center gap-2">
-                {activeTab === 'public' && <img src={Bag} className="w-4 h-4" />}
-                {activeTab === 'trader' && <img src={User_face} className="w-4 h-4" />}
-                {activeTab === 'favo' && <img src={Star} className="w-4 h-4" />}
+                {activeTab === 'public' && <img src={Bag} className="w-[14px] h-[13px]" alt="" />}
+                {activeTab === 'trader' && <img src={User_face} className="w-[14px] h-[13px]" alt="" />}
+                {activeTab === 'favo' && <img src={Star} className="w-[14px] h-[13px]" alt="" />}
                 {activeTab === 'myTrade' && <IoMdPerson />}
                 <span>
                   {activeTab === 'public' && 'Public Portfolios'}
@@ -180,7 +180,7 @@ const CopyTrading = () => {
                   {activeTab === 'myTrade' && 'My Traders'}
                 </span>
               </div>
-              <IoMdArrowDropdown />
+              <img src="/assets/arrrow.svg" alt="" />
             </button>
 
             {showDropdown && (
@@ -243,35 +243,35 @@ const CopyTrading = () => {
             </button>
           </div>
         </div>
-        <div className="flex border-b justify-between py-2.5 px-4 border-gray-800 flex items-center">
+        <div className="flex border-b justify-between py-2.5 gap-3 px-4 border-gray-800 flex items-center">
           <div className=" flex gap-1">
             {
-              activeTag == 'pnl' ? <button className="mr-[8px] btn_filter font-semibold text-white text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('pnl')} >
+              activeTag == 'pnl' ? <button className="lg:mr-[8px] btn_filter font-semibold text-white text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('pnl')} >
                 PnL
               </button> :
-                <button className="mr-[8px] btn_filter_before font-semibold text-gray-600 text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('pnl')} >
+                <button className="lg:mr-[8px]  btn_filter_before font-semibold text-gray-600 text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('pnl')} >
                   PnL
                 </button>
             }
             {
-              activeTag == 'rol' ? <button className="mr-[8px] btn_filter font-semibold text-white text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('rol')}>
+              activeTag == 'rol' ? <button className="lg:mr-[8px] btn_filter font-semibold text-white text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('rol')}>
                 ROL
               </button> :
-                <button className="mr-[8px] btn_filter_before font-semibold text-gray-600 text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('rol')}>
+                <button className="lg:mr-[8px]  btn_filter_before font-semibold text-gray-600 text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('rol')}>
                   ROL
                 </button>
             }
             {
-              activeTag == 'total' ? <button className="mr-[8px] btn_filter font-semibold text-white truncate text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
+              activeTag == 'total' ? <button className="lg:mr-[8px] btn_filter font-semibold text-white truncate text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
                 Total Copiers
               </button> :
-                <button className="mr-[8px] btn_filter_before font-semibold text-gray-600 truncate text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
+                <button className="lg:mr-[8px]  btn_filter_before font-semibold text-gray-600 truncate text-[10px] lg:text-[12px] flex items-center justify-center flex" onClick={() => setActiveTag('total')} >
                   Total Copiers
                 </button>
             }
           </div>
           <div className="lg:ml-auto">
-            <div className="flex gap-2 sm:gap-3">
+            <div className="flex gap-1 sm:gap-3">
               <div className="px-3 py-1 md:py-2 round_filter text-white flex items-center gap-2 max-[450px]:w-[100px]">
                 <IoSearchSharp className="text-gray-600 text-md md:text-base" />
                 <input
@@ -319,7 +319,7 @@ const CopyTrading = () => {
             isLoading || !users.length ? <div className="m-[18px] flex flex-col gap-5 overflow-auto flex-grow loading">
               <><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={90} /><SkeletonRow opacity={70} /><SkeletonRow opacity={50} /><SkeletonRow opacity={30} /></>
             </div> :
-              <div className="p-4  flex flex-col gap-5 overflow-auto flex-grow">
+              <div className="px-4 py-2.5 lg:p-4  flex flex-col gap-2.5 lg:gap-5 overflow-auto flex-grow">
                 {
                   activeTab == 'public' ?
                     <PortfoliosTab users={users} />
