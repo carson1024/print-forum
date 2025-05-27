@@ -62,7 +62,7 @@ const Leaderboard = () => {
               </div>
               </div>
 
-              <div className="lg:px-3 lg:sm:px-[18px] pt-2 lg:py-3 circle overflow-auto lg:border border-gray-150 flex-col lg:flex-row flex lg:items-center gap-1 lg:gap-2 lg:flex-wrap">
+              <div className="lg:px-3 lg:sm:px-[18px] pt-3 lg:py-3 circle overflow-auto lg:border border-gray-150 flex-col lg:flex-row flex lg:items-center gap-1 lg:gap-2 lg:flex-wrap">
                 <div className="flex items-center gap-2">
                   <span className=" text-[10px] md:text-xs text-gray-600">Win ratio :</span>
                   <div className=" text-[10px] md:text-xs bg-primary/20 px-2 py-1.5 sm:hidden hidden lg:flex items-center gap-1 rounded-full">
