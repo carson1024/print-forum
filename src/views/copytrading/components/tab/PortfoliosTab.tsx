@@ -55,7 +55,7 @@ const PortfoliosTab = ({
             <div className="trade_number_border items-center text-gray-600 text-bold text-[10px] lg:mr-[6px]">{index + 1}</div>
             <div className="flex gap-[4px] items-center">
 
-            <span className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center lg:mr-[6px]`}></span>
+            <span className={`badge-rank-${user.rank} rounded-[4px] text-[10px] w-[20px] h-[20px] items-center lg:mr-[6px]`}></span>
             <span className="text-[10px] lg:text-[12px] font-semibold text-white lg:mr-[6px]">{user.name}</span>
             <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 lg:mr-[6px]">{user.winrate}%</span>
             </div>
