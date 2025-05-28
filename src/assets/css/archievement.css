@@ -402,7 +402,7 @@ span[class^='badge-other'] {
 }
 
 span[class^='leader-rank'] {
-  @apply relative font-bold rounded-[4px] text-sm w-[18px] text-[10px] lg:text-sm h-[18px] lg:w-[44px] lg:h-[44px] bg-gray-100 flex justify-center items-center overflow-hidden;
+  @apply relative font-bold rounded-[4px] text-sm w-[18px] text-[10px] lg:text-[10px] h-[18px] lg:w-[20px] lg:h-[20px] bg-gray-100 flex justify-center items-center overflow-hidden;
 }
 
 span[class^='leader-rank']::after {
