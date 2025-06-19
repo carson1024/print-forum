@@ -1,6 +1,9 @@
 import { Toaster, toast } from "react-hot-toast";
 
-export const showToastr = (message: string, type: "success" | "error" | "info") => {
+export const showToastr = (
+  message: string,
+  type: "success" | "error" | "info"
+) => {
   // console.log("showToastr", message, type);
   switch (type) {
     case "success":
@@ -16,13 +19,15 @@ export const showToastr = (message: string, type: "success" | "error" | "info") 
 };
 
 const Toastr = () => {
-  return <Toaster
-    toastOptions={{
-      // style: { background: "#333", color: "#fff" },
-      position: "top-center",
-      duration: 3000
-    }}
-  />;
+  return (
+    <Toaster
+      toastOptions={{
+        // style: { background: "#333", color: "#fff" },
+        position: "top-center",
+        duration: 3000,
+      }}
+    />
+  );
 };
 
 export default Toastr;

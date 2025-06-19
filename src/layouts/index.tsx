@@ -19,7 +19,8 @@ export default function MainLayout(props: { [x: string]: any }) {
       if (
         window.location.href.indexOf(
           routes[i].layout + "/" + routes[i].path
-        ) !== -1) {
+        ) !== -1
+      ) {
         setCurrentRoute(routes[i].key);
       }
     }
@@ -57,13 +58,9 @@ export default function MainLayout(props: { [x: string]: any }) {
           secondary={getActiveNavbar(routes)}
           {...rest}
         />
-        <main
-          className="transition-all grow overflow-hidden"
-        >
+        <main className="transition-all grow overflow-hidden">
           <div className="h-full">
-            <Routes>
-              {getRoutes(routes)}
-            </Routes>
+            <Routes>{getRoutes(routes)}</Routes>
           </div>
         </main>
       </div>

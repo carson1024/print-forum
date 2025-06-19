@@ -1,6 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(process.env.VITE_SUPABASE_URL as string, process.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string);
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL as string,
+  process.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string
+);
 
 exports.handler = async (event: any) => {
   try {
@@ -11,9 +14,16 @@ exports.handler = async (event: any) => {
       };
     }
     //update the weeklt and monthly winrate
-    const { data: allusers, error: allusererror } = await supabase.from("users").select("*").order("created_at");
+    const { data: allusers, error: allusererror } = await supabase
+      .from("users")
+      .select("*")
+      .order("created_at");
     allusers.map(async (user) => {
-      const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("user_id", user.id);
+      const { data: owncalls, error: owncallerror } = await supabase
+        .from("calls")
+        .select("*")
+        .order("created_at")
+        .eq("user_id", user.id);
       if (owncalls.length == 0) {
         const { error: updatewinrateError } = await supabase
           .from("users")
@@ -24,16 +34,24 @@ exports.handler = async (event: any) => {
         } else {
           console.log("weekrateUpdate successful");
         }
-      }
-      else {
-        const monthcalls = owncalls.filter(call => new Date(call.created_at).getTime() + 2592000000 > Date.now());
-        let winmonthcallcounts = monthcalls.filter(monthcall => monthcall.is_featured === true).length;
+      } else {
+        const monthcalls = owncalls.filter(
+          (call) =>
+            new Date(call.created_at).getTime() + 2592000000 > Date.now()
+        );
+        let winmonthcallcounts = monthcalls.filter(
+          (monthcall) => monthcall.is_featured === true
+        ).length;
         let monthcallcounts = monthcalls.length;
-        let monthrate = Math.ceil(winmonthcallcounts * 100 / monthcallcounts);
-        const weekcalls = owncalls.filter(call => new Date(call.created_at).getTime() + 604800000 > Date.now());
-        let winweekcallcounts = weekcalls.filter(weekcall => weekcall.is_featured === true).length;
+        let monthrate = Math.ceil((winmonthcallcounts * 100) / monthcallcounts);
+        const weekcalls = owncalls.filter(
+          (call) => new Date(call.created_at).getTime() + 604800000 > Date.now()
+        );
+        let winweekcallcounts = weekcalls.filter(
+          (weekcall) => weekcall.is_featured === true
+        ).length;
         let weekcallcounts = weekcalls.length;
-        let weekrate = Math.ceil(winweekcallcounts * 100 / weekcallcounts);
+        let weekrate = Math.ceil((winweekcallcounts * 100) / weekcallcounts);
         const { error: updatewinrateError } = await supabase
           .from("users")
           .update({ weekrate: weekrate, monthrate: monthrate })
@@ -44,28 +62,61 @@ exports.handler = async (event: any) => {
           console.log("weekrateUpdate successful");
         }
       }
-    })
+    });
 
     //winrate Update process
-    const { data: users, error: usererror } = await supabase.from("users").select("*").order("created_at");
+    const { data: users, error: usererror } = await supabase
+      .from("users")
+      .select("*")
+      .order("created_at");
     users.map(async (user) => {
       let newrank = 1;
-      if (20 <= user.xp && user.xp < 44) { newrank = 2 }
-      if (44 <= user.xp && user.xp < 72) { newrank = 3 }
-      if (72 <= user.xp && user.xp < 104) { newrank = 4 }
-      if (104 <= user.xp && user.xp < 144) { newrank = 5 }
-      if (144 <= user.xp && user.xp < 184) { newrank = 6 }
-      if (184 <= user.xp && user.xp < 244) { newrank = 7 }
-      if (244 <= user.xp && user.xp < 292) { newrank = 8 }
-      if (292 <= user.xp && user.xp < 364) { newrank = 9 }
-      if (364 <= user.xp) { newrank = 10 }
-      const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("user_id", user.id);
+      if (20 <= user.xp && user.xp < 44) {
+        newrank = 2;
+      }
+      if (44 <= user.xp && user.xp < 72) {
+        newrank = 3;
+      }
+      if (72 <= user.xp && user.xp < 104) {
+        newrank = 4;
+      }
+      if (104 <= user.xp && user.xp < 144) {
+        newrank = 5;
+      }
+      if (144 <= user.xp && user.xp < 184) {
+        newrank = 6;
+      }
+      if (184 <= user.xp && user.xp < 244) {
+        newrank = 7;
+      }
+      if (244 <= user.xp && user.xp < 292) {
+        newrank = 8;
+      }
+      if (292 <= user.xp && user.xp < 364) {
+        newrank = 9;
+      }
+      if (364 <= user.xp) {
+        newrank = 10;
+      }
+      const { data: owncalls, error: owncallerror } = await supabase
+        .from("calls")
+        .select("*")
+        .order("created_at")
+        .eq("user_id", user.id);
       let counts = owncalls.length;
-      let wincalls = (owncalls.filter(call => call.is_featured === true)).length
+      let wincalls = owncalls.filter(
+        (call) => call.is_featured === true
+      ).length;
       if (newrank !== user.rank) {
         const { error: updatenotificationError } = await supabase
           .from("notifications")
-          .insert({ user_id: user.id, type: "rankup", title: `Rank${newrank} reached`, value: `${newrank}`, content: `Congraturation! You reached to Rank${newrank}.` });
+          .insert({
+            user_id: user.id,
+            type: "rankup",
+            title: `Rank${newrank} reached`,
+            value: `${newrank}`,
+            content: `Congraturation! You reached to Rank${newrank}.`,
+          });
         if (updatenotificationError) {
           console.error("Update failed:", updatenotificationError);
         }
@@ -81,7 +132,7 @@ exports.handler = async (event: any) => {
       }
 
       if (wincalls > 0) {
-        let winrate = wincalls * 100 / counts;
+        let winrate = (wincalls * 100) / counts;
         let rounded = Math.ceil(winrate);
         const { error: updatewinrateError } = await supabase
           .from("users")
@@ -92,8 +143,7 @@ exports.handler = async (event: any) => {
         } else {
           console.log("winrateUpdate successful");
         }
-      }
-      else if (wincalls == 0) {
+      } else if (wincalls == 0) {
         const { error: updatewinrateError } = await supabase
           .from("users")
           .update({ callcount: counts, rank: newrank })
@@ -104,27 +154,34 @@ exports.handler = async (event: any) => {
           console.log("winrateUpdate successful");
         }
       }
-
-
-    })
+    });
     // Fetch all calls ordered by created_at
-    const { data: calls, error } = await supabase.from("calls").select("*, users(*)").order("created_at");
+    const { data: calls, error } = await supabase
+      .from("calls")
+      .select("*, users(*)")
+      .order("created_at");
     if (error) {
       console.error("Error fetching data:", error);
       return 0;
     }
     if (!calls || calls.length === 0) return;
     const responses = await Promise.all(
-      calls.map(call => fetch(`https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112,` + call.token_address))
+      calls.map((call) =>
+        fetch(
+          `https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112,` +
+            call.token_address
+        )
+      )
     );
-    const results = await Promise.all(responses.map(res => res.json()));
+    const results = await Promise.all(responses.map((res) => res.json()));
     for (const [index, resave] of results.entries()) {
       if (!resave?.data || resave.data.length === 0) continue;
       const tokenId = calls[index].token_address;
       const newPrice = resave.data[tokenId].price;
       const oldPrice = calls[index].price;
       const priceRatio = newPrice / oldPrice;
-      const timelimit = new Date(calls[index].created_at).getTime() + 86400000 - Date.now()
+      const timelimit =
+        new Date(calls[index].created_at).getTime() + 86400000 - Date.now();
 
       // Determine new `featured` value
       let newFeatured = 0;
@@ -142,19 +199,42 @@ exports.handler = async (event: any) => {
         // Update the call record
         const { error: updateError } = await supabase
           .from("calls")
-          .update({ changedPrice: newPrice, changedCap: newPrice * calls[index].supply / (Math.pow(10, calls[index].decimals)), is_featured: true, featured: newFeatured, percentage: Math.ceil(100 * (newPrice * calls[index].supply / (Math.pow(10, calls[index].decimals))) / (calls[index].init_market_cap)) })
+          .update({
+            changedPrice: newPrice,
+            changedCap:
+              (newPrice * calls[index].supply) /
+              Math.pow(10, calls[index].decimals),
+            is_featured: true,
+            featured: newFeatured,
+            percentage: Math.ceil(
+              (100 *
+                ((newPrice * calls[index].supply) /
+                  Math.pow(10, calls[index].decimals))) /
+                calls[index].init_market_cap
+            ),
+          })
           .eq("id", calls[index].id);
         if (updateError) {
           console.error("Update failed:", updateError);
         } else {
           console.log("Update successful");
         }
-      }
-      else {
+      } else {
         // Update the call record
         const { error: updateError } = await supabase
           .from("calls")
-          .update({ changedPrice: newPrice, changedCap: newPrice * calls[index].supply / (Math.pow(10, calls[index].decimals)), percentage: Math.ceil(100 * (newPrice * calls[index].supply / (Math.pow(10, calls[index].decimals))) / (calls[index].init_market_cap)) })
+          .update({
+            changedPrice: newPrice,
+            changedCap:
+              (newPrice * calls[index].supply) /
+              Math.pow(10, calls[index].decimals),
+            percentage: Math.ceil(
+              (100 *
+                ((newPrice * calls[index].supply) /
+                  Math.pow(10, calls[index].decimals))) /
+                calls[index].init_market_cap
+            ),
+          })
           .eq("id", calls[index].id);
         if (updateError) {
           console.error("Update failed:", updateError);
@@ -178,8 +258,7 @@ exports.handler = async (event: any) => {
           } else {
             console.log("Update successful");
           }
-        }
-        else if (call.featured == 5) {
+        } else if (call.featured == 5) {
           xpmark += 10;
           const { error: updateError } = await supabase
             .from("calls")
@@ -190,8 +269,7 @@ exports.handler = async (event: any) => {
           } else {
             console.log("Update successful");
           }
-        }
-        else if (call.featured >= 10) {
+        } else if (call.featured >= 10) {
           xpmark += 12;
           const { error: updateError } = await supabase
             .from("calls")
@@ -202,8 +280,7 @@ exports.handler = async (event: any) => {
           } else {
             console.log("Update successful");
           }
-        }
-        else if (call.featured == 1) {
+        } else if (call.featured == 1) {
           xpmark -= 6;
           const { error: updateError } = await supabase
             .from("calls")
@@ -215,7 +292,9 @@ exports.handler = async (event: any) => {
             console.log("Update successful");
           }
         }
-        if (xpmark < 0) { xpmark = 0; }
+        if (xpmark < 0) {
+          xpmark = 0;
+        }
         const { error: updateError } = await supabase
           .from("calls")
           .update({ xpCheck: 1 })
@@ -235,7 +314,7 @@ exports.handler = async (event: any) => {
           console.log("Update successful");
         }
       }
-    })
+    });
   } catch (error) {
     console.error("Unexpected error:", error);
     return {

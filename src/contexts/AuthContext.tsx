@@ -1,11 +1,18 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { Session } from '@supabase/supabase-js';
-import { Keypair } from '@solana/web3.js';
-import { Connection, clusterApiUrl, PublicKey } from '@solana/web3.js';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { supabase } from "../lib/supabase";
+import { Session } from "@supabase/supabase-js";
+import { Keypair } from "@solana/web3.js";
+import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
 
 export interface UserType {
-  id: string,
+  id: string;
   avatar: string | null;
   wallet_paddress: string;
   wallet_saddress: string;
@@ -30,9 +37,7 @@ export interface AuthContextType {
   isLogin: boolean;
   session: Session | null;
   user: UserType | null;
-
 }
-
 
 const AuthContext = createContext<AuthContextType>(null);
 
@@ -40,55 +45,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setLoading] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<UserType | null>(null);
-  const isLogin = useMemo<boolean>(() => !!(session?.user.email && session?.user.confirmed_at), [session]);
+  const isLogin = useMemo<boolean>(
+    () => !!(session?.user.email && session?.user.confirmed_at),
+    [session]
+  );
   const [balance, setBalance] = useState<number | null>(null);
   const getBalance = async (publicKeyStr: string) => {
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed'); // or 'mainnet-beta'
+    const connection = new Connection(clusterApiUrl("devnet"), "confirmed"); // or 'mainnet-beta'
     const publicKey = new PublicKey(publicKeyStr);
 
     try {
       const balance = await connection.getBalance(publicKey);
       return balance / 1e9; // Convert lamports to SOL
     } catch (error) {
-      console.error('Error fetching balance:', error);
+      console.error("Error fetching balance:", error);
       return null;
     }
   };
-  const checkUser = useCallback(async (_session: Session) => {
-    if (!_session?.user.id) {
-      setUser(null);
-      return;
-    }
-    if (user?.id == _session?.user.id) return;
-    const { data: dataUser, error: errorUser } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", _session.user.id)
-      .single();
-    if (errorUser) {
-      console.error("Error fetching user:", errorUser);
-    } else {
-      setUser(dataUser);
-    }
-  }, [user]);
+  const checkUser = useCallback(
+    async (_session: Session) => {
+      if (!_session?.user.id) {
+        setUser(null);
+        return;
+      }
+      if (user?.id == _session?.user.id) return;
+      const { data: dataUser, error: errorUser } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", _session.user.id)
+        .single();
+      if (errorUser) {
+        console.error("Error fetching user:", errorUser);
+      } else {
+        setUser(dataUser);
+      }
+    },
+    [user]
+  );
 
   async function handleUserLogin() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
-      console.log('No user logged in');
+      console.log("No user logged in");
       return;
     }
 
     // Check if the user already has a wallet address
     const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', user.id) // assuming 'id' is the PK from auth.users
+      .from("users")
+      .select("*")
+      .eq("id", user.id) // assuming 'id' is the PK from auth.users
       .single();
 
     if (error) {
-      console.error('Error fetching user:', error);
+      console.error("Error fetching user:", error);
       return;
     }
 
@@ -99,35 +112,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const walletSaddress = keypair.secretKey; // Get the securite address
       // Save the wallet address in the database (only once)
       const { error: updateError } = await supabase
-        .from('users')
-        .update({ wallet_paddress: walletPaddress, wallet_saddress: walletSaddress })
-        .eq('id', user.id);
+        .from("users")
+        .update({
+          wallet_paddress: walletPaddress,
+          wallet_saddress: walletSaddress,
+        })
+        .eq("id", user.id);
 
       if (updateError) {
-        console.error('Error updating wallet address:', updateError);
+        console.error("Error updating wallet address:", updateError);
       } else {
-        console.log('Wallet address generated and saved successfully');
+        console.log("Wallet address generated and saved successfully");
         const balance = await getBalance(walletPaddress);
         setBalance(Number(balance));
         const { error: balanceError } = await supabase
-          .from('users')
+          .from("users")
           .update({ balance: balance })
-          .eq('id', user.id);
+          .eq("id", user.id);
         if (balanceError) {
-          console.error('Error updating balance error', balanceError);
+          console.error("Error updating balance error", balanceError);
         }
-
       }
-    }
-    else if (data.wallet_paddress) {
+    } else if (data.wallet_paddress) {
       const balance = await getBalance(data.wallet_paddress);
       setBalance(Number(balance));
       const { error: balanceError } = await supabase
-        .from('users')
+        .from("users")
         .update({ balance: balance })
-        .eq('id', user.id);
+        .eq("id", user.id);
       if (balanceError) {
-        console.error('Error updating balance error', balanceError);
+        console.error("Error updating balance error", balanceError);
       }
     }
   }
@@ -153,9 +167,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     checkAndCreateWallet();
-
-
-
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, _session: Session | null) => {

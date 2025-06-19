@@ -1,11 +1,6 @@
-export const SkeletonDiscussionRow = ({
-  opacity
-}: {
-  opacity: number;
-}) => (
+export const SkeletonDiscussionRow = ({ opacity }: { opacity: number }) => (
   <>
     <div className="flex gap-4" style={{ opacity: opacity / 100 }}>
-
       <div className="space-y-1 flex-grow">
         <div className="flex gap-1 items-center">
           <div className="circle-item w-6 h-6 sm:w-7 sm:h-7 bg-red-300 text-black text-sm font-bold skeleton"></div>
@@ -17,7 +12,10 @@ export const SkeletonDiscussionRow = ({
         </div>
       </div>
     </div>
-    <div className="border-b-[1px] mt-[20px] mb-[20px] border-gray-100" style={{ opacity: opacity / 100 }}></div>
+    <div
+      className="border-b-[1px] mt-[20px] mb-[20px] border-gray-100"
+      style={{ opacity: opacity / 100 }}
+    ></div>
   </>
 );
 

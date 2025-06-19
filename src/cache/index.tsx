@@ -1,9 +1,9 @@
 import { CallReportType } from "types/calls";
 
 export let pairsCache: {
-    [key: string]: CallReportType
+  [key: string]: CallReportType;
 } = {};
 
 export const clearCache = () => {
-    pairsCache = {};
-}
+  pairsCache = {};
+};

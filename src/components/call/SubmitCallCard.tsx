@@ -17,7 +17,6 @@ const SubmitCallCard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmitCall = async () => {
-
     if (isSubmitting) return;
     setCallReport(null);
     if (!isLogin) {
@@ -29,13 +28,18 @@ const SubmitCallCard = () => {
       showToastr("Please enter a CA", "error");
       return;
     }
-    const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("address", callToken);
-    let mycalls = (owncalls.filter(call => call.user_id === session.user.id)).length
+    const { data: owncalls, error: owncallerror } = await supabase
+      .from("calls")
+      .select("*")
+      .order("created_at")
+      .eq("address", callToken);
+    let mycalls = owncalls.filter(
+      (call) => call.user_id === session.user.id
+    ).length;
     if (mycalls > 0) {
       showToastr("This token is already called fro you!", "error");
       return;
-    }
-    else {
+    } else {
       setIsSubmitting(true);
       let result = await checkCall(callToken);
       setIsSubmitting(false);
@@ -47,32 +51,32 @@ const SubmitCallCard = () => {
       setCallToken("");
       setIsCallModalOpen(true);
     }
-
-  }
+  };
 
   const handleCallSave = async () => {
-
     if (!session.user || !callReport) return;
     const userId = session.user.id;
 
-    const { data, error } = await supabase
-      .from("calls")
-      .insert([
-        {
-          image: callReport.info.imageUrl,
-          name: callReport.fileMeta.name,
-          symbol: callReport.fileMeta.symbol,
-          address: callReport.pairAddress,
-          token_address: callReport.baseToken.address,
-          init_market_cap: callReport.marketCap,
-          decimals: callReport.token.decimals,
-          supply: callReport.token.supply,
-          changedCap: callReport.marketCap,
-          price: (callReport.marketCap * Math.pow(10, callReport.token.decimals)) / callReport.token.supply,
-          percentage: 100,
-          changedPrice: (callReport.marketCap * Math.pow(10, callReport.token.decimals)) / callReport.token.supply
-        },
-      ]);
+    const { data, error } = await supabase.from("calls").insert([
+      {
+        image: callReport.info.imageUrl,
+        name: callReport.fileMeta.name,
+        symbol: callReport.fileMeta.symbol,
+        address: callReport.pairAddress,
+        token_address: callReport.baseToken.address,
+        init_market_cap: callReport.marketCap,
+        decimals: callReport.token.decimals,
+        supply: callReport.token.supply,
+        changedCap: callReport.marketCap,
+        price:
+          (callReport.marketCap * Math.pow(10, callReport.token.decimals)) /
+          callReport.token.supply,
+        percentage: 100,
+        changedPrice:
+          (callReport.marketCap * Math.pow(10, callReport.token.decimals)) /
+          callReport.token.supply,
+      },
+    ]);
 
     if (error) {
       showToastr("Error saving call report", "error");
@@ -88,41 +92,50 @@ const SubmitCallCard = () => {
           user_id: userId,
           address: callReport.pairAddress,
         },
-      ])
+      ]);
 
     if (error) {
       showToastr("Error saving call report", "error");
       console.error("Error saving call report:", error.message);
     }
     setIsCallModalOpen(false);
-  }
+  };
 
-  return (<>
-    {/* Search and Submit Button */}
-    <div className="flex items-center ">
-      <div className="flex items-center card-1 grow mr-[11px]">
-        <input
-          value={callToken}
-          onChange={(e) => setCallToken(e.target.value)}
-          type="text"
-          placeholder="Paste in CA"
-          className="outline-none text-sm px-2 grow sm:text-base bg-transparent " />
-        {/* <button className="sm:hidden flex btn btn-sm" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button> */}
+  return (
+    <>
+      {/* Search and Submit Button */}
+      <div className="flex items-center ">
+        <div className="flex items-center card-1 grow mr-[11px]">
+          <input
+            value={callToken}
+            onChange={(e) => setCallToken(e.target.value)}
+            type="text"
+            placeholder="Paste in CA"
+            className="outline-none text-sm px-2 grow sm:text-base bg-transparent "
+          />
+          {/* <button className="sm:hidden flex btn btn-sm" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button> */}
+        </div>
+        <button
+          className="btn_call text-[14px] font-semibold !hidden sm:!flex text-black w-[80px] h-[40px]"
+          onClick={handleSubmitCall}
+          disabled={isSubmitting}
+        >
+          Submit
+        </button>
       </div>
-      <button className="btn_call text-[14px] font-semibold !hidden sm:!flex text-black w-[80px] h-[40px]" onClick={handleSubmitCall} disabled={isSubmitting}>Submit</button>
-    </div>
-    <CallModal
-      isOpen={isCallModalOpen}
-      callReport={callReport}
-      onSave={handleCallSave}
-      onClose={() => setIsCallModalOpen(false)}
-    />
-    <LoginModal
-      isOpen={isLoginModalOpen}
-      onClose={() => setIsLoginModalOpen(false)}
-      login={login}
-    />
-  </>)
-}
+      <CallModal
+        isOpen={isCallModalOpen}
+        callReport={callReport}
+        onSave={handleCallSave}
+        onClose={() => setIsCallModalOpen(false)}
+      />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        login={login}
+      />
+    </>
+  );
+};
 
 export default SubmitCallCard;
