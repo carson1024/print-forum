@@ -9,12 +9,12 @@ import { showToastr } from "components/toastr";
 import { MdCheck } from "react-icons/md";
 // import { ConnectWalletButton } from "./ConnectWalletButton";
 const DepositModal = ({
-    isOpen,
-    onClose,
-  }: Readonly<{
-    isOpen: boolean,
-    onClose: () => void
-  }>) => {
+  isOpen,
+  onClose,
+}: Readonly<{
+  isOpen: boolean,
+  onClose: () => void
+}>) => {
   const { isLogin, session, user } = useAuth();
   const [isCopied, setIsCopied] = useState(false);
   const handleCopy = async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -30,7 +30,7 @@ const DepositModal = ({
     // <ConnectWalletButton />
   }
 
-    return <Modal isOpen={isOpen} onClose={onClose}>
+  return <Modal isOpen={isOpen} onClose={onClose}>
     <div className="space-y-6 w-[470px]">
       <div className="flex">
         <div className=" flex items-center gap-1 text-[14px] font-semibold text-[#59FFCB]" onClick={openWallet}>
@@ -48,13 +48,13 @@ const DepositModal = ({
         <div className="text-[14px] font-Medium   whitespace-nowrap">Address</div>
         <div className="flex items-center gap-2 grow">
           <div className="truncate-wrapper">
-              <span className="text-gray-600 text-[12px] truncate">{user?.wallet_paddress}</span>
+            <span className="text-gray-600 text-[12px] truncate">{user?.wallet_paddress}</span>
           </div>
         </div>
         <button className="text-gray-400">{
-                      !isCopied ? <img src={IconCopy} className="w-4 h-4 sm:w-6 sm:h-6 opacity-40" />
-                      : <span className='text-[#06cf9c]'><MdCheck size={16} /></span>
-          }
+          !isCopied ? <img src={IconCopy} className="w-4 h-4 sm:w-6 sm:h-6 opacity-40" />
+            : <span className='text-[#06cf9c]'><MdCheck size={16} /></span>
+        }
         </button>
       </div>
     </div>

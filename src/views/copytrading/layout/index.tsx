@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getMultiplierType, getRankChar } from "utils/style";
-import SubmitCallCard from "components/call/SubmitCallCard"; 
+import SubmitCallCard from "components/call/SubmitCallCard";
 import LoginCard from "components/login/LoginCard";
 import MyProfile from "views/forum/components/MyProfile";
 import ForumCard from "views/forum/components/ForumCard";
@@ -9,9 +9,9 @@ import { useAuth } from "contexts/AuthContext";
 import { login, logout } from "utils/auth";
 
 const CopyTradingLayout = ({
-    children
+  children
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) => {
   const { isLogin } = useAuth();
 
@@ -24,17 +24,17 @@ const CopyTradingLayout = ({
             <SubmitCallCard />
           </div>
         </div>
-        { children }
+        {children}
       </div>
-      
+
       {/* Right Side - Panel */}
       <div className=" ">
-        { !isLogin ? <div className="m-[18px]">
-            <LoginCard
-              login={login}
-            />
-            <ForumCard  />
-          </div> : 
+        {!isLogin ? <div className="m-[18px]">
+          <LoginCard
+            login={login}
+          />
+          <ForumCard />
+        </div> :
           <MyProfile
             logout={logout} />}
       </div>

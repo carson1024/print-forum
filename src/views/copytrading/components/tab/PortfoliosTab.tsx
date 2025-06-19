@@ -10,7 +10,7 @@ const PortfoliosTab = ({
   users
 }: {
   users: any[]
-  }) => {
+}) => {
   const [favo, setFavo] = useState([]);
   const { isLogin, session, user } = useAuth();
   useEffect(() => {
@@ -22,8 +22,8 @@ const PortfoliosTab = ({
     }
   }, [user]);
 
-const handleFavorite = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  if (!isLogin || !user) return;
+  const handleFavorite = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isLogin || !user) return;
     const userId = e.currentTarget.id;
 
     // Clone and add
@@ -44,8 +44,8 @@ const handleFavorite = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (favoerror) {
       console.error("Error updating favorites:", favoerror.message);
     }
-};
-  
+  };
+
   return (<>
     {users.map((user, index) => (<Link to={`/profile?id=${user.id}&tag=2`} key={index}>
       <div className="trading_border  flex items-center justify-between">
@@ -68,11 +68,11 @@ const handleFavorite = async (e: React.MouseEvent<HTMLButtonElement>) => {
         </div>
         <div className="hidden sm:flex gap-2">
           {
-            favo.includes(user.id)?<button className="bg-gray-100 text-primary w-8 h-8 circle-item" >
-            <MdStar size={20} />
+            favo.includes(user.id) ? <button className="bg-gray-100 text-primary w-8 h-8 circle-item" >
+              <MdStar size={20} />
             </button> :
               <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item" id={user.id} onClick={handleFavorite}>
-              <MdStar size={20} />
+                <MdStar size={20} />
               </button>
           }
           <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">

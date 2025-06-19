@@ -22,10 +22,10 @@ export const SkeletonDiscussionRow = ({
 );
 
 export const SkeletonDiscussionList = () => (
-    <>
-        <SkeletonDiscussionRow opacity={90} />
-        <SkeletonDiscussionRow opacity={60} />
-        <SkeletonDiscussionRow opacity={30} />
-        <SkeletonDiscussionRow opacity={10} />
-    </>
+  <>
+    <SkeletonDiscussionRow opacity={90} />
+    <SkeletonDiscussionRow opacity={60} />
+    <SkeletonDiscussionRow opacity={30} />
+    <SkeletonDiscussionRow opacity={10} />
+  </>
 );

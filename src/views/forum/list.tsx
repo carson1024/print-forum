@@ -1,12 +1,12 @@
 import Pause from 'assets/img/pause.png';
-import React, { useState, useEffect,useRef  } from 'react';
-import {useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ForumLayout from "./layout"
 import { supabase } from "lib/supabase";
 import { SkeletonList } from "components/skeleton/forum";
 import { CallRow } from "./components/CallRow";
 
-const options = ["All Ranks", "Level 1", "Level 2", "Level 3","Level 4","Level 5","Level 6","Level 7","Level 8","Level 9","Level 10"];
+const options = ["All Ranks", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9", "Level 10"];
 
 function useOutsideAlerter(ref: any, setX: any): void {
   React.useEffect(() => {
@@ -18,8 +18,8 @@ function useOutsideAlerter(ref: any, setX: any): void {
     // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-    // Unbind the event listener on clean up
-    document.removeEventListener("mousedown", handleClickOutside);
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [ref, setX]);
 }
@@ -56,11 +56,11 @@ const ForumList = () => {
         return;
       }
       if (data) {
-         if (filters == "All Ranks" || filters == null) {
-           setCallListFeatured(data.filter(call => call.is_featured === true));
-           setCallListLastest(data.filter(call => call.is_featured === false))
+        if (filters == "All Ranks" || filters == null) {
+          setCallListFeatured(data.filter(call => call.is_featured === true));
+          setCallListLastest(data.filter(call => call.is_featured === false))
         }
-         else {
+        else {
           setCallListFeatured((data.filter(call => call.is_featured === true)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)));
           setCallListLastest((data.filter(call => call.is_featured === false)).filter(call => call.users.rank === parseInt(filters.slice(6, 8), 10)));
         }
@@ -73,16 +73,16 @@ const ForumList = () => {
       .channel("calls")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "calls" }, fetchCalls)
       .subscribe();
-     
+
     window.addEventListener("mousemove", handleMouseMove);
-    
+
     return () => {
       supabase.removeChannel(channel);
       window.removeEventListener("mousemove", handleMouseMove);
     }
 
   }, [filters, page]);
-  
+
   const handleMouseMove = () => {
   };
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -95,26 +95,26 @@ const ForumList = () => {
   return <ForumLayout>
     <div className="border-r border-gray-800">
       <div className="grid grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
-        
+
         <div className="flex border-b border-gray-800 flex items-center justify-between px-[18px]">
           <div className="flex show_filter items-center text-[14px] font-semibold text-gray-500">
             <div ref={wrapperRef} className="relative inline-block text-left">
-            <span>Showing</span>
-            <button className="text-white whitespace-nowrap text-[14px] font-semibold ml-[8px]" onClick={toggleDropdown}>{filters}</button>
-            {isOpen && (
-          <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-36 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg">
-          {options.map((op) => (
-            <button
-              key={op}
-              className={`block w-full px-4 py-2.5 text-left hover:text-black hover:bg-primary/50 ${filters == op ? 'bg-primary/50 text-black' : ''}`}
-              onClick={() => handleSelect(op)}>
-              {op}
-            </button>
-              ))}
+              <span>Showing</span>
+              <button className="text-white whitespace-nowrap text-[14px] font-semibold ml-[8px]" onClick={toggleDropdown}>{filters}</button>
+              {isOpen && (
+                <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 w-36 text-white overflow-hidden rounded-sm pb-2 z-10 text-sm bg-neutral-800 shadow-lg">
+                  {options.map((op) => (
+                    <button
+                      key={op}
+                      className={`block w-full px-4 py-2.5 text-left hover:text-black hover:bg-primary/50 ${filters == op ? 'bg-primary/50 text-black' : ''}`}
+                      onClick={() => handleSelect(op)}>
+                      {op}
+                    </button>
+                  ))}
+                </div>
+              )}</div>
           </div>
-        )}</div>
-          </div>
-          
+
           <div className=" flex text-[14px] font-semibold text-gray-500">
             <div className="flex items-center justify-center">
               <span>Feed is <span className="text-white whitespace-nowrap">Live</span></span>

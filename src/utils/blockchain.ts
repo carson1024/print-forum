@@ -16,7 +16,7 @@ export const checkCall = async (address: string): Promise<CallReportType | null>
       if (pairData.pairs[0].quoteToken.symbol != "SOL") return null;
       const baseToken = pairData.pairs[0].baseToken.address;
       tokenAddress = baseToken;
-    }else {
+    } else {
       const getTokenUrl = `https://api.dexscreener.com/latest/dex/tokens/${address}`;
       response = await fetch(getTokenUrl);
       pairData = await response.json();
@@ -38,8 +38,8 @@ export const checkCall = async (address: string): Promise<CallReportType | null>
     };
     pairsCache[result.pairAddress] = result;
     return result;
-    } catch (error) {
-   }
+  } catch (error) {
+  }
   return null;
 }
 
@@ -65,7 +65,7 @@ export function formatNumber(value: number): string {
 export function formatTimestamp(timestamp: string): string {
   const now = new Date();
   const date = new Date(timestamp);
-  
+
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   const seconds = diffInSeconds % 60;

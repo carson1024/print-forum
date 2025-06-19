@@ -60,7 +60,7 @@ const CallModal = ({
 
       {/* Contract Address */}
       <div className="bg-gray-50 px-4 sm:px-6 py-4 circle text-xs text-gray-600 flex items-center gap-2">
-        <span className="font-semibold text-white text-base">CA</span> 
+        <span className="font-semibold text-white text-base">CA</span>
         <div className="truncate-wrapper">
           <span className="truncate">{callReport?.pairAddress}</span>
         </div>
@@ -70,15 +70,15 @@ const CallModal = ({
       {/* Holders & Callers */}
       <div className="  items-center space-y-[6px]">
         <div className="flex">
-                        <span className="token_info text-gray-600 text-[12px] font-Medium mr-[8px]">Callers<span className="token_border text-white">{callers}</span></span>
-                        <span className="token_info text-gray-600 text-[12px] font-Medium ">Top&nbsp;10&nbsp;holders<span className=" text-white">{top10HolderInfo.pct.toFixed(2)}% <span className="text-gray-600">${formatNumber(top10HolderInfo.uiAmount*((callReport?.marketCap * Math.pow(10, callReport?.token.decimals)) / callReport?.token.supply))}</span></span></span>
+          <span className="token_info text-gray-600 text-[12px] font-Medium mr-[8px]">Callers<span className="token_border text-white">{callers}</span></span>
+          <span className="token_info text-gray-600 text-[12px] font-Medium ">Top&nbsp;10&nbsp;holders<span className=" text-white">{top10HolderInfo.pct.toFixed(2)}% <span className="text-gray-600">${formatNumber(top10HolderInfo.uiAmount * ((callReport?.marketCap * Math.pow(10, callReport?.token.decimals)) / callReport?.token.supply))}</span></span></span>
         </div>
         <div className="mb-[12px]">
-                        <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Top&nbsp;3&nbsp;holders
-                          {top3Holders.map((holder, index) => (
-                            <span className=" text-white ">{holder.pct.toFixed(2)}%<span className="text-gray-600 ml-[2px]">${formatNumber(holder.uiAmount*((callReport?.marketCap * Math.pow(10, callReport?.token.decimals)) / callReport?.token.supply))}</span></span>
-                          ))}
-                        </span>
+          <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Top&nbsp;3&nbsp;holders
+            {top3Holders.map((holder, index) => (
+              <span className=" text-white ">{holder.pct.toFixed(2)}%<span className="text-gray-600 ml-[2px]">${formatNumber(holder.uiAmount * ((callReport?.marketCap * Math.pow(10, callReport?.token.decimals)) / callReport?.token.supply))}</span></span>
+            ))}
+          </span>
         </div>
       </div>
 

@@ -8,30 +8,30 @@ const AllTradesModal = ({
   isOpen: boolean,
   onClose: () => void
 }>) => {
-    const [activeTab, setActiveTab] = useState<'active' | 'past'>('active');
+  const [activeTab, setActiveTab] = useState<'active' | 'past'>('active');
   return <Modal isOpen={isOpen} onClose={onClose} extraClass="!max-w-none w-[100%] sm:w-[100%] min-h-[100%] overflow-hidden flex">
     <div className="flex flex-col gap-4 sm:gap-6 grow ">
       <h3 className="text-base sm:text-lg ">My Trades</h3>
       <div className="border border-gray-100"></div>
       <div className=" light">
-         <div className=" flex text-[14px] font-semibold text-gray-500 ">
-            {
-              activeTab == 'active' ? <button className=" repause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('active')}>
+        <div className=" flex text-[14px] font-semibold text-gray-500 ">
+          {
+            activeTab == 'active' ? <button className=" repause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('active')}>
               <span className="text-primary text-[14px]">Active</span>
-              </button>:
+            </button> :
               <button className=" pause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('active')}>
-              <span className="text-[14px]">Active</span>
+                <span className="text-[14px]">Active</span>
               </button>
-            }
-            {
-              activeTab == 'past' ? <button className="ml-[20px] repause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('past')}>
+          }
+          {
+            activeTab == 'past' ? <button className="ml-[20px] repause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('past')}>
               <span className="text-primary">Past</span>
-              </button>:
+            </button> :
               <button className="ml-[20px] pause_btn flex items-center justify-center mainhover flex" onClick={() => setActiveTab('past')}>
-              <span>Past</span>
-            </button>
-            }
-          </div>
+                <span>Past</span>
+              </button>
+          }
+        </div>
       </div>
       <div className="space-y-3 flex-grow overflow-auto">
         {
@@ -40,12 +40,12 @@ const AllTradesModal = ({
               {
                 index % 4 < 2 ?
                   <button className="circle btn_buy_small text-[#59FFCB] btn btn-xs">Buy</button>
-                :
+                  :
                   <button className="circle btn_buy_small text-red-300 btn btn-xs">Sell</button>
               }
             </div>
             <div className="text-Medium text-[12px] text-gray-600 mr-[16px]">
-                2025-01-16 15:45:17
+              2025-01-16 15:45:17
             </div>
             <div className="text-Medium text-[12px] text-gray-600 mr-[16px]">
               Pair
@@ -63,10 +63,10 @@ const AllTradesModal = ({
               Role
               <span className="text-white ml-[4px]">Taker</span>
             </div>
-            <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]"><span className={`badge-rank-2 w-[20px] h-[20px]`}></span><span className="text-white font-semibold text-[12px]">UsernameLong</span><span className="text-gray-600 font-Medium text-[12px]">55%</span><img src={Trader } className="w-[20px] h-[20px]" /></span>
-            
+            <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]"><span className={`badge-rank-2 w-[20px] h-[20px]`}></span><span className="text-white font-semibold text-[12px]">UsernameLong</span><span className="text-gray-600 font-Medium text-[12px]">55%</span><img src={Trader} className="w-[20px] h-[20px]" /></span>
+
             <div className=" flex gap-2 items-center ml-auto">
-              { (index % 4 < 2) && <button className="bg-red-300 p-[3px] circle text-[12px] font-semibold text-[#FFFFFF]">Sell now</button> }
+              {(index % 4 < 2) && <button className="bg-red-300 p-[3px] circle text-[12px] font-semibold text-[#FFFFFF]">Sell now</button>}
             </div>
           </div>)
         }

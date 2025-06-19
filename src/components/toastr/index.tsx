@@ -16,12 +16,12 @@ export const showToastr = (message: string, type: "success" | "error" | "info") 
 };
 
 const Toastr = () => {
-  return <Toaster 
+  return <Toaster
     toastOptions={{
       // style: { background: "#333", color: "#fff" },
       position: "top-center",
       duration: 3000
-    }} 
+    }}
   />;
 };
 

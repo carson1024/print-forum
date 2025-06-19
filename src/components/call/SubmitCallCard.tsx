@@ -9,28 +9,28 @@ import { checkCall } from "utils/blockchain";
 import { login, logout } from "utils/auth";
 
 const SubmitCallCard = () => {
-  const { isLogin, session,user } = useAuth();
+  const { isLogin, session, user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
   const [callToken, setCallToken] = useState("");
   const [callReport, setCallReport] = useState<CallReportType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const handleSubmitCall = async () => {
 
-      if (isSubmitting) return;
-      setCallReport(null);
-      if (!isLogin) {
-        // showToastr("Please login to submit a call", "error");
-        setIsLoginModalOpen(true);
-        return;
-      }
-      if (!callToken) {
-        showToastr("Please enter a CA", "error");
-        return;
-      }
-      const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("address", callToken);
-      let mycalls = (owncalls.filter(call => call.user_id === session.user.id)).length
+    if (isSubmitting) return;
+    setCallReport(null);
+    if (!isLogin) {
+      // showToastr("Please login to submit a call", "error");
+      setIsLoginModalOpen(true);
+      return;
+    }
+    if (!callToken) {
+      showToastr("Please enter a CA", "error");
+      return;
+    }
+    const { data: owncalls, error: owncallerror } = await supabase.from("calls").select("*").order("created_at").eq("address", callToken);
+    let mycalls = (owncalls.filter(call => call.user_id === session.user.id)).length
     if (mycalls > 0) {
       showToastr("This token is already called fro you!", "error");
       return;
@@ -47,7 +47,7 @@ const SubmitCallCard = () => {
       setCallToken("");
       setIsCallModalOpen(true);
     }
-    
+
   }
 
   const handleCallSave = async () => {
@@ -70,7 +70,7 @@ const SubmitCallCard = () => {
           changedCap: callReport.marketCap,
           price: (callReport.marketCap * Math.pow(10, callReport.token.decimals)) / callReport.token.supply,
           percentage: 100,
-          changedPrice:(callReport.marketCap * Math.pow(10, callReport.token.decimals)) / callReport.token.supply
+          changedPrice: (callReport.marketCap * Math.pow(10, callReport.token.decimals)) / callReport.token.supply
         },
       ]);
 
@@ -89,7 +89,7 @@ const SubmitCallCard = () => {
           address: callReport.pairAddress,
         },
       ])
-    
+
     if (error) {
       showToastr("Error saving call report", "error");
       console.error("Error saving call report:", error.message);
@@ -101,27 +101,27 @@ const SubmitCallCard = () => {
     {/* Search and Submit Button */}
     <div className="flex items-center ">
       <div className="flex items-center card-1 grow mr-[11px]">
-        <input 
+        <input
           value={callToken}
           onChange={(e) => setCallToken(e.target.value)}
-          type="text" 
-          placeholder="Paste in CA" 
+          type="text"
+          placeholder="Paste in CA"
           className="outline-none text-sm px-2 grow sm:text-base bg-transparent " />
         {/* <button className="sm:hidden flex btn btn-sm" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button> */}
       </div>
       <button className="btn_call text-[14px] font-semibold !hidden sm:!flex text-black w-[80px] h-[40px]" onClick={handleSubmitCall} disabled={isSubmitting}>Submit</button>
     </div>
-    <CallModal 
-      isOpen={isCallModalOpen} 
+    <CallModal
+      isOpen={isCallModalOpen}
       callReport={callReport}
       onSave={handleCallSave}
-      onClose={() => setIsCallModalOpen(false)} 
+      onClose={() => setIsCallModalOpen(false)}
     />
-    <LoginModal 
-      isOpen={isLoginModalOpen} 
+    <LoginModal
+      isOpen={isLoginModalOpen}
       onClose={() => setIsLoginModalOpen(false)}
       login={login}
-      />
+    />
   </>)
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getMultiplierType, getRankChar } from "utils/style";
-import SubmitCallCard from "components/call/SubmitCallCard"; 
+import SubmitCallCard from "components/call/SubmitCallCard";
 import LoginCard from "components/login/LoginCard";
 import LeaderboardCard from "../components/LeaderboardCard";
 import MyProfile from "views/forum/components/MyProfile";
@@ -9,9 +9,9 @@ import { login, logout } from "utils/auth";
 import { SkeletonList } from "components/skeleton/forum";
 
 const LeaderboardLayout = ({
-    children
+  children
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) => {
   const { isLogin } = useAuth();
 
@@ -24,17 +24,17 @@ const LeaderboardLayout = ({
             <SubmitCallCard />
           </div>
         </div>
-        { children }
+        {children}
       </div>
-      
+
       {/* Right Side - Panel */}
       <div className=" ">
-        { !isLogin ? <div className="m-[18px]">
-            <LoginCard
-              login={login}
-            />
-            <LeaderboardCard  />
-          </div> : 
+        {!isLogin ? <div className="m-[18px]">
+          <LoginCard
+            login={login}
+          />
+          <LeaderboardCard />
+        </div> :
           <MyProfile
             logout={logout} />}
       </div>

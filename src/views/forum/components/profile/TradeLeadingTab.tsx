@@ -1,4 +1,4 @@
-import React, { useEffect,useRef,useState  } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import CopyingModal from 'components/modal/CopyingModal';
@@ -21,8 +21,8 @@ function useOutsideAlerter(ref: any, setX: any): void {
     // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-    // Unbind the event listener on clean up
-    document.removeEventListener("mousedown", handleClickOutside);
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [ref, setX]);
 }
@@ -55,10 +55,10 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(searchParams.get('day') || "7 days");
   const wrapperRef = React.useRef(null);
-  const [activeTab,setActiveTab] = useState<'portfolios' | 'traders' | 'favorites'>('portfolios');
+  const [activeTab, setActiveTab] = useState<'portfolios' | 'traders' | 'favorites'>('portfolios');
   useOutsideAlerter(wrapperRef, setIsOpen);
   const toggleDropdown = () => setIsOpen(!isOpen);
-  const handleSelect = (op: string): void =>{
+  const handleSelect = (op: string): void => {
     setFilters(op);
     // setSearchParams({ type:activeTab, day: op });
     setIsOpen(false);
@@ -69,7 +69,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
       <div className="grid grid-rows-[76px_1fr] h-full border-gray-800">
         <div className='border-b border-gray-800 flex items-center'>
           {
-            !isCopying ?<><button className='btn_copy ml-[18px] items-center mainhover' onClick={() => setIsCopyingModalOpen(true)}><span className='flex text-black text-[14px] font-semibold items-center'>Copy Trader</span></button></>
+            !isCopying ? <><button className='btn_copy ml-[18px] items-center mainhover' onClick={() => setIsCopyingModalOpen(true)}><span className='flex text-black text-[14px] font-semibold items-center'>Copy Trader</span></button></>
               :
               <>
                 <button className='btn_copy_after ml-[18px] items-center mr-[8px] mainhover'><span className='flex text-primary text-[14px] font-semibold items-center'><img src={Nick} />&nbsp;&nbsp;Copy Trader</span></button>
@@ -79,7 +79,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
               </>
           }
         </div>
-      <div className="grid h-screen" style={{ gridTemplateColumns: 'calc((100vw - 501px) / 2) 1fr' }}>
+        <div className="grid h-screen" style={{ gridTemplateColumns: 'calc((100vw - 501px) / 2) 1fr' }}>
           <div className="border-r border-gray-800 flex flex-col h-screen">
             <div className="grid grid-rows-[50px_1fr] border-gray-800 ">
               <div className="border-b items-center flex">
@@ -133,7 +133,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
                     </div>
 
                   </div>
-                  
+
                   <div className='flex mb-[16px] space-x-[16px]'>
                     <span className=" flex text-gray-600 text-[12px] font-Medium mr-[5px]">UsernameLong&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
                     <span className="flex text-gray-600 text-[12px] font-Medium space-x-[5px]">cv9r69ww&nbsp;&nbsp;<span className="text-[#4BC586] space-x-[5px]">9/0.3 SOL</span></span>
@@ -157,44 +157,44 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
                 <div className="m-[18px] text-[14px] font-semibold text-white items-center flex">Latest Trades</div>
               </div>
               <div className="overflow-y-auto h-[calc(100vh-202px)]">
-                 <div className='m-[18px]'>
+                <div className='m-[18px]'>
                   {[...Array(20)].map((_, index) => (<>
-                   <div className="flex items-center gap-2 flex-wrap text-[12px] font-Medium">
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <div className="text-xs btn_buy px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1">
-                        <button className="text-[#59FFCB]">Buy</button>
+                    <div className="flex items-center gap-2 flex-wrap text-[12px] font-Medium">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <div className="text-xs btn_buy px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1">
+                          <button className="text-[#59FFCB]">Buy</button>
+                        </div>
+                        <div className="flex gap-8 px-[12px]">
+                          <div className="">
+                            <p className="text-xs mb-[2px] text-white/60">Pair</p>
+                            <p className="text-xs text-white">UNIUSDT</p>
+                          </div>
+                          <div className="">
+                            <p className="text-xs mb-[2px] text-white/60">Executed</p>
+                            <p className="text-xs text-white">7.87 UNI</p>
+                          </div>
+                          <div className="">
+                            <p className="text-xs mb-[2px] text-white/60">Total</p>
+                            <p className="text-xs text-white">0.01 SOL</p>
+                          </div>
+                          <div className="">
+                            <p className="text-xs mb-[2px] text-white/60">Role</p>
+                            <p className="text-xs text-white">Taiker</p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex gap-8 px-[12px]">
-                      <div className="">
-                        <p className="text-xs mb-[2px] text-white/60">Pair</p>
-                        <p className="text-xs text-white">UNIUSDT</p>
-                      </div>
-                      <div className="">
-                        <p className="text-xs mb-[2px] text-white/60">Executed</p>
-                        <p className="text-xs text-white">7.87 UNI</p>
-                      </div>
-                      <div className="">
-                        <p className="text-xs mb-[2px] text-white/60">Total</p>
-                        <p className="text-xs text-white">0.01 SOL</p>
-                      </div>
-                      <div className="">
-                        <p className="text-xs mb-[2px] text-white/60">Role</p>
-                        <p className="text-xs text-white">Taiker</p>
-                      </div>
-                     </div>
+                      <span className="ml-auto text-xs text-white/60 ">2025-01-16 15:45:17</span>
                     </div>
-                    <span className="ml-auto text-xs text-white/60 ">2025-01-16 15:45:17</span>
-                  </div>
                     <div className="border-b border-gray-800 mb-[19px] mt-[19px]"></div>
-                    </>
+                  </>
                   ))}
-                </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
     <CopyingModal isOpen={isCopyingModalOpen} onOk={() => {
       setIsCopyingModalOpen(false);
       setIsCopying(true)

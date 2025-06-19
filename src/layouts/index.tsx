@@ -8,10 +8,10 @@ export default function MainLayout(props: { [x: string]: any }) {
   const { ...rest } = props;
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
-  const { isLogin,session } = useAuth();
+  const { isLogin, session } = useAuth();
   React.useEffect(() => {
-      getActiveRoute(routes);
-  }, [location.pathname,session]);
+    getActiveRoute(routes);
+  }, [location.pathname, session]);
 
   const getActiveRoute = (routes: RoutesType[]): string | boolean => {
     let activeRoute = "forum";
@@ -20,8 +20,9 @@ export default function MainLayout(props: { [x: string]: any }) {
         window.location.href.indexOf(
           routes[i].layout + "/" + routes[i].path
         ) !== -1) {
-        setCurrentRoute(routes[i].key);}
-       }
+        setCurrentRoute(routes[i].key);
+      }
+    }
     return activeRoute;
   };
 
@@ -31,8 +32,9 @@ export default function MainLayout(props: { [x: string]: any }) {
       if (
         window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
       ) {
-        return routes[i].secondary;}
+        return routes[i].secondary;
       }
+    }
     return activeNavbar;
   };
   const getRoutes = (routes: RoutesType[]): any => {
@@ -50,20 +52,20 @@ export default function MainLayout(props: { [x: string]: any }) {
   return (
     <div className="flex flex-col h-screen w-screen m-auto gap-4 overflow">
       <div className="grid grid-cols-[170px_1fr] h-screen bg-black text-white ">
-      <Navbar
-        currentRoute={currentRoute}
-        secondary={getActiveNavbar(routes)}
-        {...rest}
-      />
-      <main
-        className="transition-all grow overflow-hidden"
-      >
-        <div className="h-full">
-          <Routes>
-            {getRoutes(routes)}
-          </Routes>
-        </div>
-      </main>
+        <Navbar
+          currentRoute={currentRoute}
+          secondary={getActiveNavbar(routes)}
+          {...rest}
+        />
+        <main
+          className="transition-all grow overflow-hidden"
+        >
+          <div className="h-full">
+            <Routes>
+              {getRoutes(routes)}
+            </Routes>
+          </div>
+        </main>
       </div>
     </div>
   );

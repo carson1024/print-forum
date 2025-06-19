@@ -20,29 +20,29 @@ const Profile = () => {
     <div className="flex gap-5 h-full overflow-auto justify-center">
       {/* Right Side - Panel */}
       <div className="w-[360px] sm:w-[440px] flex flex-col gap-5 overflow-auto">
-        { !isLogin ? <div className="my-auto space-y-5">
-            <div className="text-center mb-3">
-              <img src={Logo} className="m-auto h-12" />
-            </div>
-            {
-              (tab == 'leaderboard') && <LeaderboardCard />
-            }
-            <LoginCard
-              login={login}
-            />
-            {
-              (tab != 'leaderboard') && <ForumCard />
-            }
-          </div> : <>
-            {
-              (tab != 'copytrading') && <MyProfile
-                logout={logout} />
-            }
-            {
-              (tab == 'copytrading') && <CopyTradingProfile
-                logout={logout} />
-            }
-          </>
+        {!isLogin ? <div className="my-auto space-y-5">
+          <div className="text-center mb-3">
+            <img src={Logo} className="m-auto h-12" />
+          </div>
+          {
+            (tab == 'leaderboard') && <LeaderboardCard />
+          }
+          <LoginCard
+            login={login}
+          />
+          {
+            (tab != 'leaderboard') && <ForumCard />
+          }
+        </div> : <>
+          {
+            (tab != 'copytrading') && <MyProfile
+              logout={logout} />
+          }
+          {
+            (tab == 'copytrading') && <CopyTradingProfile
+              logout={logout} />
+          }
+        </>
         }
       </div>
     </div>

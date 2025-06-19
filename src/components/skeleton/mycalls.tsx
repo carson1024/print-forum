@@ -10,8 +10,8 @@ export const SkeletonMyCallsRow = ({
 );
 
 export const SkeletonMyCallsList = () => (
-    <>
-        <SkeletonMyCallsRow opacity={80} />
-        <SkeletonMyCallsRow opacity={40} />
-    </>
+  <>
+    <SkeletonMyCallsRow opacity={80} />
+    <SkeletonMyCallsRow opacity={40} />
+  </>
 );

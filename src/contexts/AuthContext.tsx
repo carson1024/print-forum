@@ -30,7 +30,7 @@ export interface AuthContextType {
   isLogin: boolean;
   session: Session | null;
   user: UserType | null;
- 
+
 }
 
 
@@ -43,17 +43,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isLogin = useMemo<boolean>(() => !!(session?.user.email && session?.user.confirmed_at), [session]);
   const [balance, setBalance] = useState<number | null>(null);
   const getBalance = async (publicKeyStr: string) => {
-  const connection = new Connection(clusterApiUrl('devnet'), 'confirmed'); // or 'mainnet-beta'
-  const publicKey = new PublicKey(publicKeyStr);
+    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed'); // or 'mainnet-beta'
+    const publicKey = new PublicKey(publicKeyStr);
 
-  try {
-    const balance = await connection.getBalance(publicKey);
-    return balance / 1e9; // Convert lamports to SOL
-  } catch (error) {
-    console.error('Error fetching balance:', error);
-    return null;
-  }
-};
+    try {
+      const balance = await connection.getBalance(publicKey);
+      return balance / 1e9; // Convert lamports to SOL
+    } catch (error) {
+      console.error('Error fetching balance:', error);
+      return null;
+    }
+  };
   const checkUser = useCallback(async (_session: Session) => {
     if (!_session?.user.id) {
       setUser(null);
@@ -72,65 +72,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-async function handleUserLogin() {
-  const { data: { user } } = await supabase.auth.getUser();
+  async function handleUserLogin() {
+    const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    console.log('No user logged in');
-    return;
-  }
+    if (!user) {
+      console.log('No user logged in');
+      return;
+    }
 
-  // Check if the user already has a wallet address
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', user.id) // assuming 'id' is the PK from auth.users
-    .single();
-
-  if (error) {
-    console.error('Error fetching user:', error);
-    return;
-  }
-
-  // If the wallet_address is missing, generate a new one
-  if (!data.wallet_paddress || !data.wallet_saddress) {
-    const keypair = Keypair.generate(); // Generate a new Solana wallet
-    const walletPaddress = keypair.publicKey.toBase58(); // Get the public address
-    const walletSaddress = keypair.secretKey; // Get the securite address
-    // Save the wallet address in the database (only once)
-    const { error: updateError } = await supabase
+    // Check if the user already has a wallet address
+    const { data, error } = await supabase
       .from('users')
-      .update({ wallet_paddress: walletPaddress, wallet_saddress: walletSaddress })
-      .eq('id', user.id);
+      .select('*')
+      .eq('id', user.id) // assuming 'id' is the PK from auth.users
+      .single();
 
-    if (updateError) {
-      console.error('Error updating wallet address:', updateError);
-    } else {
-      console.log('Wallet address generated and saved successfully');
-      const balance =await getBalance(walletPaddress);
+    if (error) {
+      console.error('Error fetching user:', error);
+      return;
+    }
+
+    // If the wallet_address is missing, generate a new one
+    if (!data.wallet_paddress || !data.wallet_saddress) {
+      const keypair = Keypair.generate(); // Generate a new Solana wallet
+      const walletPaddress = keypair.publicKey.toBase58(); // Get the public address
+      const walletSaddress = keypair.secretKey; // Get the securite address
+      // Save the wallet address in the database (only once)
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ wallet_paddress: walletPaddress, wallet_saddress: walletSaddress })
+        .eq('id', user.id);
+
+      if (updateError) {
+        console.error('Error updating wallet address:', updateError);
+      } else {
+        console.log('Wallet address generated and saved successfully');
+        const balance = await getBalance(walletPaddress);
+        setBalance(Number(balance));
+        const { error: balanceError } = await supabase
+          .from('users')
+          .update({ balance: balance })
+          .eq('id', user.id);
+        if (balanceError) {
+          console.error('Error updating balance error', balanceError);
+        }
+
+      }
+    }
+    else if (data.wallet_paddress) {
+      const balance = await getBalance(data.wallet_paddress);
       setBalance(Number(balance));
       const { error: balanceError } = await supabase
-      .from('users')
-      .update({ balance:balance })
-      .eq('id', user.id);
+        .from('users')
+        .update({ balance: balance })
+        .eq('id', user.id);
       if (balanceError) {
-      console.error('Error updating balance error', balanceError);
-    }
-
-    }
-  } 
-  else if (data.wallet_paddress) {
-    const balance =await getBalance(data.wallet_paddress);
-      setBalance(Number(balance));
-      const { error: balanceError } = await supabase
-      .from('users')
-      .update({ balance:balance })
-      .eq('id', user.id);
-      if (balanceError) {
-      console.error('Error updating balance error', balanceError);
+        console.error('Error updating balance error', balanceError);
+      }
     }
   }
-}
 
   useEffect(() => {
     setLoading(true);
@@ -149,7 +149,7 @@ async function handleUserLogin() {
     checkSession();
 
     const checkAndCreateWallet = async () => {
-    await handleUserLogin();
+      await handleUserLogin();
     };
 
     checkAndCreateWallet();
@@ -168,7 +168,7 @@ async function handleUserLogin() {
     };
   }, []);
   return (
-    <AuthContext.Provider value={{session, isLogin, user}}>
+    <AuthContext.Provider value={{ session, isLogin, user }}>
       {children}
     </AuthContext.Provider>
   );

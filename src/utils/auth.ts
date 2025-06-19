@@ -3,25 +3,25 @@ export const login = async (provider: string, email?: string): Promise<boolean> 
   switch (provider) {
     case 'twitter':
     case 'google':
-    {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'twitter',
-      });
-      if (error) {
-        console.error(error);
-        return false;
+      {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'twitter',
+        });
+        if (error) {
+          console.error(error);
+          return false;
+        }
+        return true;
       }
-      return true;
-    }
     case 'email': {
       const { data, error } = await supabase.auth.signInWithOtp({
         email: email,
         options: { shouldCreateUser: true },
       });
       if (error) {
-        console.error(error); 
+        console.error(error);
         return false;
-      }else {
+      } else {
         return true;
       }
     }

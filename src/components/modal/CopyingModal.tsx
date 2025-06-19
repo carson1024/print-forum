@@ -6,14 +6,14 @@ import { IoCheckmark } from "react-icons/io5";
 import User_modal from "assets/img/User_modal.png"
 
 const CopyingModal = ({
-    isOpen,
-    onOk,
-    onCancel,
-  }: Readonly<{
-    isOpen: boolean,
-    onOk: () => void
-    onCancel: () => void
-  }>) => {
+  isOpen,
+  onOk,
+  onCancel,
+}: Readonly<{
+  isOpen: boolean,
+  onOk: () => void
+  onCancel: () => void
+}>) => {
   return <Modal isOpen={isOpen} onClose={onCancel}>
     <div className="w-[470px]">
       <div className="flex">
@@ -30,8 +30,8 @@ const CopyingModal = ({
         </div>
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
-              <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Followers<span className="small_border circle text-primary space-x-[5px]">12</span></span>
-              <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Win rate<span className="gray_border text-white space-x-[5px]">56%</span></span>
+            <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Followers<span className="small_border circle text-primary space-x-[5px]">12</span></span>
+            <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Win rate<span className="gray_border text-white space-x-[5px]">56%</span></span>
             <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Calls<span className=" text-white space-x-[5px]">125</span></span>
             <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">Account age<span className=" text-white space-x-[5px]">2 years</span></span>
           </div>
@@ -48,9 +48,9 @@ const CopyingModal = ({
           <span className="text-[#59FFCB] text-sm">3 SOL available</span>
         </div>
         <div className="flex items-center bg-gray-50 circle px-6 py-2.5 ">
-          <input 
-            type="number" 
-            placeholder="0.00" 
+          <input
+            type="number"
+            placeholder="0.00"
             className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-sm"
           />
           <span className="ml-2">SOL</span>
@@ -59,16 +59,16 @@ const CopyingModal = ({
       <div className="space-y-3 mb-[16px]">
         <label className="text-sm sm:text-base block">One buy amount</label>
         <div className="flex items-center bg-gray-50 circle px-6 py-2.5">
-          <input 
-            type="number" 
-            placeholder="0.00" 
+          <input
+            type="number"
+            placeholder="0.00"
             className="bg-transparent flex-grow outline-none text-white placeholder-gray-500 text-sm"
           />
           <span className="ml-2">SOL</span>
         </div>
       </div>
       {/* Start Copying Button */}
-    <button className="w-full bg-primary text-black text-[14px] font-semibold circle py-3" onClick={onOk}>Start Copying</button>
+      <button className="w-full bg-primary text-black text-[14px] font-semibold circle py-3" onClick={onOk}>Start Copying</button>
     </div>
   </Modal>
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Modal from "."
 import IconUpload from 'assets/img/icons/upload.svg';
 import IconTwitter from 'assets/img/icons/twitter.svg';
@@ -11,21 +11,21 @@ import { SkeletonList, SkeletonRow } from "../../components/skeleton/forum";
 import IconUser from 'assets/img/icons/user.svg';
 
 const EditProfileModal = ({
-    isOpen,
-    onOk,
-    onCancel,
-    onChange,
-  }: Readonly<{
-    isOpen: boolean,
-    onOk: () => void
-    onCancel: () => void
-    onChange: (xaddress:string,taddress:string,saddress:string,bio:string,avatar:string) => void
-  }>) => {
+  isOpen,
+  onOk,
+  onCancel,
+  onChange,
+}: Readonly<{
+  isOpen: boolean,
+  onOk: () => void
+  onCancel: () => void
+  onChange: (xaddress: string, taddress: string, saddress: string, bio: string, avatar: string) => void
+}>) => {
   const { isLogin, session } = useAuth();
-  const [xaddress, setXaddress] = useState('');  
-  const [taddress, setTaddress] = useState('');  
-  const [saddress, setSaddress] = useState('');  
-  const [bio, setBio] = useState('');  
+  const [xaddress, setXaddress] = useState('');
+  const [taddress, setTaddress] = useState('');
+  const [saddress, setSaddress] = useState('');
+  const [bio, setBio] = useState('');
   const [profile, setProfile] = useState([]);
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(null);
@@ -72,64 +72,64 @@ const EditProfileModal = ({
         }
       };
       info();
-     }
-   }, [session]);
-  
-  const onsaveInfo = async () => { 
+    }
+  }, [session]);
+
+  const onsaveInfo = async () => {
     if (myfile !== null) {
-    const file = myfile;
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
-    const filePath = `avatars/${fileName}`;
+      const file = myfile;
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: true, // Optional since you're using a new name
-      });
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true, // Optional since you're using a new name
+        });
 
-    if (uploadError) {
-      console.error('Upload failed:', uploadError.message);
-      return;
-    }
+      if (uploadError) {
+        console.error('Upload failed:', uploadError.message);
+        return;
+      }
 
-    const { data: { publicUrl } } = await supabase.storage
-      .from('avatars')
-      .getPublicUrl(filePath);
+      const { data: { publicUrl } } = await supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
 
-    const { error: updateError } = await supabase
-      .from("users")
-      .update({ 
-        xaddress : xaddress, 
-        taddress : taddress, 
-        saddress : saddress, 
-        avatar: publicUrl, 
-        bio : bio
-      })
-      .eq("id", session.user.id);
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({
+          xaddress: xaddress,
+          taddress: taddress,
+          saddress: saddress,
+          avatar: publicUrl,
+          bio: bio
+        })
+        .eq("id", session.user.id);
 
-    if (updateError) {
-      console.error("Update failed:", updateError);
+      if (updateError) {
+        console.error("Update failed:", updateError);
+      } else {
+        showToastr("Your information is changed", "success");
+        onChange(xaddress, taddress, saddress, bio, publicUrl);
+        onOk();
+      }
     } else {
-      showToastr("Your information is changed", "success");
-      onChange(xaddress, taddress, saddress, bio, publicUrl);
-      onOk();
-    }
-  } else {
-    const { error: updateError } = await supabase
-      .from("users")
-      .update({ xaddress, taddress, saddress, bio })
-      .eq("id", session.user.id);
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ xaddress, taddress, saddress, bio })
+        .eq("id", session.user.id);
 
-    if (updateError) {
-      console.error("Update failed:", updateError);
-    } else {
-      showToastr("Your information is changed", "success");
-      onChange(xaddress, taddress, saddress, bio, preview);
-      onOk();
+      if (updateError) {
+        console.error("Update failed:", updateError);
+      } else {
+        showToastr("Your information is changed", "success");
+        onChange(xaddress, taddress, saddress, bio, preview);
+        onOk();
+      }
     }
-  }
   }
   return <Modal isOpen={isOpen} onClose={onCancel} extraClass="w-[620px]">
 
@@ -140,25 +140,25 @@ const EditProfileModal = ({
             {preview ? (
               <img src={preview} alt="Avatar" className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />
             ) : profile[0].avatar !== null ? (<img src={profile[0].avatar} className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle" />) : (<img src={IconUser} className="w-[12px] h-[12px] sm:w-[82px] sm:h-[82px] circle" />)
-                
+
             }</>}
           <div className="space-y-2">
             {isLoading ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> : <h2 className="text-base sm:text-lg font-bold">{profile[0].name}</h2>}
-            {isLoading?<div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div>: <button className=" sm:flex items-center gap-2 text-sm bg-gray-50 px-3 py-2 rounded-full" onClick={handleButtonClick}>
+            {isLoading ? <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div> : <button className=" sm:flex items-center gap-2 text-sm bg-gray-50 px-3 py-2 rounded-full" onClick={handleButtonClick}>
               <img src={IconUpload} className="w-5 h-5" /> Upload new picture
             </button>}
-            
-             <input
+
+            <input
               type="file"
               accept="image/*"
               ref={fileInputRef}
               className="hidden"
-              onChange={(e)=>handleFileChange(e)}
-              />
+              onChange={(e) => handleFileChange(e)}
+            />
           </div>
         </div>
       </div>
-    <div className="border-b-[1px] border-gray-100"></div>
+      <div className="border-b-[1px] border-gray-100"></div>
       {/* Social Links */}
       <div className="space-y-5">
         <div className="flex items-center bg-gray-50 rounded-full px-5 py-2.5 gap-2">
@@ -212,5 +212,5 @@ const EditProfileModal = ({
       <button className="w-full btn py-3 text-sm sm:text-base" onClick={onsaveInfo}>Save</button>
     </div>
   </Modal>
- }
+}
 export default EditProfileModal;

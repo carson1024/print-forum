@@ -35,18 +35,18 @@ const CopyTradingProfile = (props: {
   const [mySKey, setMySKey] = useState({});
   const [balance, setBalance] = useState<number | null>(null);
   const getBalance = async (publicKeyStr: string) => {
-  const connection = new Connection(clusterApiUrl('devnet'), 'confirmed'); // or 'mainnet-beta'
-  const publicKey = new PublicKey(publicKeyStr);
+    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed'); // or 'mainnet-beta'
+    const publicKey = new PublicKey(publicKeyStr);
 
-  try {
-    const balance = await connection.getBalance(publicKey);
-    return balance / 1e9; // Convert lamports to SOL
-  } catch (error) {
-    console.error('Error fetching balance:', error);
-    return null;
-  }
-};
-  
+    try {
+      const balance = await connection.getBalance(publicKey);
+      return balance / 1e9; // Convert lamports to SOL
+    } catch (error) {
+      console.error('Error fetching balance:', error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     if (!user) return; // If there's no user, stop execution
     if (user?.wallet_paddress) {
@@ -58,15 +58,15 @@ const CopyTradingProfile = (props: {
         if (user.balance !== balance) {
           user.balance = balance;
           const { error: balanceError } = await supabase
-                .from('users')
-                .update({ balance:balance })
-                .eq('id', user.id);
-                if (balanceError) {
-                console.error('Error updating balance error', balanceError);
-              }
+            .from('users')
+            .update({ balance: balance })
+            .eq('id', user.id);
+          if (balanceError) {
+            console.error('Error updating balance error', balanceError);
+          }
         }
       };
-    
+
       const privateKeyString = user?.wallet_saddress;
       const privateKeyObject = JSON.parse(privateKeyString);
       const privateKeyArray = Object.values(privateKeyObject).map(Number);
@@ -86,7 +86,7 @@ const CopyTradingProfile = (props: {
         } catch (error) {
           console.error('Error fetching user info', error);
         }
-    
+
       };
 
       fetchcall();
@@ -96,22 +96,22 @@ const CopyTradingProfile = (props: {
         if (interval) clearInterval(interval);
       };
     }
-}, [user]);
+  }, [user]);
   return (<>
     <div className="rounded border border-gray-100">
       <div className="bg-white text-black p-5 space-y-4 rounded">
         <div className="flex gap-3 items-center">
           <div className="relative w-[65px] h-[65px] bg-black circle flex items-center justify-center">
-            { 
+            {
               isLogin && user?.avatar ? <img src={user.avatar} className="w-[65px] h-[65px] circle" /> :
-              <img src={IconUser} className="w-4 h-4" />
+                <img src={IconUser} className="w-4 h-4" />
             }
-            
+
           </div>
           <div className="space-y-2 flex justify-between grow items-center">
             <div>
               {isLoading ? <div className="text-md font-semibold"><span className="text-xl font-bold">...</span> SOL</div> :
-              <div className="text-md font-semibold"><span className="text-xl font-bold">{balance || 0}</span> SOL</div>}
+                <div className="text-md font-semibold"><span className="text-xl font-bold">{balance || 0}</span> SOL</div>}
               <p className="text-black/60">Current Balance</p>
             </div>
             <div className="flex">
@@ -139,7 +139,7 @@ const CopyTradingProfile = (props: {
             <div className="space-y-0.5">
               <p className="text-black/60 text-sm">Unallocated</p>
               <div className="text-black font-semibold flex gap-2">
-                <span className="font-semibold"><span className="text-md font-bold">{Number(user?.balance-user?.allocate_balance) ||0}</span> SOL</span>
+                <span className="font-semibold"><span className="text-md font-bold">{Number(user?.balance - user?.allocate_balance) || 0}</span> SOL</span>
               </div>
             </div>
           </div>
@@ -155,44 +155,44 @@ const CopyTradingProfile = (props: {
       </div>
       <div className="bg-white text-black flex-1 overflow-auto rounded-b">
         {activeTab2 === 0 ? (
-        <div className="px-5 py-3">
-          <div className="">
-            {
-              Array(8).fill(0).map(() => <div className="py-3 border-b-[1px] border-black/10 space-y-2">
-                <div className="flex justify-between items-center">
-                  <div className="btn-group gray">
-                    <button className="rounded-full bg-green-600 text-white px-1.5 py-1 text-xs">Buy</button>
-                    <button className="rounded-full bg-black/10 text-black/60 px-1.5 py-1 text-xs">UsernameLong</button>
+          <div className="px-5 py-3">
+            <div className="">
+              {
+                Array(8).fill(0).map(() => <div className="py-3 border-b-[1px] border-black/10 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <div className="btn-group gray">
+                      <button className="rounded-full bg-green-600 text-white px-1.5 py-1 text-xs">Buy</button>
+                      <button className="rounded-full bg-black/10 text-black/60 px-1.5 py-1 text-xs">UsernameLong</button>
+                    </div>
+                    <span className="text-xs text-black/60">2025-01-16 15:45:17</span>
                   </div>
-                  <span className="text-xs text-black/60">2025-01-16 15:45:17</span>
-                </div>
-                <div className="flex gap-8">
-                  <div className="">
-                    <p className="text-xs text-black/60">Pair</p>
-                    <p className="text-xs text-black">UNIUSDT</p>
+                  <div className="flex gap-8">
+                    <div className="">
+                      <p className="text-xs text-black/60">Pair</p>
+                      <p className="text-xs text-black">UNIUSDT</p>
+                    </div>
+                    <div className="">
+                      <p className="text-xs text-black/60">Executed</p>
+                      <p className="text-xs text-black">7.87 UNI</p>
+                    </div>
+                    <div className="">
+                      <p className="text-xs text-black/60">Total</p>
+                      <p className="text-xs text-black">0.01 SOL</p>
+                    </div>
+                    <div className="">
+                      <p className="text-xs text-black/60">Role</p>
+                      <p className="text-xs text-black">Taiker</p>
+                    </div>
                   </div>
-                  <div className="">
-                    <p className="text-xs text-black/60">Executed</p>
-                    <p className="text-xs text-black">7.87 UNI</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-black/60">Total</p>
-                    <p className="text-xs text-black">0.01 SOL</p>
-                  </div>
-                  <div className="">
-                    <p className="text-xs text-black/60">Role</p>
-                    <p className="text-xs text-black">Taiker</p>
-                  </div>
-                </div>
-              </div>)
-            }
+                </div>)
+              }
+            </div>
           </div>
-        </div>
         ) : (<></>
         )}
       </div>
     </div>
-    <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => { setIsWithdrawModalOpen(false); }} maxsol={balance} onWithdraw={(amount: number, tooneaddress: string) => { setIsConfirmWithdrawModalOpen(true); setAmount(amount); setToAddress(tooneaddress)}} />
+    <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => { setIsWithdrawModalOpen(false); }} maxsol={balance} onWithdraw={(amount: number, tooneaddress: string) => { setIsConfirmWithdrawModalOpen(true); setAmount(amount); setToAddress(tooneaddress) }} />
     <DepositModal isOpen={isDepositModalOpen} onClose={() => setIsDepositModalOpen(false)} />
     <AllTradesModal isOpen={isAllTradesModalOpen} onClose={() => setIsAllTradesModalOpen(false)} />
     <ConfirmwithdrawModalModal isOpen={isConfirmWithdrawModalOpen} onClose={() => { setIsConfirmWithdrawModalOpen(false); setIsWithdrawModalOpen(false); }} maxsol={balance} withdraw={amount} privateKey={mySKey} to={toaddress} />

@@ -19,7 +19,7 @@ const Modal = ({
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50" onClick={onClose}>
       <div className={`bg-dark1 text-white circle shadow-lg  max-w-[98%] md:max-w-[620px] ${extraClass || ''}`} onClick={(e) => e.stopPropagation()}>
         {/* Close Button */}
-        <button 
+        <button
           className={`absolute top-8 right-8 md:top-[20px] md:right-[20px] text-gray-300 hover:text-gray-500 ${hideCloseButton ? 'hidden' : ''}`}
           onClick={onClose}
         >

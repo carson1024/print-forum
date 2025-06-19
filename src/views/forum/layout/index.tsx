@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import LoginCard from "../../../components/login/LoginCard";
 import MyProfile from "../components/MyProfile";
 import ForumCard from "../components/ForumCard";
-import SubmitCallCard from "components/call/SubmitCallCard"; 
+import SubmitCallCard from "components/call/SubmitCallCard";
 import { useAuth } from "contexts/AuthContext";
 import { login, logout } from "utils/auth";
 
 const ForumLayout = ({
-    children
+  children
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) => {
   const { isLogin } = useAuth();
 
@@ -22,23 +22,23 @@ const ForumLayout = ({
             <SubmitCallCard />
           </div>
         </div>
-        { children }
+        {children}
       </div>
-      
+
       {/* Right Side - Panel */}
       <div className=" ">
-        { !isLogin ? <div className="m-[18px]">
-            <LoginCard
-              login={login}
-            />
-            <ForumCard  />
-          </div> : 
+        {!isLogin ? <div className="m-[18px]">
+          <LoginCard
+            login={login}
+          />
+          <ForumCard />
+        </div> :
           <MyProfile
             logout={logout} />}
       </div>
     </div>
   </>
- );
+  );
 }
 
 export default ForumLayout;
