@@ -7,6 +7,7 @@ const ForumCard = () => {
             .fill(0)
             .map((value, index) => (
               <span
+                key={index}
                 className={`badge-rank-${index + 1} w-[24px] h-[24px]`}
               ></span>
             ))}

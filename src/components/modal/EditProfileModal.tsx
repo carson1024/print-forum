@@ -69,11 +69,11 @@ const EditProfileModal = ({
           return;
         }
         if (data.length > 0) {
-          setPreview(data[0].avatar);
-          setXaddress(data[0].xaddress);
-          setTaddress(data[0].taddress);
-          setSaddress(data[0].saddress);
-          setBio(data[0].bio);
+          setPreview(data[0].avatar_url);
+          setXaddress(data[0].xaddress || '');
+          setTaddress(data[0].taddress || '');
+          setSaddress(data[0].saddress || '');
+          setBio(data[0].bio || '');
           setProfile(data);
           setIsLoading(false);
         } else {
@@ -88,7 +88,8 @@ const EditProfileModal = ({
       const file = myfile;
       const fileExt = file.name.split(".").pop();
       const fileName = `${session.user.id}-${Date.now()}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
+      // Upload to the root of the bucket so RLS policy matches
+      const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
@@ -109,10 +110,11 @@ const EditProfileModal = ({
       const { error: updateError } = await supabase
         .from("users")
         .update({
+          id: session.user.id,
           xaddress: xaddress,
           taddress: taddress,
           saddress: saddress,
-          avatar: publicUrl,
+          avatar_url: publicUrl,
           bio: bio,
         })
         .eq("id", session.user.id);
@@ -127,7 +129,7 @@ const EditProfileModal = ({
     } else {
       const { error: updateError } = await supabase
         .from("users")
-        .update({ xaddress, taddress, saddress, bio })
+        .update({ id: session.user.id, xaddress, taddress, saddress, bio })
         .eq("id", session.user.id);
 
       if (updateError) {
@@ -157,9 +159,9 @@ const EditProfileModal = ({
                     alt="Avatar"
                     className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle"
                   />
-                ) : profile[0].avatar !== null ? (
+                ) : profile[0].avatar_url ? (
                   <img
-                    src={profile[0].avatar}
+                    src={profile[0].avatar_url}
                     className="w-[42px] h-[42px] sm:w-[82px] sm:h-[82px] circle"
                   />
                 ) : (
@@ -175,7 +177,7 @@ const EditProfileModal = ({
                 <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div>
               ) : (
                 <h2 className="text-base sm:text-lg font-bold">
-                  {profile[0].name}
+                  {profile[0].display_name || profile[0].username}
                 </h2>
               )}
               {isLoading ? (

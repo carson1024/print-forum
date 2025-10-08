@@ -12,20 +12,24 @@ import {
 } from "utils/blockchain";
 
 const FavouritesTab = ({ users }: { users: any[] }) => {
-  const [favo, setFavo] = useState([]);
+  const [favo, setFavo] = useState<string[]>([]);
   const { isLogin, session, user } = useAuth();
   useEffect(() => {
-    if (isLogin && user) {
-      const rawFavos = user.favos;
-      // Safely parse if it's a string
-      const parsedFavos =
-        typeof rawFavos === "string" ? JSON.parse(rawFavos) : rawFavos;
-      setFavo(parsedFavos || []);
-    }
+    const loadFavourites = async () => {
+      if (!isLogin || !session?.user?.id) return;
+      const { data, error } = await supabase
+        .from('favourites')
+        .select('target_user_id')
+        .eq('user_id', session.user.id);
+      if (!error && data) setFavo(data.map((r: any) => r.target_user_id));
+    };
+    loadFavourites();
   }, [user]);
   return (
     <>
-      {users.map((user, index) => (
+      {users
+        .filter((u) => favo.includes(u.id))
+        .map((user, index) => (
         <Link to={`/profile?id=${user.id}&tag=2`} key={index}>
           <div className="trading_border  flex items-center justify-between">
             <div className="flex items-center ">
@@ -36,7 +40,7 @@ const FavouritesTab = ({ users }: { users: any[] }) => {
                 className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center mr-[6px]`}
               ></span>
               <span className="text-[12px] font-semibold text-white mr-[6px]">
-                {user.name}
+                {user.display_name || user.username}
               </span>
               <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
                 {user.winrate}%

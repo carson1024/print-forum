@@ -20,7 +20,7 @@ const AllCopiersModal = ({
           {Array(9)
             .fill(0)
             .map((value, index) => (
-              <div className="bg-gray-50 rounded sm:rounded-[40px] text-sm px-4 py-3 flex items-center gap-3 flex-wrap">
+              <div key={index} className="bg-gray-50 rounded sm:rounded-[40px] text-sm px-4 py-3 flex items-center gap-3 flex-wrap">
                 <div className="grow">
                   <div className="flex gap-2 items-center">
                     <span className="badge-rank-8"></span>

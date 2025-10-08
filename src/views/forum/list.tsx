@@ -67,6 +67,7 @@ const ForumList = () => {
         .order("created_at", { ascending: false });
       if (error) {
         console.error("Error fetching calls:", error.message);
+        setIsLoading(false);
         return;
       }
       if (data) {
@@ -158,7 +159,7 @@ const ForumList = () => {
               </div>
               <button className="ml-[20px] pause_btn flex items-center justify-center mainhover">
                 <img src={Pause} className="w-[24px] h-[24px]" />
-                <button>Pause</button>
+                <span>Pause</span>
               </button>
             </div>
           </div>

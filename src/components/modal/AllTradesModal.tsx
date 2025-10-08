@@ -56,7 +56,7 @@ const AllTradesModal = ({
           {Array(9)
             .fill(0)
             .map((value, index) => (
-              <div className="border-b border-gray-100 text-sm px-3 py-1.5 sm:px-4 sm:py-3 flex items-center gap-3 sm:gap-5 flex-wrap">
+              <div key={index} className="border-b border-gray-100 text-sm px-3 py-1.5 sm:px-4 sm:py-3 flex items-center gap-3 sm:gap-5 flex-wrap">
                 <div className="mr-[16px]">
                   {index % 4 < 2 ? (
                     <button className="circle btn_buy_small text-[#59FFCB] btn btn-xs">

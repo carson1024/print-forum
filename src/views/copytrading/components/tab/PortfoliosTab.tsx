@@ -11,39 +11,39 @@ import {
   formatTimestamp,
 } from "utils/blockchain";
 const PortfoliosTab = ({ users }: { users: any[] }) => {
-  const [favo, setFavo] = useState([]);
+  const [favo, setFavo] = useState<string[]>([]);
   const { isLogin, session, user } = useAuth();
   useEffect(() => {
-    if (isLogin && user) {
-      const rawFavos = user.favos;
-      // Safely parse if it's a string
-      const parsedFavos =
-        typeof rawFavos === "string" ? JSON.parse(rawFavos) : rawFavos;
-      setFavo(parsedFavos || []);
-    }
+    const loadFavourites = async () => {
+      if (!isLogin || !session?.user?.id) return;
+      const { data, error } = await supabase
+        .from('favourites')
+        .select('target_user_id')
+        .eq('user_id', session.user.id);
+      if (!error && data) {
+        setFavo(data.map((r: any) => r.target_user_id));
+      }
+    };
+    loadFavourites();
   }, [user]);
 
   const handleFavorite = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!isLogin || !user) return;
-    const userId = e.currentTarget.id;
-
-    // Clone and add
-    let updatedFavos = Array.isArray(favo) ? [...favo] : [];
-    if (!updatedFavos.includes(userId)) {
-      updatedFavos.push(userId);
-    }
-
-    setFavo(updatedFavos);
-
-    // Optional: update local user
-    user.favos = updatedFavos;
-    const { error: favoerror } = await supabase
-      .from("users")
-      .update({ favos: updatedFavos }) // ❗ Do NOT stringify
-      .eq("id", user.id);
-
-    if (favoerror) {
-      console.error("Error updating favorites:", favoerror.message);
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isLogin || !session?.user?.id) return;
+    const targetId = e.currentTarget.id;
+    const isFav = favo.includes(targetId);
+    if (isFav) {
+      const { error } = await supabase
+        .from('favourites')
+        .delete()
+        .match({ user_id: session.user.id, target_user_id: targetId });
+      if (!error) setFavo(favo.filter((id) => id !== targetId));
+    } else {
+      const { error } = await supabase
+        .from('favourites')
+        .insert([{ user_id: session.user.id, target_user_id: targetId }]);
+      if (!error) setFavo([...favo, targetId]);
     }
   };
 
@@ -60,7 +60,7 @@ const PortfoliosTab = ({ users }: { users: any[] }) => {
                 className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center mr-[6px]`}
               ></span>
               <span className="text-[12px] font-semibold text-white mr-[6px]">
-                {user.name}
+                {user.display_name || user.username}
               </span>
               <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
                 {user.winrate}%

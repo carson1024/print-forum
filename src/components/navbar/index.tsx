@@ -1,10 +1,12 @@
 import IconUser from "assets/img/icons/user.svg";
 import RestrictedModal from "components/modal/RestrictedModal";
+import LoginModal from "components/modal/LoginModal";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
 import Icons from "./icons";
 import { useAuth } from "../../contexts/AuthContext";
+import { login } from "utils/auth";
 import Logo from "assets/img/logo-single.png";
 import Token from "assets/img/token.png";
 import Userlogo from "assets/img/sample/userlogo.png";
@@ -31,6 +33,7 @@ const Navbar = (props: {
   secondary?: boolean | string;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const route = useLocation();
   const navigate = useNavigate();
   const { isLogin, session } = useAuth();
@@ -102,15 +105,20 @@ const Navbar = (props: {
                 Copy trading
               </button>
             ) : (
-              <Link to="/copytrading">
-                <button
-                  className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]"
-                  onClick={() => setActiveTab("copy")}
-                >
-                  <img src={Adjust} className="w-[24px] h-[24px] mr-[6px]" />
-                  Copy trading
-                </button>
-              </Link>
+              <button
+                className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]"
+                onClick={() => {
+                  if (isLogin) {
+                    setActiveTab("copy");
+                    navigate("/copytrading");
+                  } else {
+                    setIsLoginModalOpen(true);
+                  }
+                }}
+              >
+                <img src={Adjust} className="w-[24px] h-[24px] mr-[6px]" />
+                Copy trading
+              </button>
             )}
             {activeTab == "rankings" ? (
               <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
@@ -148,6 +156,11 @@ const Navbar = (props: {
       <RestrictedModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        login={login}
       />
     </>
   );

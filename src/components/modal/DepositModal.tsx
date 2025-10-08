@@ -15,14 +15,16 @@ const DepositModal = ({
   isOpen: boolean;
   onClose: () => void;
 }>) => {
-  const { isLogin, session, user } = useAuth();
+  const { isLogin, session, user, wallet } = useAuth();
   const [isCopied, setIsCopied] = useState(false);
   const handleCopy = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     if (isCopied) return;
     setIsCopied(true);
-    await navigator.clipboard.writeText(user?.wallet_paddress);
+    if (wallet?.public_key) {
+      await navigator.clipboard.writeText(wallet.public_key);
+    }
     showToastr("Address copied to clipboard!", "success");
     setTimeout(() => setIsCopied(false), 2000);
   };
@@ -60,7 +62,7 @@ const DepositModal = ({
           <div className="flex items-center gap-2 grow">
             <div className="truncate-wrapper">
               <span className="text-gray-600 text-[12px] truncate">
-                {user?.wallet_paddress}
+                {wallet?.public_key || 'No wallet yet'}
               </span>
             </div>
           </div>

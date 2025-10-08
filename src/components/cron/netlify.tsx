@@ -200,8 +200,8 @@ exports.handler = async (event: any) => {
         const { error: updateError } = await supabase
           .from("calls")
           .update({
-            changedPrice: newPrice,
-            changedCap:
+            changed_price: newPrice,
+            changed_cap:
               (newPrice * calls[index].supply) /
               Math.pow(10, calls[index].decimals),
             is_featured: true,
@@ -224,8 +224,8 @@ exports.handler = async (event: any) => {
         const { error: updateError } = await supabase
           .from("calls")
           .update({
-            changedPrice: newPrice,
-            changedCap:
+            changed_price: newPrice,
+            changed_cap:
               (newPrice * calls[index].supply) /
               Math.pow(10, calls[index].decimals),
             percentage: Math.ceil(
@@ -251,7 +251,7 @@ exports.handler = async (event: any) => {
           xpmark += 8;
           const { error: updateError } = await supabase
             .from("calls")
-            .update({ addXP: 8 })
+            .update({ add_xp: 8 })
             .eq("id", call.id);
           if (updateError) {
             console.error("Update failed:", updateError);
@@ -262,7 +262,7 @@ exports.handler = async (event: any) => {
           xpmark += 10;
           const { error: updateError } = await supabase
             .from("calls")
-            .update({ addXP: 10 })
+            .update({ add_xp: 10 })
             .eq("id", call.id);
           if (updateError) {
             console.error("Update failed:", updateError);
@@ -273,7 +273,7 @@ exports.handler = async (event: any) => {
           xpmark += 12;
           const { error: updateError } = await supabase
             .from("calls")
-            .update({ addXP: 12 })
+            .update({ add_xp: 12 })
             .eq("id", call.id);
           if (updateError) {
             console.error("Update failed:", updateError);
@@ -284,7 +284,7 @@ exports.handler = async (event: any) => {
           xpmark -= 6;
           const { error: updateError } = await supabase
             .from("calls")
-            .update({ addXP: -6 })
+            .update({ add_xp: -6 })
             .eq("id", call.id);
           if (updateError) {
             console.error("Update failed:", updateError);

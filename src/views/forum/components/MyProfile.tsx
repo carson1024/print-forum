@@ -25,8 +25,9 @@ import Ring from "assets/img/sample/Ring.png";
 import Setting from "assets/img/sample/Setting.png";
 import UpDeposite from "assets/img/sample/UpDeposite.png";
 import DownWithdraw from "assets/img/sample/DownWithdraw.png";
+
 const MyProfile = (props: { logout: () => void }) => {
-  const { session, user } = useAuth();
+  const { session, user, wallet } = useAuth();
   const { logout } = props;
   const [activeTab, setActiveTab] = useState(0);
   const [activeTag, setActiveTag] = useState("");
@@ -47,18 +48,6 @@ const MyProfile = (props: { logout: () => void }) => {
   const [isRingModalOpen, setIsRingModalOpen] = useState(false);
   const [mySKey, setMySKey] = useState({});
   const [balance, setBalance] = useState<number | null>(null);
-  const getBalance = async (publicKeyStr: string) => {
-    const connection = new Connection(clusterApiUrl("devnet"), "confirmed"); // or 'mainnet-beta'
-    const publicKey = new PublicKey(publicKeyStr);
-
-    try {
-      const balance = await connection.getBalance(publicKey);
-      return balance / 1e9; // Convert lamports to SOL
-    } catch (error) {
-      console.error("Error fetching balance:", error);
-      return null;
-    }
-  };
 
   useEffect(() => {
     //  setIsLoading(true);
@@ -94,45 +83,11 @@ const MyProfile = (props: { logout: () => void }) => {
     };
     fetchCalls();
 
-    if (user?.wallet_paddress) {
-      let interval: NodeJS.Timeout;
-      const fetchBalance = async (publicKeyStr: string) => {
-        const balance = await getBalance(publicKeyStr);
-        setBalance(balance);
-        if (user.balance !== balance) {
-          user.balance = balance;
-          const { error: balanceError } = await supabase
-            .from("users")
-            .update({ balance: balance })
-            .eq("id", user.id);
-          if (balanceError) {
-            console.error("Error updating balance error", balanceError);
-          }
-        }
-      };
-      const privateKeyString = user?.wallet_saddress;
-      const privateKeyObject = JSON.parse(privateKeyString);
-      const privateKeyArray = Object.values(privateKeyObject).map(Number);
-      const privateKeyUint8Array = Uint8Array.from(privateKeyArray);
-      const myKeypair = Keypair.fromSecretKey(privateKeyUint8Array);
-      setMySKey(myKeypair);
-      const fetchcall = async () => {
-        try {
-          // setMyKey(data.wallet_paddress);
-          await fetchBalance(user.wallet_paddress);
-          setIsLoading(false);
-          // Set interval AFTER you have the wallet address
-          interval = setInterval(() => {
-            fetchBalance(user.wallet_paddress);
-          }, 5000);
-        } catch (error) {
-          console.error("Error fetching user info", error);
-        }
-      };
-      fetchcall();
-      return () => {
-        if (interval) clearInterval(interval);
-      };
+    // Use wallet from context if available
+    if (wallet?.public_key) {
+      setBalance(typeof wallet.balance === "number" ? wallet.balance : null);
+    } else {
+      setBalance(null);
     }
     // Subscribe to real-time changes in the "calls" table
     const channel = supabase
@@ -193,7 +148,7 @@ const MyProfile = (props: { logout: () => void }) => {
           <div className=" border-b border-gray-800 items-center justify-center">
             <div className="m-[18px]">
               <div className="flex items-center">
-                {!user?.avatar ? (
+                {!user?.avatar_url ? (
                   <a>
                     <img
                       src={Userlogo}
@@ -203,13 +158,13 @@ const MyProfile = (props: { logout: () => void }) => {
                 ) : (
                   <a>
                     <img
-                      src={user.avatar}
+                      src={user.avatar_url}
                       className="w-[32px] h-[32px] mr-[8px] circle"
                     />
                   </a>
                 )}
                 <span className="text-[14px] flex items-center font-semibold text-white">
-                  {user?.name}
+                  {user?.display_name || user?.username}
                 </span>
                 <button>
                   <img src={Next} className="w-[24px] h-[24px] mr-[8px]" />
@@ -779,7 +734,7 @@ const MyProfile = (props: { logout: () => void }) => {
                   <div className="ml-auto">
                     <div className="mb-[12px]">
                       <div className="text-[14px] font-semibold text-[#59FFCB] flex items-center">
-                        {user?.allocate_balance || 0} SOL
+                        {0} SOL
                         <span className="text-[14px] font-semibold text-[#59FFCB] flex items-center">
                           <AiFillCaretUp className="transform scale-[0.6]" />
                           12%
@@ -791,7 +746,7 @@ const MyProfile = (props: { logout: () => void }) => {
                     </div>
                     <div className="">
                       <div className="text-[14px] font-semibold text-[#59FFCB] flex items-center">
-                        {Number(balance - user?.allocate_balance) || 0} SOL
+                        {Number((balance || 0) - 0) || 0} SOL
                       </div>
                       <div className="text-[12px] font-Regular text-gray-600 flex items-center">
                         Unallocated
@@ -848,8 +803,8 @@ const MyProfile = (props: { logout: () => void }) => {
                   <div className="">
                     {Array(3)
                       .fill(0)
-                      .map(() => (
-                        <div className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
+                      .map((value, index) => (
+                        <div key={index} className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
                           <div className="flex items-center">
                             <div className="gray space-x-[4px] text-[12px]">
                               <button className="circle btn_buy_small text-white px-1.5 py-1 text-xs">
@@ -906,8 +861,8 @@ const MyProfile = (props: { logout: () => void }) => {
                       <div className="">
                         {Array(3)
                           .fill(0)
-                          .map(() => (
-                            <div className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
+                          .map((value, index) => (
+                            <div key={index} className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
                               <div className="flex items-center">
                                 <div className="gray space-x-[4px] text-[12px]">
                                   <button className="circle btn_buy_small text-white px-1.5 py-1 text-xs">
@@ -981,15 +936,15 @@ const MyProfile = (props: { logout: () => void }) => {
                                   <></>
                                 )}
                               </div>
-                              {call.addXP == 0 ? (
+                              {call.add_xp == 0 ? (
                                 <></>
-                              ) : call.addXP < 0 ? (
+                              ) : call.add_xp < 0 ? (
                                 <span className="rounded-full bg-red-500 px-2 py-1.5 text-xs text-black font-semibold">
-                                  {call.addXP}XP
+                                  {call.add_xp}XP
                                 </span>
                               ) : (
                                 <span className="rounded-full bg-primary px-2 py-1.5 text-xs text-black font-semibold">
-                                  {call.addXP}XP
+                                  {call.add_xp}XP
                                 </span>
                               )}
                             </div>
@@ -1000,8 +955,8 @@ const MyProfile = (props: { logout: () => void }) => {
                       <div className="">
                         {Array(3)
                           .fill(0)
-                          .map(() => (
-                            <div className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
+                          .map((value, index) => (
+                            <div key={index} className="border-b-[1px] border-black/10 space-y-[8px] justify-evenly h-full mb-[8px]">
                               <div className="flex items-center">
                                 <div className="gray space-x-[4px] text-[12px]">
                                   <button className="circle btn_buy_small text-white px-1.5 py-1 text-xs">

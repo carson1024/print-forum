@@ -313,7 +313,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
                 <div className="overflow-y-auto h-[calc(100vh-202px)]">
                   <div className="m-[18px]">
                     {[...Array(20)].map((_, index) => (
-                      <>
+                      <div key={index}>
                         <div className="flex items-center gap-2 flex-wrap text-[12px] font-Medium">
                           <div className="flex items-center gap-1 sm:gap-2">
                             <div className="text-xs btn_buy px-1 py-1 sm:px-2 sm:py-1.5 flex items-center gap-1">
@@ -351,7 +351,7 @@ const TradeLeadingTab = ({ myprofile }: Props) => {
                           </span>
                         </div>
                         <div className="border-b border-gray-800 mb-[19px] mt-[19px]"></div>
-                      </>
+                      </div>
                     ))}
                   </div>
                 </div>

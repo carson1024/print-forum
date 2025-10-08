@@ -107,7 +107,7 @@ const CopyTrading = () => {
 
   const handleSearch = () => {
     const newdata = saveusers.filter(
-      (user) => user.name.includes(filter) === true
+      (user) => user.display_name.includes(filter) === true
     );
     setUsers(newdata);
   };

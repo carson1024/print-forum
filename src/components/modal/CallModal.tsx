@@ -105,7 +105,7 @@ const CallModal = ({
             <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">
               Top&nbsp;3&nbsp;holders
               {top3Holders.map((holder, index) => (
-                <span className=" text-white ">
+                <span key={index} className=" text-white ">
                   {holder.pct.toFixed(2)}%
                   <span className="text-gray-600 ml-[2px]">
                     $

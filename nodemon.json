@@ -1,0 +1,9 @@
+{
+  "watch": ["server/**/*.js", "server/**/*.ts"],
+  "ext": "js,ts,json",
+  "ignore": ["node_modules", "build", "src"],
+  "exec": "node server/index.js",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

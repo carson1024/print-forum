@@ -362,7 +362,7 @@ export const CallsTab = ({ call, active }: { call: any; active: string }) => {
   };
 
   return (
-    <Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`}>
+    <Link to={`/token/${call.address}?id=${call.id}&user=${call.user_id}`}>
       <div className="bg-black text-white">
         <div
           className="mt-[18px] ml-[18px] mr-[18px] grid items-center bg-black raw_border"
@@ -409,7 +409,7 @@ export const CallsTab = ({ call, active }: { call: any; active: string }) => {
                 <span className="text-sm items-center flex">
                   <AiFillCaretRight />
                 </span>
-                {formatNumber(call.changedCap)}&nbsp;
+                {formatNumber(call.changed_cap)}&nbsp;
                 <span className="text-sm items-center flex font-Regular text-white">
                   {call.percentage == 100 ? (
                     <></>

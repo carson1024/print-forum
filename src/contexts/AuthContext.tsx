@@ -10,33 +10,14 @@ import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Keypair } from "@solana/web3.js";
 import { Connection, clusterApiUrl, PublicKey } from "@solana/web3.js";
-
-export interface UserType {
-  id: string;
-  avatar: string | null;
-  wallet_paddress: string;
-  wallet_saddress: string;
-  balance: number;
-  allocate_balance: number;
-  name: string;
-  email: string;
-  taddress: string;
-  xaddress: string;
-  saddress: string;
-  bio: string;
-  rank: number;
-  xp: number;
-  winrate: number;
-  callcount: number;
-  achievements: string[];
-  favos: string[];
-  created_at: string;
-}
+import axios from "axios";
+import { UserType, WalletType } from "types/users";
 
 export interface AuthContextType {
   isLogin: boolean;
   session: Session | null;
   user: UserType | null;
+  wallet: WalletType | null;
 }
 
 const AuthContext = createContext<AuthContextType>(null);
@@ -45,106 +26,92 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setLoading] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<UserType | null>(null);
+  const [walletCreating, setWalletCreating] = useState<Set<string>>(new Set());
+  const [walletProcessed, setWalletProcessed] = useState<Set<string>>(new Set());
+  const [wallet, setWallet] = useState<WalletType | null>(null);
   const isLogin = useMemo<boolean>(
     () => !!(session?.user.email && session?.user.confirmed_at),
     [session]
   );
-  const [balance, setBalance] = useState<number | null>(null);
-  const getBalance = async (publicKeyStr: string) => {
-    const connection = new Connection(clusterApiUrl("devnet"), "confirmed"); // or 'mainnet-beta'
-    const publicKey = new PublicKey(publicKeyStr);
+  // Create wallet for user if not exists
+  const createWalletForUser = async (userId: string): Promise<void> => {
+    // Prevent multiple simultaneous calls for the same user
+    if (walletCreating.has(userId)) {
+      return;
+    }
 
+    setWalletCreating(prev => new Set(prev).add(userId));
+    
     try {
-      const balance = await connection.getBalance(publicKey);
-      return balance / 1e9; // Convert lamports to SOL
+      const { data } = await axios.post('/api/wallet/signup', { userId }, { headers: { 'Content-Type': 'application/json' } });
+
+      if (!data?.success) {
+        console.error('Failed to create wallet:', data?.error);
+      } else {
+        // After successful creation, fetch fresh wallet info with balance
+        try {
+          const res = await axios.get(`/api/wallet/user/${userId}?includeBalance=true`);
+          if (res.data?.success) {
+            setWallet(res.data.wallet || null);
+          }
+        } catch (e) {
+          // no-op, will be fetched on next init
+        }
+      }
     } catch (error) {
-      console.error("Error fetching balance:", error);
-      return null;
+      console.error('Error creating wallet:', error);
+    } finally {
+      setWalletCreating(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
     }
   };
+
   const checkUser = useCallback(
     async (_session: Session) => {
       if (!_session?.user.id) {
         setUser(null);
+        setWalletProcessed(new Set());
+        setWallet(null);
         return;
       }
       if (user?.id == _session?.user.id) return;
+      
+      // First, check if user exists
       const { data: dataUser, error: errorUser } = await supabase
         .from("users")
         .select("*")
         .eq("id", _session.user.id)
         .single();
+      
       if (errorUser) {
         console.error("Error fetching user:", errorUser);
-      } else {
-        setUser(dataUser);
+        return;
+      }
+      
+      setUser(dataUser);
+      // Fetch wallet info for this user
+      try {
+        const { data } = await axios.get(`/api/wallet/user/${_session.user.id}?includeBalance=true`);
+        if (data?.success) {
+          setWallet(data.wallet || null);
+        } else {
+          setWallet(null);
+        }
+      } catch (e) {
+        setWallet(null);
+      }
+      
+      // Create wallet only on first login (not on every session change)
+      if (!walletProcessed.has(_session.user.id) && !walletCreating.has(_session.user.id)) {
+        await createWalletForUser(_session.user.id);
+        setWalletProcessed(prev => new Set(prev).add(_session.user.id));
       }
     },
-    [user]
+    [user, walletCreating, walletProcessed]
   );
-
-  async function handleUserLogin() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      console.log("No user logged in");
-      return;
-    }
-
-    // Check if the user already has a wallet address
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", user.id) // assuming 'id' is the PK from auth.users
-      .single();
-
-    if (error) {
-      console.error("Error fetching user:", error);
-      return;
-    }
-
-    // If the wallet_address is missing, generate a new one
-    if (!data.wallet_paddress || !data.wallet_saddress) {
-      const keypair = Keypair.generate(); // Generate a new Solana wallet
-      const walletPaddress = keypair.publicKey.toBase58(); // Get the public address
-      const walletSaddress = keypair.secretKey; // Get the securite address
-      // Save the wallet address in the database (only once)
-      const { error: updateError } = await supabase
-        .from("users")
-        .update({
-          wallet_paddress: walletPaddress,
-          wallet_saddress: walletSaddress,
-        })
-        .eq("id", user.id);
-
-      if (updateError) {
-        console.error("Error updating wallet address:", updateError);
-      } else {
-        console.log("Wallet address generated and saved successfully");
-        const balance = await getBalance(walletPaddress);
-        setBalance(Number(balance));
-        const { error: balanceError } = await supabase
-          .from("users")
-          .update({ balance: balance })
-          .eq("id", user.id);
-        if (balanceError) {
-          console.error("Error updating balance error", balanceError);
-        }
-      }
-    } else if (data.wallet_paddress) {
-      const balance = await getBalance(data.wallet_paddress);
-      setBalance(Number(balance));
-      const { error: balanceError } = await supabase
-        .from("users")
-        .update({ balance: balance })
-        .eq("id", user.id);
-      if (balanceError) {
-        console.error("Error updating balance error", balanceError);
-      }
-    }
-  }
 
   useEffect(() => {
     setLoading(true);
@@ -162,12 +129,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     checkSession();
 
-    const checkAndCreateWallet = async () => {
-      await handleUserLogin();
-    };
-
-    checkAndCreateWallet();
-
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, _session: Session | null) => {
         setSession(_session);
@@ -179,7 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
   return (
-    <AuthContext.Provider value={{ session, isLogin, user }}>
+    <AuthContext.Provider value={{ session, isLogin, user, wallet }}>
       {children}
     </AuthContext.Provider>
   );

@@ -6,6 +6,15 @@ import "./assets/css/archievement.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./contexts/AuthContext";
+import axios from "axios";
+
+// Configure Axios base URL once for the app
+(() => {
+  const base = (process.env.REACT_APP_API_BASE_URL || '').replace(/\/+$/,'');
+  if (base) {
+    axios.defaults.baseURL = base;
+  }
+})();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

@@ -20,7 +20,7 @@ import { Keypair } from "@solana/web3.js";
 
 const CopyTradingProfile = (props: { logout: () => void }) => {
   const { logout } = props;
-  const { isLogin, session, user } = useAuth();
+  const { isLogin, session, user, wallet } = useAuth();
   const [activeTab1, setActiveTab1] = useState(0);
   const [activeTab2, setActiveTab2] = useState(0);
   const [amount, setAmount] = useState(0);
@@ -48,61 +48,24 @@ const CopyTradingProfile = (props: { logout: () => void }) => {
 
   useEffect(() => {
     if (!user) return; // If there's no user, stop execution
-    if (user?.wallet_paddress) {
-      let interval: NodeJS.Timeout;
-
-      const fetchBalance = async (publicKeyStr: string) => {
-        const balance = await getBalance(publicKeyStr);
-        setBalance(balance);
-        if (user.balance !== balance) {
-          user.balance = balance;
-          const { error: balanceError } = await supabase
-            .from("users")
-            .update({ balance: balance })
-            .eq("id", user.id);
-          if (balanceError) {
-            console.error("Error updating balance error", balanceError);
-          }
-        }
-      };
-
-      const privateKeyString = user?.wallet_saddress;
-      const privateKeyObject = JSON.parse(privateKeyString);
-      const privateKeyArray = Object.values(privateKeyObject).map(Number);
-      const privateKeyUint8Array = Uint8Array.from(privateKeyArray);
-      const myKeypair = Keypair.fromSecretKey(privateKeyUint8Array);
-      setMySKey(myKeypair);
-      const fetchcall = async () => {
-        try {
-          // setMyKey(data.wallet_paddress);
-          await fetchBalance(user.wallet_paddress);
-          setIsLoading(false);
-
-          // Set interval AFTER you have the wallet address
-          interval = setInterval(() => {
-            fetchBalance(user.wallet_paddress);
-          }, 5000);
-        } catch (error) {
-          console.error("Error fetching user info", error);
-        }
-      };
-
-      fetchcall();
-
-      // Cleanup
-      return () => {
-        if (interval) clearInterval(interval);
-      };
+    
+    // Use wallet from context if available
+    if (wallet?.public_key) {
+      setBalance(typeof wallet.balance === "number" ? wallet.balance : null);
+      setIsLoading(false);
+    } else {
+      setBalance(null);
+      setIsLoading(false);
     }
-  }, [user]);
+  }, [user, wallet]);
   return (
     <>
       <div className="rounded border border-gray-100">
         <div className="bg-white text-black p-5 space-y-4 rounded">
           <div className="flex gap-3 items-center">
             <div className="relative w-[65px] h-[65px] bg-black circle flex items-center justify-center">
-              {isLogin && user?.avatar ? (
-                <img src={user.avatar} className="w-[65px] h-[65px] circle" />
+              {isLogin && user?.avatar_url ? (
+                <img src={user.avatar_url} className="w-[65px] h-[65px] circle" />
               ) : (
                 <img src={IconUser} className="w-4 h-4" />
               )}
@@ -152,7 +115,7 @@ const CopyTradingProfile = (props: { logout: () => void }) => {
                 <div className="text-black font-semibold flex gap-1 sm:gap-2">
                   <span className="font-semibold">
                     <span className="text-md font-bold">
-                      {user?.allocate_balance || 0}
+                      0
                     </span>{" "}
                     SOL
                   </span>
@@ -169,7 +132,7 @@ const CopyTradingProfile = (props: { logout: () => void }) => {
                 <div className="text-black font-semibold flex gap-2">
                   <span className="font-semibold">
                     <span className="text-md font-bold">
-                      {Number(user?.balance - user?.allocate_balance) || 0}
+                      {Number((balance || 0) - 0) || 0}
                     </span>{" "}
                     SOL
                   </span>

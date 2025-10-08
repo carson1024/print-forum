@@ -1,4 +1,5 @@
 import { supabase } from "lib/supabase";
+
 export const login = async (provider: string, email?: string): Promise<boolean> => {
   switch (provider) {
     case 'twitter':
@@ -11,6 +12,8 @@ export const login = async (provider: string, email?: string): Promise<boolean> 
           console.error(error);
           return false;
         }
+        
+        // OAuth redirects, wallet will be created in AuthContext when session is established
         return true;
       }
     case 'email': {
@@ -22,6 +25,7 @@ export const login = async (provider: string, email?: string): Promise<boolean> 
         console.error(error);
         return false;
       } else {
+        // Email OTP doesn't return user data immediately, wallet will be created in AuthContext
         return true;
       }
     }

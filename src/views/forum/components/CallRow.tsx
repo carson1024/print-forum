@@ -374,7 +374,7 @@ export const CallRow = ({ call }: { call: any }) => {
 
   return (
     <>
-      <Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`}>
+      <Link to={`/token/${call.address}?id=${call.id}&user=${call.user_id}`}>
         <div className="bg-black text-white">
           <div
             className="mt-[18px] ml-[18px] mr-[18px] grid items-center bg-black raw_border"
@@ -421,7 +421,7 @@ export const CallRow = ({ call }: { call: any }) => {
                   <span className="text-sm items-center flex">
                     <AiFillCaretRight />
                   </span>
-                  {formatNumber(call.changedCap)}&nbsp;
+                  {formatNumber(call.changed_cap)}&nbsp;
                   <span className="text-sm items-center flex font-Regular text-white">
                     {call.percentage == 100 ? (
                       <></>
@@ -443,11 +443,9 @@ export const CallRow = ({ call }: { call: any }) => {
                   <span
                     className={`badge-rank-${call.users.rank} w-[20px] h-[20px]`}
                   ></span>
-                  <Link to={`/profile?id=${call.users.id}&tag=1`} key={call.id}>
-                    <div className=" text-sm text-[12px] font-semibold items-center">
-                      {call.users.name}
-                    </div>
-                  </Link>
+                  <div className=" text-sm text-[12px] font-semibold items-center">
+                    {call.users.display_name}
+                  </div>
                   <div className="text-gray-600 text-[12px] font-Medium flex">
                     {call.users.winrate}%
                   </div>

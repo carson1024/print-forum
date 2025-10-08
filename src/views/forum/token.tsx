@@ -95,7 +95,7 @@ const TokenDetail = () => {
         .from("calls")
         .select("*, users(*)")
         .eq("address", pairAddress)
-        .order("addXP", { ascending: false });
+        .order("add_xp", { ascending: false });
 
       const fetchItem = supabase
         .from("calls")
@@ -414,7 +414,7 @@ const TokenDetail = () => {
                     <span className="text-sm items-center flex">
                       <AiFillCaretRight />
                     </span>{" "}
-                    {formatNumber(sitem?.changedCap)}&nbsp;
+                    {formatNumber(sitem?.changed_cap)}&nbsp;
                     <span className="text-sm items-center flex font-Regular text-white">
                       {sitem?.percentage == 100 ? (
                         <></>
@@ -460,7 +460,7 @@ const TokenDetail = () => {
                       <span className="text-gray-600">
                         $
                         {formatNumber(
-                          top10HolderInfo.uiAmount * sitem?.changedPrice
+                          top10HolderInfo.uiAmount * sitem?.changed_price
                         )}
                       </span>
                     </span>
@@ -468,10 +468,10 @@ const TokenDetail = () => {
                   <span className="token_info text-gray-600 text-[12px] font-Medium space-x-[5px]">
                     Top&nbsp;3&nbsp;holders
                     {top3Holders.map((holder, index) => (
-                      <span className="token_border text-white space-x-[5px]">
+                      <span key={index} className="token_border text-white space-x-[5px]">
                         {holder.pct.toFixed(2)}%
                         <span className="text-gray-600">
-                          ${formatNumber(holder.uiAmount * sitem?.changedPrice)}
+                          ${formatNumber(holder.uiAmount * sitem?.changed_price)}
                         </span>
                       </span>
                     ))}
@@ -619,7 +619,7 @@ const TokenDetail = () => {
                                       className={`badge-rank-${caller.users.rank} w-[20px] h-[20px]`}
                                     ></span>
                                     <span className="text-[12px] font-Medium text-white">
-                                      {caller.users.name}
+                                      {caller.users.display_name}
                                     </span>
                                     <span className="text-[12px] font-Medium text-[#76767E]">
                                       {caller.users.winrate}%
@@ -633,7 +633,7 @@ const TokenDetail = () => {
                                         <span className="text-sm items-center flex">
                                           <AiFillCaretRight />
                                         </span>
-                                        {formatNumber(caller.changedCap)}&nbsp;
+                                        {formatNumber(caller.changed_cap)}&nbsp;
                                         <span className="text-sm items-center flex font-Regular text-white">
                                           {caller?.percentage == 100 ? (
                                             <></>
@@ -671,23 +671,23 @@ const TokenDetail = () => {
                                   </div>
                                 </div>
                                 <div className="ml-auto flex">
-                                  {caller.addXP > 5 ? (
+                                  {caller.add_xp > 5 ? (
                                     <>
                                       {" "}
                                       <div className="caller_rise flex items-center mr-[18px]">
                                         <span className="text-[12px] font-semibold text-primary">
-                                          +{caller.addXP}XP
+                                          +{caller.add_xp}XP
                                         </span>
                                       </div>
                                     </>
-                                  ) : caller.addXP == 0 ? (
+                                  ) : caller.add_xp == 0 ? (
                                     <></>
                                   ) : (
                                     <>
                                       {" "}
                                       <div className="caller_rise flex items-center mr-[18px]">
                                         <span className="text-[12px] font-semibold text-red-300">
-                                          {caller.addXP}XP
+                                          {caller.add_xp}XP
                                         </span>
                                       </div>
                                     </>
@@ -723,7 +723,7 @@ const TokenDetail = () => {
                               className={`badge-rank-${me[0].rank} w-[20px] h-[20px] mr-[6px]`}
                             ></span>
                             <span className="text-[14px] font-Medium text-white mr-[6px]">
-                              {me[0].name}
+                              {me[0].display_name}
                             </span>
                             <span className="text-[12px] font-Medium text-[#76767E] mr-[6px]">
                               {me[0].winrate}%
@@ -754,7 +754,7 @@ const TokenDetail = () => {
                                 className={`badge-rank-${discussion.users.rank} w-[20px] h-[20px] mr-[6px]`}
                               ></span>
                               <span className="text-[14px] font-Medium text-white mr-[6px]">
-                                {discussion.users.name}
+                                {discussion.users.display_name}
                               </span>
                               <span className="text-[12px] font-Medium text-[#76767E] mr-[6px]">
                                 {discussion.users.winrate}%

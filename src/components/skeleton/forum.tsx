@@ -18,10 +18,10 @@ export const SkeletonRow = ({ opacity }: { opacity: number }) => (
 );
 
 export const SkeletonList = () => (
-  <>
+  <div className="flex flex-col gap-4">
     <SkeletonRow opacity={90} />
     <SkeletonRow opacity={60} />
     <SkeletonRow opacity={30} />
     <SkeletonRow opacity={5} />
-  </>
+  </div>
 );

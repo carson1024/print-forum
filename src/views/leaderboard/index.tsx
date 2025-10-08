@@ -76,7 +76,7 @@ const Leaderboard = () => {
                               </div>
                               <div className="flex gap-1 items-center mr-2">
                                 <span className="font-bold text-sm">
-                                  {item.name}
+                                  {item.display_name}
                                 </span>
                               </div>
                             </div>

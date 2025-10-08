@@ -17,24 +17,10 @@ import {
   SkeletonRow,
 } from "../../../../../src/components/skeleton/forum";
 import { CallsTab } from "./CallsTab";
+import { UserType } from "types/users";
 
 type Props = {
-  myprofile: {
-    id: string;
-    name: string;
-    email: string;
-    avatar: string;
-    xp: string;
-    rank: string;
-    winrate: string;
-    callcount: string;
-    achievements: string;
-    created_at: string;
-    taddress: string;
-    xaddress: string;
-    saddress: string;
-    bio: string;
-  };
+  myprofile: UserType;
 };
 
 const ProfileTab = ({ myprofile }: Props) => {
@@ -588,9 +574,9 @@ const ProfileTab = ({ myprofile }: Props) => {
                 <div className="border-b border-gray-800 mb-[16px]"></div>
                 <a
                   className="flex"
-                  href={`https://explorer.solana.com/address/${myprofile.saddress}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={myprofile.saddress ? `https://explorer.solana.com/address/${myprofile.saddress}` : "javascript:;"}
+                  target={myprofile.saddress ? "_blank" : undefined}
+                  rel={myprofile.saddress ? "noopener noreferrer" : undefined}
                 >
                   <button className="btn_link mainhover text-[14px] font-semibold text-[#FFFFFF] mb-[12px]">
                     <img className="mr-[8px]" src={Solana} />
@@ -599,9 +585,9 @@ const ProfileTab = ({ myprofile }: Props) => {
                 </a>
                 <a
                   className="flex"
-                  href={`https://x.com/${myprofile.xaddress}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={myprofile.xaddress ? `https://x.com/${myprofile.xaddress}` : "javascript:;"}
+                  target={myprofile.xaddress ? "_blank" : undefined}
+                  rel={myprofile.xaddress ? "noopener noreferrer" : undefined}
                 >
                   <button className="btn_link mainhover text-[14px] font-semibold text-[#FFFFFF] mb-[12px]">
                     <img className="mr-[8px]" src={Twitter} />
@@ -610,9 +596,9 @@ const ProfileTab = ({ myprofile }: Props) => {
                 </a>
                 <a
                   className="flex"
-                  href={`https://t.me/${myprofile.taddress}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={myprofile.taddress ? `https://t.me/${myprofile.taddress}` : "javascript:;"}
+                  target={myprofile.taddress ? "_blank" : undefined}
+                  rel={myprofile.taddress ? "noopener noreferrer" : undefined}
                 >
                   <button className="btn_link mainhover text-[14px] font-semibold text-[#FFFFFF] ">
                     <img className="mr-[4px]" src={Telegram} />

@@ -33,11 +33,11 @@ const SubmitCallCard = () => {
       .select("*")
       .order("created_at")
       .eq("address", callToken);
-    let mycalls = owncalls.filter(
+    let mycalls = (owncalls || []).filter(
       (call) => call.user_id === session.user.id
     ).length;
     if (mycalls > 0) {
-      showToastr("This token is already called fro you!", "error");
+      showToastr("This token is already called from you!", "error");
       return;
     } else {
       setIsSubmitting(true);
@@ -59,6 +59,7 @@ const SubmitCallCard = () => {
 
     const { data, error } = await supabase.from("calls").insert([
       {
+        user_id: userId,
         image: callReport.info.imageUrl,
         name: callReport.fileMeta.name,
         symbol: callReport.fileMeta.symbol,
@@ -67,12 +68,12 @@ const SubmitCallCard = () => {
         init_market_cap: callReport.marketCap,
         decimals: callReport.token.decimals,
         supply: callReport.token.supply,
-        changedCap: callReport.marketCap,
+        changed_cap: callReport.marketCap,
         price:
           (callReport.marketCap * Math.pow(10, callReport.token.decimals)) /
           callReport.token.supply,
         percentage: 100,
-        changedPrice:
+        changed_price:
           (callReport.marketCap * Math.pow(10, callReport.token.decimals)) /
           callReport.token.supply,
       },
@@ -85,14 +86,6 @@ const SubmitCallCard = () => {
       return;
     }
     user.callcount += 1;
-    const { data: dataCaller, error: errorCaller } = await supabase
-      .from("callers")
-      .insert([
-        {
-          user_id: userId,
-          address: callReport.pairAddress,
-        },
-      ]);
 
     if (error) {
       showToastr("Error saving call report", "error");
