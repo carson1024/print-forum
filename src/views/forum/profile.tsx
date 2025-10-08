@@ -30,6 +30,7 @@ const ProfileDetail = () => {
   const { isLogin, session, user } = useAuth();
   const [avatar, setAvatar] = useState("");
   const [shouldRun, setShouldRun] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -132,47 +133,35 @@ const ProfileDetail = () => {
   return (
     <ForumLayout>
       <div className="border-r border-gray-800 grow loading">
-        <div className="grid grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
-          <div className="flex border-b border-gray-800 flex items-center px-[18px]">
-            <button onClick={() => navigate(-1)}>
-              <img src={Prev} className="w-[24px] h-[24px] mr-[12px]" />
-            </button>
-            {isLoading || avatar == null ? (
-              <a>
-                <img src={Userlogo} className="w-[32px] h-[32px] mr-[8px]" />
-              </a>
-            ) : (
-              <a>
-                <img
-                  src={avatar}
-                  className="w-[32px] h-[32px] mr-[8px] circle"
-                />
-              </a>
-            )}
-            {isLoading || !profile.length ? (
-              <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div>
-            ) : (
-              <>
-                <span className="font-bold text-base text-[14px]">
-                  {profile[0].display_name || profile[0].username}
-                </span>
-                {isLogin && user && user.id === mainid && (
-                  <div className="flex items-center">
-                    <button
-                      className="ml-[12px] pause_btn !px-3 !py-2 !h-auto text-xs rounded-md flex items-center gap-1.5"
-                      onClick={() => setIsEditProfileModalOpen(true)}
-                    >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                      Edit Profile
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-
-            <div className=" flex text-[14px] font-semibold text-gray-500 ml-auto">
+        <div className="md:grid grid-rows-[76px_1fr] flex-col h-screen border-gray-800">
+          <div className="flex border-b py-2.5 border-gray-800 justify-between flex items-center px-[18px]">
+            <div className="flex items-center">
+              <button onClick={() => navigate(-1)}>
+                <img src={Prev} className="w-[24px] h-[24px] mr-[12px]" />
+              </button>
+              {isLoading || avatar == null ? (
+                <a>
+                  <img src={Userlogo} className="w-[32px] h-[32px] mr-[8px]" />
+                </a>
+              ) : (
+                <a>
+                  <img
+                    src={avatar}
+                    className="w-[32px] h-[32px] mr-[8px] circle"
+                  />
+                </a>
+              )}
+              {isLoading || !profile.length ? (
+                <div className="skeleton w-64 h-4 sm:w-60 sm:h-6 rounded "></div>
+              ) : (
+                <>
+                  <span className="font-bold text-base text-[12px] lg:text-[14px]">
+                    {profile[0].name}
+                  </span>
+                </>
+              )}
+            </div>
+            <div className=" hidden lg:flex text-[14px] font-semibold text-gray-500 ml-auto">
               {activeTab == "profile" ? (
                 <button
                   className="ml-[20px] repause_btn flex items-center justify-center mainhover flex"
@@ -206,6 +195,60 @@ const ProfileDetail = () => {
                   <img src={Adjust} className="" />
                   <span>Trading leading</span>
                 </button>
+              )}
+            </div>
+
+            <div className="relative lg:hidden max-w-max ">
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="w-full gap-1.5 text-white text-[10px] font-semibold px-3 py-2 rounded-[6px] border border-[#28272B] flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  {activeTab === "profile" && (
+                    <img
+                      src={User_face}
+                      className="w-[14px] h-[13px]"
+                      alt="Profile"
+                    />
+                  )}
+                  {activeTab === "trade" && (
+                    <img
+                      src={Adjust}
+                      className="w-[14px] h-[13px]"
+                      alt="Trading"
+                    />
+                  )}
+                  <span>
+                    {activeTab === "profile" && "Profile"}
+                    {activeTab === "trade" && "Trading leading"}
+                  </span>
+                </div>
+                <img src="/assets/arrrow.svg" alt="Dropdown" />
+              </button>
+
+              {showDropdown && (
+                <div className="absolute z-50 mt-2 w-full bg-[#1a1a1a] border border-gray-700 rounded-[6px] shadow-lg">
+                  <button
+                    onClick={() => {
+                      setActiveTab("profile");
+                      setShowDropdown(false);
+                    }}
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800 text-[10px]"
+                  >
+                    <img src={User_face} className="w-4 h-4 mr-2" />
+                    Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab("trade");
+                      setShowDropdown(false);
+                    }}
+                    className="flex items-center w-full px-4 py-2 text-white hover:bg-gray-800 text-[10px]"
+                  >
+                    <img src={Adjust} className="w-4 h-4 mr-2" />
+                    Trading leading
+                  </button>
+                </div>
               )}
             </div>
           </div>

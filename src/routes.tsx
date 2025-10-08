@@ -9,6 +9,8 @@ import ProfileDetail from "views/forum/profile";
 import Leaderboard from "views/leaderboard";
 import CopyTrading from "views/copytrading";
 import Profile from "views/user";
+import MyProfile from "views/forum/components/MyProfile";
+import { logout } from "utils/auth";
 
 const routes = [
   {
@@ -46,6 +48,12 @@ const routes = [
     layout: "",
     path: "copytrading",
     component: <CopyTrading />,
+  },
+  {
+    key: "account",
+    layout: "",
+    path: "account",
+    component: <MyProfile logout={logout} />,
   },
 ];
 export default routes;

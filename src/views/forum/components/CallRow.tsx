@@ -370,150 +370,94 @@ export const CallRow = ({ call }: { call: any }) => {
       };
       insertdislikeUser();
     }
-  };
+  }
 
-  return (
-    <>
-      <Link to={`/token/${call.address}?id=${call.id}&user=${call.user_id}`}>
-        <div className="bg-black text-white">
-          <div
-            className="mt-[18px] ml-[18px] mr-[18px] grid items-center bg-black raw_border"
-            style={{ gridTemplateColumns: "320px 1fr 37px" }}
-          >
-            <div className="flex mr-[32px] items-center bg-black">
-              <img src={call.image} className="w-[69px] h-[69px] circle-item" />
-              <div className="flex flex-col items-start token_data mr-[8px] ml-[12px]">
-                <div className="data1 text-sm text-[14px] font-semibold items-center flex">
-                  ${call.symbol}
-                  {featured > 1 ? (
-                    <div>
-                      <span
-                        className={`badge-multiplier-${featured}X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex`}
-                      ></span>
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                  {/* <span className="badge-multiplier-10X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex"></span>  */}
-                  <span
-                    onClick={handleCopy}
-                    className="token_address text-[12px] font-Medium text-gray-500"
-                  >
-                    <span className="truncate text-gray-400">
-                      {formatShortAddress(call.address)}
-                    </span>
-                    <button className="text-gray-400">
-                      {!isCopied ? (
-                        <img src={IconCopy} className="opacity-40" />
-                      ) : (
-                        <span className="text-[#06cf9c]">
-                          <MdCheck size={16} />
-                        </span>
-                      )}
-                    </button>
-                  </span>
-                  <span className="font-Regular text-gray-600">
-                    {formatTimestamp(call.updated_at)}
-                  </span>
-                </div>
-                <div className="text-gray-600 text-[12px] font-Medium flex">
-                  MCAP&nbsp;{formatNumber(call.init_market_cap)}
-                  <span className="text-sm items-center flex">
-                    <AiFillCaretRight />
-                  </span>
-                  {formatNumber(call.changed_cap)}&nbsp;
-                  <span className="text-sm items-center flex font-Regular text-white">
-                    {call.percentage == 100 ? (
-                      <></>
-                    ) : call.percentage > 100 ? (
-                      <div className="flex text-green-600">
-                        <AiFillCaretUp className="text-green-600" />
-                        <span>{Number(call.percentage) - 100}%</span>
-                      </div>
-                    ) : (
-                      <div className="flex text-red-400">
-                        <AiFillCaretDown className="text-red-400" />
-                        <span>{100 - Number(call.percentage)}%</span>
-                      </div>
-                    )}
-                    {/* <AiFillCaretUp /> 121% */}
-                  </span>
-                </div>
-                <div className="items-center flex text-sm space-x-[8px]">
-                  <span
-                    className={`badge-rank-${call.users.rank} w-[20px] h-[20px]`}
-                  ></span>
-                  <div className=" text-sm text-[12px] font-semibold items-center">
-                    {call.users.display_name}
-                  </div>
-                  <div className="text-gray-600 text-[12px] font-Medium flex">
-                    {call.users.winrate}%
-                  </div>
-                </div>
-              </div>
+  return <><Link to={`/token/${call.address}?id=${call.id} &user=${call.user_id}`}>
+    <div className="bg-black py-2.5 px-4 text-white">
+      <div className="p-2.5 border border-[#28272B] rounded-[12px] flex justify-between items-center bg-black lg:raw_border" style={{ gridTemplateColumns: '320px 1fr 37px' }}>
+        <div className="flex lg:mr-[32px] items-center bg-black">
+          <img src={call.image} alt="" className=" w-[55px] lg:w-[69px] h-[55px] lg:h-[69px] circle-item" />
+          <div className="flex flex-col items-start gap-[5px] mr-[8px] ml-[12px]">
+            <div className="text-[12px] gap-1.5 lg:gap-2 lg:text-[14px] font-semibold items-center flex">${call.symbol}
+              {
+                featured > 1 ? <div>
+                  <span className={`badge-multiplier-${featured}X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex`}></span>
+                </div> :
+                  <></>
+              }
+              {/* <span className="badge-multiplier-10X w-[35px] h-[21px]  text-[#59FFCB] text-[12px] font-semibold items-center flex"></span>  */}
+              <span onClick={handleCopy} className="token_address  text-[10px] lg:text-[12px] font-Medium text-gray-500">
+                <span className="truncate text-gray-400">{formatShortAddress(call.address)}</span>
+                <button className="text-gray-400">{
+                  !isCopied ? <img src={IconCopy} className="opacity-40" />
+                    : <span className='text-[#06cf9c]'><MdCheck size={16} /></span>
+                }</button>
+              </span>
+              <span className="font-Regular text-[10px] text-gray-600">{formatTimestamp(call.updated_at)}</span>
             </div>
-            <div className="bg-black"></div>
-            <div className="flex items-center bg-black ml-auto">
-              {confirmVote == 0 ? (
-                <>
-                  <div className="space-y-[3px]">
-                    <div
-                      className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px] "
-                      onClick={handleVotelikemobile}
-                    >
-                      <AiFillCaretUp />{" "}
+            <div className="text-gray-600 text-[10px] lg:text-[12px] font-Medium flex">
+              MCAP&nbsp;{formatNumber(call.init_market_cap)}<span className="text-sm items-center flex"><AiFillCaretRight /></span>{formatNumber(call.changedCap)}&nbsp;<span className="text-sm items-center flex font-Regular text-white">
+                {
+                  call.percentage == 100 ? <></> : call.percentage > 100 ?
+                    <div className="flex text-green-600">
+                      <AiFillCaretUp className="text-green-600" />
+                      <span>{Number(call.percentage) - 100}%</span>
+                    </div> :
+                    <div className="flex text-red-400 text-[10px] lg:text-[12px] flex items-center">
+                      <AiFillCaretDown className="text-red-400" />
+                      <span>{100 - Number(call.percentage)}%</span>
                     </div>
-                    <div
-                      className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]"
-                      onClick={handleVotedislikemobile}
-                    >
-                      <AiFillCaretDown />
-                    </div>
-                    <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">
-                      {ratioVote}%
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {confirmVote == 1 ? (
-                    <>
-                      <div className="space-y-[3px]" onClick={handlekeep}>
-                        <button className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]">
-                          <FaThumbsUp className="w-3 h-3 text-green-500  cursor-pointer hover:scale-110 transition-transform" />{" "}
-                        </button>
-                        <button className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]">
-                          <AiFillCaretDown />
-                        </button>
-                        <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">
-                          {ratioVote}%
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="space-y-[3px]" onClick={handlekeep}>
-                      <div className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]">
-                        <AiFillCaretUp />{" "}
-                      </div>
-                      <div className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]">
-                        <FaThumbsDown className="w-3 h-3 text-red-500 cursor-pointer hover:scale-110 transition-transform" />
-                      </div>
-                      <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">
-                        {ratioVote}%
-                      </span>
-                    </div>
-                  )}
-                </>
-              )}
+                }
+                {/* <AiFillCaretUp /> 121% */}
+              </span>
+            </div>
+            <div className="items-center flex text-[10px] lg:text-sm space-x-[8px]">
+              <span className={`badge-rank-${call.users.rank} w-[20px] h-[20px]`}></span>
+              <Link to={`/profile?id=${call.users.id}&tag=1`} key={call.id}>
+                <div className="text-[10px] lg:text-[12px] font-semibold items-center">{call.users.name}</div>
+              </Link>
+              <div className="text-gray-600 text-[10px] lg:text-[12px] font-Medium flex">{call.users.winrate}%</div>
             </div>
           </div>
         </div>
-      </Link>
-      <LoginFromVoteModal
-        isOpen={isLoginFromVoteModalOpen}
-        onClose={() => setIsLoginFromVoteModalOpen(false)}
-        login={login}
-      />
-    </>
-  );
-};
+        <div className="bg-black lg:block hidden"></div>
+        <div className="flex items-center bg-black lg:ml-auto">
+          {
+            confirmVote == 0 ? <><div className="space-y-[3px] text-center">
+              <div className="flex lg:flex-col gap-px">
+
+                <div className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px] " onClick={handleVotelikemobile}><AiFillCaretUp /> </div>
+                <div className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" onClick={handleVotedislikemobile}><AiFillCaretDown /></div>
+              </div>
+              <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">{ratioVote}%</span>
+            </div></> : <>
+              {
+                confirmVote == 1 ? <><div className="space-y-[3px]" onClick={handlekeep}>
+                  <div className="flex lg:flex-col gap-px">
+
+                    <button className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]"><FaThumbsUp className="w-3 h-3 text-green-500  cursor-pointer hover:scale-110 transition-transform" /> </button>
+                    <button className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]"><AiFillCaretDown /></button>
+                  </div>
+                  <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">{ratioVote}%</span>
+                </div></> :
+                  <div className="space-y-[3px]" onClick={handlekeep}>
+                    <div className="flex lg:flex-col gap-px">
+
+                      <div className="circle-reitem w-6 h-6 bg-gray-100 hover:bg-gray-50 text-green-600 text-sm pb-[2px]"  ><AiFillCaretUp /> </div>
+                      <div className="circle-reitem w-6 h-6 bg-gray-100 text-red-400 text-sm pt-[2px]" ><FaThumbsDown className="w-3 h-3 text-red-500 cursor-pointer hover:scale-110 transition-transform" /></div>
+                    </div>
+                    <span className="text-xs text-gray-600  select-none m-0 p-0 leading-none">{ratioVote}%</span>
+                  </div>
+              }</>
+          }
+        </div>
+      </div>
+    </div>
+  </Link>
+    <LoginFromVoteModal
+      isOpen={isLoginFromVoteModalOpen}
+      onClose={() => setIsLoginFromVoteModalOpen(false)}
+      login={login}
+    />
+  </>
+}

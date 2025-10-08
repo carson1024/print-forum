@@ -1,32 +1,32 @@
 import IconUser from "assets/img/icons/user.svg";
 import RestrictedModal from "components/modal/RestrictedModal";
-import LoginModal from "components/modal/LoginModal";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MdClose } from "react-icons/md";
 import Icons from "./icons";
 import { useAuth } from "../../contexts/AuthContext";
-import { login } from "utils/auth";
-import Logo from "assets/img/logo-single.png";
-import Token from "assets/img/token.png";
-import Userlogo from "assets/img/sample/userlogo.png";
-import Next from "assets/img/sample/next.png";
-import Ring from "assets/img/sample/Ring.png";
-import Setting from "assets/img/sample/Setting.png";
-import UpDeposite from "assets/img/sample/UpDeposite.png";
-import DownWithdraw from "assets/img/sample/DownWithdraw.png";
-import Vector from "assets/img/Vector.png";
-import VectorR from "assets/img/VectorR.png";
-import Frame from "assets/img/Frame.png";
-import FrameR from "assets/img/FrameR.png";
-import Adjust from "assets/img/Adjust.png";
-import AdjustR from "assets/img/AdjustR.png";
-import Ranks from "assets/img/Ranks.png";
-import RanksR from "assets/img/RanksR.png";
-import Telegram from "assets/img/telegram.png";
-import Twitter from "assets/img/twitter.png";
-import Solana from "assets/img/solana.png";
-import { useSearchParams } from "react-router-dom";
+import Logo from 'assets/img/logo-single.png';
+import Token from 'assets/img/token.png';
+import Userlogo from 'assets/img/sample/userlogo.png';
+import Next from 'assets/img/sample/next.png';
+import Ring from 'assets/img/sample/Ring.png';
+import Setting from 'assets/img/sample/Setting.png';
+import UpDeposite from 'assets/img/sample/UpDeposite.png';
+import DownWithdraw from 'assets/img/sample/DownWithdraw.png';
+import Vector from 'assets/img/Vector.png';
+import VectorR from 'assets/img/VectorR.png';
+import Frame from 'assets/img/Frame.png';
+import FrameR from 'assets/img/FrameR.png';
+import Adjust from 'assets/img/Adjust.png';
+import AdjustR from 'assets/img/AdjustR.png';
+import Ranks from 'assets/img/Ranks.png';
+import RanksR from 'assets/img/RanksR.png';
+import Telegram from 'assets/img/telegram.png';
+import Twitter from 'assets/img/twitter.png';
+import Solana from 'assets/img/solana.png';
+import { useSearchParams } from 'react-router-dom';
+import LoginModal from 'components/modal/LoginModal';
+import { login } from 'utils/auth';
 
 const Navbar = (props: {
   currentRoute: string;
@@ -37,74 +37,56 @@ const Navbar = (props: {
   const route = useLocation();
   const navigate = useNavigate();
   const { isLogin, session } = useAuth();
-  const [activeTab, setActiveTab] = useState<
-    "forum" | "alpha" | "copy" | "rankings" | ""
-  >("forum");
+  const [activeTab, setActiveTab] = useState<'forum' | 'alpha' | 'copy' | 'rankings' | ''>('forum');
+  const [activeTab2, setActiveTab2] = useState<'forum' | 'alpha' | 'copy' | 'rankings' | 'accounts'>('forum');
+  const [isLoginModal, setIsLoginMoal] = useState(false)
+
 
   useEffect(() => {
     console.log(route.pathname);
-    if (route.pathname == "/") {
-      setActiveTab("forum");
-    } else if (route.pathname == "/login") {
-      setActiveTab("");
-    } else if (route.pathname == "/token") {
-      setActiveTab("forum");
-    } else if (route.pathname == "/profile") {
-      setActiveTab("forum");
-    } else if (route.pathname == "/leaderboard") {
-      setActiveTab("rankings");
-    } else if (route.pathname == "/copytrading") {
-      setActiveTab("copy");
-    }
+    if (route.pathname == "/") { setActiveTab('forum') }
+    else if (route.pathname == "/login") { setActiveTab('') }
+    else if (route.pathname == "/token") { setActiveTab('forum') }
+    else if (route.pathname == "/profile") { setActiveTab('forum') }
+    else if (route.pathname == "/leaderboard") { setActiveTab('rankings') }
+    else if (route.pathname == "/copytrading") { setActiveTab('copy') }
   }, [route]);
 
-  return (
-    <>
-      <div className="grid grid-rows-[76px_220px_1fr_152px_64px] h-screen border-r border-gray-800">
-        <div className=" border-b border-gray-800 flex items-center justify-center">
-          <img src={Logo} className="w-[36px] h-[36px]" />
-        </div>
-        <div className=" border-gray-800  items-center justify-center ">
-          <div className="text-gray-400 m-[20px]">
-            {activeTab == "forum" ? (
+  return (<>
+    <div className=" hidden lg:grid grid-rows-[76px_220px_1fr_152px_64px] h-screen border-r border-gray-800">
+      <div className=" border-b border-gray-800 flex items-center justify-center">
+        <img src={Logo} className="w-[36px] h-[36px]" />
+      </div>
+      <div className=" border-gray-800  items-center justify-center ">
+        <div className="text-gray-400 m-[20px]">
+          {
+            activeTab == 'forum' ?
               <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={VectorR} className="w-[24px] h-[24px] mr-[6px]" />
                 Forum
-              </button>
-            ) : (
-              <Link to="/">
-                <button
-                  className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]"
-                  onClick={() => setActiveTab("forum")}
-                >
-                  <img src={Vector} className="w-[24px] h-[24px] mr-[6px]" />
-                  Forum
-                </button>
-              </Link>
-            )}
-            {activeTab == "alpha" ? (
+              </button> :
+              <Link to="/"><button className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('forum')}>
+                <img src={Vector} className="w-[24px] h-[24px] mr-[6px]" />
+                Forum
+              </button></Link>
+          }
+          {
+            activeTab == 'alpha' ?
               <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={FrameR} className="w-[24px] h-[24px] mr-[6px]" />
                 Alpha
-              </button>
-            ) : (
-              <button
-                className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]"
-                onClick={() => {
-                  setActiveTab("alpha");
-                  setIsModalOpen(true);
-                }}
-              >
+              </button> :
+              <button className="flex items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => { setActiveTab('alpha'); setIsModalOpen(true) }}>
                 <img src={Frame} className="w-[24px] h-[24px] mr-[6px]" />
                 Alpha
               </button>
-            )}
-            {activeTab == "copy" ? (
+          }
+          {
+            activeTab == 'copy' ?
               <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={AdjustR} className="w-[24px] h-[24px] mr-[6px]" />
                 Copy trading
-              </button>
-            ) : (
+              </button> :
               <button
                 className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]"
                 onClick={() => {
@@ -119,51 +101,117 @@ const Navbar = (props: {
                 <img src={Adjust} className="w-[24px] h-[24px] mr-[6px]" />
                 Copy trading
               </button>
-            )}
-            {activeTab == "rankings" ? (
+          }
+          {
+            activeTab == 'rankings' ?
               <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[13px] font-semibold selecthover mb-[12px]">
                 <img src={RanksR} className="w-[24px] h-[24px] mr-[6px]" />
                 Rankings
-              </button>
-            ) : (
-              <Link to="/leaderboard">
-                <button
-                  className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]"
-                  onClick={() => setActiveTab("rankings")}
-                >
-                  <img src={Ranks} className="w-[24px] h-[24px] mr-[6px]" />
-                  Rankings
-                </button>
-              </Link>
-            )}
-          </div>
-        </div>
-        <div className="bg-black"></div>
-        <div className=" flex items-center bg-black">
-          <div className="text-sm  text-[13px] font-semibold  text-gray-500 space-y-[20px] m-[20px]">
-            <button>Rank system</button>
-            <button>Terms of Service</button>
-            <button>Privacy Policy</button>
-            <button>Support</button>
-          </div>
-        </div>
-        <div className=" flex items-center justify-center border-t border-gray-800 bg-black">
-          <img src={Twitter} className="w-[18px] h-[18px] mr-[16px] " />
-          <img src={Telegram} className="w-[24px] h-[24px] mr-[16px] " />
-          <img src={Solana} className="w-[20px] h-[20px] " />
+              </button> :
+              <Link to="/leaderboard"><button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[13px] font-semibold mainhover mb-[12px]" onClick={() => setActiveTab('rankings')}>
+                <img src={Ranks} className="w-[24px] h-[24px] mr-[6px]" />
+                Rankings
+              </button></Link>
+          }
         </div>
       </div>
-      <RestrictedModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        login={login}
-      />
-    </>
-  );
-};
+      <div className="bg-black"></div>
+      <div className=" flex items-center bg-black">
+        <div className="text-sm  text-[13px] font-semibold  text-gray-500 space-y-[20px] m-[20px]">
+          <button>Rank system</button>
+          <button>Terms of Service</button>
+          <button>Privacy Policy</button>
+          <button>Support</button>
+        </div>
+      </div>
+      <div className=" flex items-center justify-center border-t border-gray-800 bg-black">
+        <img src={Twitter} className="w-[18px] h-[18px] mr-[16px] " />
+        <img src={Telegram} className="w-[24px] h-[24px] mr-[16px] " />
+        <img src={Solana} className="w-[20px] h-[20px] " />
+      </div>
+    </div>
+    <div className="lg:hidden bg-[#100F13] z-[10] py-2.5 w-full fixed bottom-0">
+      <div className="text-gray-400 grid grid-cols-5">
+        {
+          activeTab2 == 'forum' ?
+            <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[11px] font-semibold  justify-center flex-col   ">
+              <img src={VectorR} className="w-[24px] h-[24px] " />
+              Forum
+            </button> :
+            <Link to="/"><button className="flex items-center w-full px-[9px] py-[6px] text-[11px] font-semibold mainhover flex-col " onClick={() => setActiveTab2('forum')}>
+              <img src={Vector} className="w-[24px] h-[24px] " />
+              Forum
+            </button></Link>
+        }
+        {
+          activeTab2 == 'alpha' ?
+            <button className="flex items-center w-full px-[9px] py-[6px] text-primary text-[11px] font-semibold  justify-center flex-col   ">
+              <img src={FrameR} className="w-[24px] h-[24px] " />
+              Alpha
+            </button> :
+            <button className="flex flex-col items-center w-full px-[9px] py-[6px] text-[11px] font-semibold mainhover  " onClick={() => { setActiveTab2('alpha'); setIsModalOpen(true) }}>
+              <img src={Frame} className="w-[24px] h-[24px] " />
+              Alpha
+            </button>
+        }
+        {
+          activeTab2 == 'copy' ?
+            <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[11px] font-semibold  justify-center flex-col   ">
+              <img src={AdjustR} className="w-[24px] h-[24px] " />
+              Copy trading
+            </button> :
+            <Link to="/copytrading"><button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[11px] font-semibold mainhover  " onClick={() => setActiveTab2('copy')}>
+              <img src={Adjust} className="w-[24px] h-[24px] " />
+              Copy trading
+            </button></Link>
+        }
+        {
+          activeTab2 == 'rankings' ?
+            <button className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[11px] font-semibold  justify-center flex-col   ">
+              <img src={RanksR} className="w-[24px] h-[24px] " />
+              Rankings
+            </button> :
+            <Link to="/leaderboard"><button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[11px] font-semibold mainhover  " onClick={() => setActiveTab2('rankings')}>
+              <img src={Ranks} className="w-[24px] h-[24px] " />
+              Rankings
+            </button></Link>
+        }
+        {
+          activeTab2 == 'accounts' ?
+            <button onClick={() => {
+              setIsLoginMoal(true)
+            }} className="flex whitespace-nowrap items-center w-full px-[9px] py-[6px] text-primary text-[11px] font-semibold  justify-center flex-col   ">
+              <img src={RanksR} alt='' className="w-[24px] h-[24px] " />
+              Accounts
+            </button> :
+        <Link
+        to={isLogin ? "/account" : "#"}
+        onClick={(e) => {
+          if (!isLogin) {
+            e.preventDefault(); // Prevent navigation
+            setIsLoginMoal(true); // Call login modal
+          } else {
+            setActiveTab2("accounts");
+          }
+        }}
+      >
+        <button className="flex flex-col whitespace-nowrap items-center w-full px-[9px] py-[6px] text-[11px] font-semibold mainhover">
+          <img src="/assets/accounts.svg" alt='' className="w-[24px] h-[24px]" />
+          Accounts
+        </button>
+      </Link>
+      
+        }
+      </div>
+    </div>
+    <RestrictedModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    <LoginModal
+      isOpen={isLoginModal}
+      onClose={() => setIsLoginMoal(false)}
+      login={login}
+    />
+  </>
+  )
+}
 
 export default Navbar;

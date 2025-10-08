@@ -17,9 +17,9 @@ const PortfoliosTab = ({ users }: { users: any[] }) => {
     const loadFavourites = async () => {
       if (!isLogin || !session?.user?.id) return;
       const { data, error } = await supabase
-        .from('favourites')
-        .select('target_user_id')
-        .eq('user_id', session.user.id);
+        .from("favourites")
+        .select("target_user_id")
+        .eq("user_id", session.user.id);
       if (!error && data) {
         setFavo(data.map((r: any) => r.target_user_id));
       }
@@ -35,13 +35,13 @@ const PortfoliosTab = ({ users }: { users: any[] }) => {
     const isFav = favo.includes(targetId);
     if (isFav) {
       const { error } = await supabase
-        .from('favourites')
+        .from("favourites")
         .delete()
         .match({ user_id: session.user.id, target_user_id: targetId });
       if (!error) setFavo(favo.filter((id) => id !== targetId));
     } else {
       const { error } = await supabase
-        .from('favourites')
+        .from("favourites")
         .insert([{ user_id: session.user.id, target_user_id: targetId }]);
       if (!error) setFavo([...favo, targetId]);
     }
@@ -52,54 +52,62 @@ const PortfoliosTab = ({ users }: { users: any[] }) => {
       {users.map((user, index) => (
         <Link to={`/profile?id=${user.id}&tag=2`} key={index}>
           <div className="trading_border  flex items-center justify-between">
-            <div className="flex items-center ">
-              <div className="trade_number_border items-center text-gray-600 text-bold text-[10px] mr-[6px]">
-                {index + 1}
+            <div className="flex flex-col md:flex-wrap gap-[5px] lg:gap-3 lg:flex-row lg:items-center ">
+              <div className="flex gap-[6px] items-center ">
+                <div className="trade_number_border items-center text-gray-600 text-bold text-[10px] lg:mr-[6px]">
+                  {index + 1}
+                </div>
+                <div className="flex gap-[4px] items-center">
+                  <span
+                    className={`badge-rank-${user.rank} rounded-[4px] text-[10px] w-[20px] h-[20px] items-center lg:mr-[6px]`}
+                  ></span>
+                  <span className="text-[10px] lg:text-[12px] font-semibold text-white lg:mr-[6px]">
+                    {user.display_name || user.username}
+                  </span>
+                  <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 lg:mr-[6px]">
+                    {user.winrate}%
+                  </span>
+                </div>
               </div>
-              <span
-                className={`badge-rank-${user.rank} w-[20px] h-[20px] items-center mr-[6px]`}
-              ></span>
-              <span className="text-[12px] font-semibold text-white mr-[6px]">
-                {user.display_name || user.username}
-              </span>
-              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
-                {user.winrate}%
-              </span>
-              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
-                {formatTimestamp(user.created_at)}
-              </span>
-              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
-                PnL
-              </span>
-              <span className="text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">
-                2.01 SOL
-              </span>
-              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
-                ROI
-              </span>
-              <span className="text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">
-                +64.31%
-              </span>
-              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
-                Win Ratio
-              </span>
-              <span className="text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">
-                {user.winrate}%
-              </span>
-              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
-                TFA
-              </span>
-              <span className="text-[12px] border_num_white font-Medium text-white mr-[10px]">
-                0 SOL
-              </span>
-              <span className="text-[12px] font-Medium text-gray-600 mr-[6px]">
-                Followers
-              </span>
-              <span className="text-[12px] border_num_white font-Medium text-[#59FFCB] mr-[10px]">
-                3
-              </span>
+              <div className="flex gap-[2px] items-center">
+                <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">
+                  {formatTimestamp(user.created_at)}
+                </span>
+                <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">
+                  PnL
+                </span>
+                <span className="text-[10px] lg:text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">
+                  2.01 SOL
+                </span>
+                <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">
+                  ROI
+                </span>
+                <span className="text-[10px] lg:text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">
+                  +64.31%
+                </span>
+              </div>
+              <div className="flex gap-[2px] items-center">
+                <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">
+                  Win Ratio
+                </span>
+                <span className="text-[10px] lg:text-[12px] border_number font-Medium text-[#59FFCB] mr-[10px]">
+                  {user.winrate}%
+                </span>
+                <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">
+                  TFA
+                </span>
+                <span className="text-[10px] lg:text-[12px] border_num_white font-Medium text-white mr-[10px]">
+                  0 SOL
+                </span>
+                <span className="text-[10px] lg:text-[12px] font-Medium text-gray-600 mr-[6px]">
+                  Followers
+                </span>
+                <span className="text-[10px] lg:text-[12px] border_num_white font-Medium text-[#59FFCB] mr-[10px]">
+                  3
+                </span>
+              </div>
             </div>
-            <div className="hidden sm:flex gap-2">
+            <div className=" flex gap-2">
               {favo.includes(user.id) ? (
                 <button className="bg-gray-100 text-primary w-8 h-8 circle-item">
                   <MdStar size={20} />
@@ -113,9 +121,6 @@ const PortfoliosTab = ({ users }: { users: any[] }) => {
                   <MdStar size={20} />
                 </button>
               )}
-              <button className="bg-gray-100 text-gray-400 w-8 h-8 circle-item">
-                <FaChevronRight />
-              </button>
             </div>
           </div>
         </Link>

@@ -7,6 +7,8 @@ import { useState } from "react";
 import { CallReportType } from "types/calls";
 import { checkCall } from "utils/blockchain";
 import { login, logout } from "utils/auth";
+import { MobileDrawer } from "components/mobile-drawer";
+import Logo from 'assets/img/logo-single.png';
 
 const SubmitCallCard = () => {
   const { isLogin, session, user } = useAuth();
@@ -17,6 +19,7 @@ const SubmitCallCard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmitCall = async () => {
+
     if (isSubmitting) return;
     setCallReport(null);
     if (!isLogin) {
@@ -51,7 +54,8 @@ const SubmitCallCard = () => {
       setCallToken("");
       setIsCallModalOpen(true);
     }
-  };
+
+  }
 
   const handleCallSave = async () => {
     if (!session.user || !callReport) return;
@@ -94,41 +98,38 @@ const SubmitCallCard = () => {
     setIsCallModalOpen(false);
   };
 
-  return (
-    <>
-      {/* Search and Submit Button */}
-      <div className="flex items-center ">
-        <div className="flex items-center card-1 grow mr-[11px]">
+  return (<>
+    {/* Search and Submit Button */}
+    <div className="flex justify-between items-center">
+
+      <div className="flex items-center gap-4 lg:gap-0 ">
+      <img src={'/assets/Frame 6.svg'} alt="" className="w-[36px] lg:hidden h-[36px]" />
+        <div className="flex w-[160px] lg:w-[333px]  items-center card-1  grow md:mr-[11px]">
           <input
             value={callToken}
             onChange={(e) => setCallToken(e.target.value)}
             type="text"
             placeholder="Paste in CA"
-            className="outline-none text-sm px-2 grow sm:text-base bg-transparent "
-          />
+            className="outline-none text-sm px-2 grow sm:text-base bg-transparent " />
           {/* <button className="sm:hidden flex btn btn-sm" onClick={handleSubmitCall} disabled={isSubmitting}>Submit a Call</button> */}
         </div>
-        <button
-          className="btn_call text-[14px] font-semibold !hidden sm:!flex text-black w-[80px] h-[40px]"
-          onClick={handleSubmitCall}
-          disabled={isSubmitting}
-        >
-          Submit
-        </button>
+        <button className="btn_call text-[14px] font-semibold  flex text-black w-[80px] h-[40px]" onClick={handleSubmitCall} disabled={isSubmitting}>Submit</button>
       </div>
-      <CallModal
-        isOpen={isCallModalOpen}
-        callReport={callReport}
-        onSave={handleCallSave}
-        onClose={() => setIsCallModalOpen(false)}
-      />
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        login={login}
-      />
-    </>
-  );
-};
+      <MobileDrawer />
+    </div>
+
+    <CallModal
+      isOpen={isCallModalOpen}
+      callReport={callReport}
+      onSave={handleCallSave}
+      onClose={() => setIsCallModalOpen(false)}
+    />
+    <LoginModal
+      isOpen={isLoginModalOpen}
+      onClose={() => setIsLoginModalOpen(false)}
+      login={login}
+    />
+  </>)
+}
 
 export default SubmitCallCard;

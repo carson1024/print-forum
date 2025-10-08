@@ -52,17 +52,21 @@ export default function MainLayout(props: { [x: string]: any }) {
 
   return (
     <div className="flex flex-col h-screen w-screen m-auto gap-4 overflow">
-      <div className="grid grid-cols-[170px_1fr] h-screen bg-black text-white ">
-        <Navbar
-          currentRoute={currentRoute}
-          secondary={getActiveNavbar(routes)}
-          {...rest}
-        />
-        <main className="transition-all grow overflow-hidden">
-          <div className="h-full">
-            <Routes>{getRoutes(routes)}</Routes>
-          </div>
-        </main>
+      <div className="grid lg:grid-cols-[170px_1fr] h-screen bg-black text-white ">
+      <Navbar
+        currentRoute={currentRoute}
+        secondary={getActiveNavbar(routes)}
+        {...rest}
+      />
+      <main
+        className="transition-all grow overflow-hidden"
+      >
+        <div className="h-full">
+          <Routes>
+            {getRoutes(routes)}
+          </Routes>
+        </div>
+      </main>
       </div>
     </div>
   );
